@@ -25,7 +25,7 @@ include(CommonCppFlags)
 #-------------------------------------------------------------------------------------------
 # Source files
 #-------------------------------------------------------------------------------------------
-file(GLOB EASTDCTEST_SOURCES "TestEAAssert.cpp")
+file(GLOB EASTDCTEST_SOURCES "source/*.cpp")
 set(SOURCES ${EASTDCTEST_SOURCES})
 
 #-------------------------------------------------------------------------------------------
@@ -33,16 +33,24 @@ set(SOURCES ${EASTDCTEST_SOURCES})
 #-------------------------------------------------------------------------------------------
 add_executable(EAStdCTest ${SOURCES})
 
+
+#-------------------------------------------------------------------------------------------
+# Include directories
+#-------------------------------------------------------------------------------------------
+target_include_directories(EAStdCTest PUBLIC include)
+
 #-------------------------------------------------------------------------------------------
 # Dependencies 
 #-------------------------------------------------------------------------------------------
 add_subdirectory(packages/EABase)
+add_subdirectory(packages/EAAssert)
 add_subdirectory(packages/EAMain)
 add_subdirectory(packages/EASTL)
 add_subdirectory(packages/EATest)
 add_subdirectory(packages/EAThread)
 
 target_link_libraries(EAStdCTest EABase)
+target_link_libraries(EAStdCTest EAAssert)
 target_link_libraries(EAStdCTest EAMain)
 target_link_libraries(EAStdCTest EASTL)
 target_link_libraries(EAStdCTest EATest)

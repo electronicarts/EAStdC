@@ -13,3 +13,6 @@
 [submodule "test/packages/EASTL"]
 	path = test/packages/EASTL
 	url = git@github.com:electronicarts/EASTL.git
+[submodule "test/packages/EABase"]
+	path = test/packages/EABase
+	url = git@github.com:electronicarts/EABase.git

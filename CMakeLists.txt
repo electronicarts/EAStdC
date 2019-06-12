@@ -10,6 +10,12 @@ project(EAStdC CXX)
 option(EASTDC_BUILD_TESTS "Enable generation of build files for tests" OFF)
 
 #-------------------------------------------------------------------------------------------
+# Compiler Flags
+#-------------------------------------------------------------------------------------------
+set (CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/test/packages/EASTL/scripts/CMake")
+include(CommonCppFlags)
+
+#-------------------------------------------------------------------------------------------
 # Library definition
 #-------------------------------------------------------------------------------------------
 file(GLOB EASTDC_SOURCES "source/*.cpp")

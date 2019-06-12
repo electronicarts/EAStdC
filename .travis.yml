@@ -5,6 +5,8 @@ os:
   - osx
   - windows
 
+osx_image: xcode10.2
+
 compiler:
   - gcc
   - clang

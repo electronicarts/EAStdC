@@ -56,6 +56,15 @@ target_link_libraries(EAStdCTest EASTL)
 target_link_libraries(EAStdCTest EATest)
 target_link_libraries(EAStdCTest EAThread)
 
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+
+if((NOT APPLE) AND (NOT WIN32))
+    target_link_libraries(EAStdCTest ${EASTLTest_Libraries} Threads::Threads rt)
+else()
+    target_link_libraries(EAStdCTest ${EASTLTest_Libraries} Threads::Threads)
+endif()
+
 #-------------------------------------------------------------------------------------------
 # Run Unit tests and verify the results.
 #-------------------------------------------------------------------------------------------

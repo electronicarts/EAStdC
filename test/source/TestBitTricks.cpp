@@ -1289,7 +1289,10 @@ int TestBitTricks()
 	// EAOffsetOf
 	size_t o = EAOffsetOf(OffsetofTest, x1);
 	EATEST_VERIFY(o == 4);
-	EA_COMPILETIME_ASSERT(EAOffsetOf(OffsetofTest, x1) == 4); // Verify that this works at compile-time.
+	#ifndef EA_COMPILER_GNUC
+		// GCC correctly throws an error that the EAOffsetOf implementation used reinterpret_cast which isn't constexpr.
+		EA_COMPILETIME_ASSERT(EAOffsetOf(OffsetofTest, x1) == 4); // Verify that this works at compile-time.
+	#endif
 
 	int ind = 1;
 	o = EAOffsetOf(OffsetofTest1, x[ind]);

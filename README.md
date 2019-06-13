@@ -17,7 +17,7 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details on compiling and testi
 
 ## Credits
 
-Roberto Parolin is the current EABase owner within EA and is responsible for the open source repository.
+Roberto Parolin is the current EAStdC owner within EA and is responsible for the open source repository.
 
 
 ## License

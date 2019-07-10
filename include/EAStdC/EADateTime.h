@@ -572,7 +572,7 @@ namespace StdC
 	/// The returned string isn't guaranteed to match equivalent results from other platforms.
 	/// The return value will be false in the case that EASTDC_UTC_TIME_AVAILABLE == 0.
 	enum { kTimeZoneNameCapacity = 64 };
-	EASTDC_API bool GetTimeZoneName(char8_t* pName, bool bDaylightSavingsName);
+	EASTDC_API bool GetTimeZoneName(char* pName, bool bDaylightSavingsName);
 
 	/// DateTimeToTm
 	/// Converts a DateTime to a C tm struct.

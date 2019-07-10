@@ -25,15 +25,15 @@ namespace StdC
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// char8_t 
+// char 
 ///////////////////////////////////////////////////////////////////////////////
 
-EASTDC_API int Vcprintf(WriteFunction8 pWriteFunction8, void* EA_RESTRICT pContext, const char8_t* EA_RESTRICT pFormat, va_list arguments)
+EASTDC_API int Vcprintf(WriteFunction8 pWriteFunction8, void* EA_RESTRICT pContext, const char* EA_RESTRICT pFormat, va_list arguments)
 {
 	return SprintfLocal::VprintfCore(pWriteFunction8, pContext, pFormat, arguments);
 }
 
-EASTDC_API int Vfprintf(FILE* EA_RESTRICT pFile, const char8_t* EA_RESTRICT pFormat, va_list arguments)
+EASTDC_API int Vfprintf(FILE* EA_RESTRICT pFile, const char* EA_RESTRICT pFormat, va_list arguments)
 {
 	#if EASTDC_PRINTF_DEBUG_ENABLED
 		if((pFile == stdout) || (pFile == stderr))
@@ -46,7 +46,7 @@ EASTDC_API int Vfprintf(FILE* EA_RESTRICT pFile, const char8_t* EA_RESTRICT pFor
 	return SprintfLocal::VprintfCore(SprintfLocal::FILEWriter8, pFile, pFormat, arguments);
 }
 
-EASTDC_API int Vprintf(const char8_t* EA_RESTRICT pFormat, va_list arguments)
+EASTDC_API int Vprintf(const char* EA_RESTRICT pFormat, va_list arguments)
 {
 	#if EASTDC_PRINTF_DEBUG_ENABLED
 		SprintfLocal::PlatformLogWriterContext8 context;
@@ -56,12 +56,12 @@ EASTDC_API int Vprintf(const char8_t* EA_RESTRICT pFormat, va_list arguments)
 	#endif
 }
 
-EASTDC_API int Vsprintf(char8_t* EA_RESTRICT pDestination, const char8_t* EA_RESTRICT pFormat, va_list arguments)
+EASTDC_API int Vsprintf(char* EA_RESTRICT pDestination, const char* EA_RESTRICT pFormat, va_list arguments)
 {
 	return Vsnprintf(pDestination, (size_t)-1, pFormat, arguments);
 }
 
-EASTDC_API int Vsnprintf(char8_t* EA_RESTRICT pDestination, size_t n, const char8_t* EA_RESTRICT pFormat, va_list arguments)
+EASTDC_API int Vsnprintf(char* EA_RESTRICT pDestination, size_t n, const char* EA_RESTRICT pFormat, va_list arguments)
 {
 	SprintfLocal::SnprintfContext8 sc(pDestination, 0, pDestination ? n : 0);
 
@@ -92,13 +92,13 @@ EASTDC_API int Vsnprintf(char8_t* EA_RESTRICT pDestination, size_t n, const char
 	#endif
 }
 
-EASTDC_API int Vscprintf(const char8_t* EA_RESTRICT pFormat, va_list arguments)
+EASTDC_API int Vscprintf(const char* EA_RESTRICT pFormat, va_list arguments)
 {
 	// vscprintf returns the number of chars that are needed for a printf operation.
 	return Vsnprintf(NULL, 0, pFormat, arguments);
 }
 
-EASTDC_API int Vdprintf(const char8_t* EA_RESTRICT pFormat, va_list arguments)
+EASTDC_API int Vdprintf(const char* EA_RESTRICT pFormat, va_list arguments)
 {
 	SprintfLocal::PlatformLogWriterContext8 context;
 	return SprintfLocal::VprintfCore(SprintfLocal::PlatformLogWriter8, &context, pFormat, arguments);
@@ -107,7 +107,7 @@ EASTDC_API int Vdprintf(const char8_t* EA_RESTRICT pFormat, va_list arguments)
 
 
 
-EASTDC_API int Cprintf(WriteFunction8 pWriteFunction, void* EA_RESTRICT pContext, const char8_t* EA_RESTRICT pFormat, ...)
+EASTDC_API int Cprintf(WriteFunction8 pWriteFunction, void* EA_RESTRICT pContext, const char* EA_RESTRICT pFormat, ...)
 {
 	va_list arguments;
 	va_start(arguments, pFormat);
@@ -119,7 +119,7 @@ EASTDC_API int Cprintf(WriteFunction8 pWriteFunction, void* EA_RESTRICT pContext
 	return result;
 }
 
-EASTDC_API int Fprintf(FILE* EA_RESTRICT pFile, const char8_t* EA_RESTRICT pFormat, ...)
+EASTDC_API int Fprintf(FILE* EA_RESTRICT pFile, const char* EA_RESTRICT pFormat, ...)
 {
 	int result;
 
@@ -142,7 +142,7 @@ EASTDC_API int Fprintf(FILE* EA_RESTRICT pFile, const char8_t* EA_RESTRICT pForm
 	return result;
 }
 
-EASTDC_API int Printf(const char8_t* EA_RESTRICT pFormat, ...)
+EASTDC_API int Printf(const char* EA_RESTRICT pFormat, ...)
 {
 	va_list arguments;
 	va_start(arguments, pFormat);
@@ -159,7 +159,7 @@ EASTDC_API int Printf(const char8_t* EA_RESTRICT pFormat, ...)
 	return result;
 }
 
-EASTDC_API int Sprintf(char8_t* EA_RESTRICT pDestination, const char8_t* EA_RESTRICT pFormat, ...)
+EASTDC_API int Sprintf(char* EA_RESTRICT pDestination, const char* EA_RESTRICT pFormat, ...)
 {
 	va_list arguments;
 	va_start(arguments, pFormat);
@@ -171,7 +171,7 @@ EASTDC_API int Sprintf(char8_t* EA_RESTRICT pDestination, const char8_t* EA_REST
 	return result;
 }
 
-EASTDC_API int Snprintf(char8_t* EA_RESTRICT pDestination, size_t n, const char8_t* EA_RESTRICT pFormat, ...)
+EASTDC_API int Snprintf(char* EA_RESTRICT pDestination, size_t n, const char* EA_RESTRICT pFormat, ...)
 {
 	va_list arguments;
 	va_start(arguments, pFormat);
@@ -183,7 +183,7 @@ EASTDC_API int Snprintf(char8_t* EA_RESTRICT pDestination, size_t n, const char8
 	return result;
 }
 
-EASTDC_API int Dprintf(const char8_t* EA_RESTRICT pFormat, ...)
+EASTDC_API int Dprintf(const char* EA_RESTRICT pFormat, ...)
 {
 	va_list arguments;
 	va_start(arguments, pFormat);
@@ -451,62 +451,8 @@ EASTDC_API int Snprintf(char32_t* EA_RESTRICT pDestination, size_t n, const char
 // Deprecated functionality
 ///////////////////////////////////////////////////////////////////////////
 
-struct Bridge8
-{
-	WriteFunction8Old mpOldWriteFunction;
-	void*             mpUserContext;
-};
-
-static int WriteFunctionBridge8(const char8_t* EA_RESTRICT pData, size_t nCount, void* EA_RESTRICT pContext8, WriteFunctionState /*wfs*/)
-{
-	Bridge8* pBridge8 = (Bridge8*)pContext8;
-	return pBridge8->mpOldWriteFunction(pData, nCount, pBridge8->mpUserContext);
-}
-
-struct Bridge16
-{
-	WriteFunction16Old mpOldWriteFunction;
-	void*              mpUserContext;
-};
-
-static int WriteFunctionBridge16(const char16_t* EA_RESTRICT pData, size_t nCount, void* EA_RESTRICT pContext16, WriteFunctionState /*wfs*/)
-{
-	Bridge16* pBridge16 = (Bridge16*)pContext16;
-	return pBridge16->mpOldWriteFunction(pData, nCount, pBridge16->mpUserContext);
-}
-
-EASTDC_API int Cprintf(WriteFunction8Old pWriteFunction, void* EA_RESTRICT pContext, const char8_t* EA_RESTRICT pFormat, ...)
-{
-	va_list arguments;
-	va_start(arguments, pFormat);
-	int result = Vcprintf(pWriteFunction, pContext, pFormat, arguments);
-	va_end(arguments);
-	return result;
-}
-
-EASTDC_API int Cprintf(WriteFunction16Old pWriteFunction, void* EA_RESTRICT pContext, const char16_t* EA_RESTRICT pFormat, ...)
-{
-	va_list arguments;
-	va_start(arguments, pFormat);
-	int result = Vcprintf(pWriteFunction, pContext, pFormat, arguments);
-	va_end(arguments);
-	return result;
-}
-
-EASTDC_API int Vcprintf(WriteFunction8Old pWriteFunction8, void* EA_RESTRICT pContext, const char8_t* EA_RESTRICT pFormat, va_list arguments)
-{
-	Bridge8 bridge8 = { pWriteFunction8, pContext };
-	return SprintfLocal::VprintfCore(WriteFunctionBridge8, &bridge8, pFormat, arguments);
-}
-
-EASTDC_API int Vcprintf(WriteFunction16Old pWriteFunction16, void* EA_RESTRICT pContext, const char16_t* EA_RESTRICT pFormat, va_list arguments)
-{
-	Bridge16 bridge16 = { pWriteFunction16, pContext };
-	return SprintfLocal::VprintfCore(WriteFunctionBridge16, &bridge16, pFormat, arguments);
-}
-
 #if EASTDC_VSNPRINTF8_ENABLED
-	EASTDC_API int Vsnprintf8(char8_t* EA_RESTRICT pDestination, size_t n, const char8_t* EA_RESTRICT pFormat, va_list arguments)
+	EASTDC_API int Vsnprintf8(char* EA_RESTRICT pDestination, size_t n, const char* EA_RESTRICT pFormat, va_list arguments)
 	{
 		return Vsnprintf(pDestination, n, pFormat, arguments);
 	}

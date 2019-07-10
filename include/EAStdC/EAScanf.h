@@ -100,7 +100,7 @@ namespace StdC
 	// of ReadFunction implementations.
 	//
 	// UTF8 multi-byte characters should be returned as their unsigned value.
-	// Thus even though char8_t is signed, all characters are read and written
+	// Thus even though char is signed, all characters are read and written
 	// as if they are uint8_t. The only time a negative value should be used is
 	// in the case of a -1 return value. This situation exists because it 
 	// exists as such with the C Standard Library, for better or worse.
@@ -111,7 +111,7 @@ namespace StdC
 	// ReadFunction16
 	//
 	// This function is currently identical to ReadFunction8 with the exception
-	// that kReadActionBegin will specify char16_t characters instead of char8_t. 
+	// that kReadActionBegin will specify char16_t characters instead of char. 
 	//
 	typedef int (*ReadFunction16)(ReadAction readAction, int value, void* pContext);
 
@@ -119,7 +119,7 @@ namespace StdC
 	// ReadFunction32
 	//
 	// This function is currently identical to ReadFunction8 with the exception
-	// that kReadActionBegin will specify char32_t characters instead of char8_t. 
+	// that kReadActionBegin will specify char32_t characters instead of char. 
 	//
 	typedef int (*ReadFunction32)(ReadAction readAction, int value, void* pContext);
 
@@ -127,7 +127,7 @@ namespace StdC
 	// ReadFunctionW
 	//
 	// This function is currently identical to ReadFunction8 with the exception
-	// that kReadActionBegin will specify wchar_t characters instead of char8_t. 
+	// that kReadActionBegin will specify wchar_t characters instead of char. 
 	//
 	typedef int (*ReadFunctionW)(ReadAction readAction, int value, void* pContext);
 
@@ -148,10 +148,10 @@ namespace StdC
 	///////////////////////////////////////////////////////////////////////////////
 	/// Scanf
 	///
-	EASTDC_API int Cscanf(ReadFunction8 pReadFunction8, void* pContext, const char8_t* pFormat, ...);
-	EASTDC_API int Fscanf(FILE* pFile, const char8_t* pFormat, ...);
-	EASTDC_API int Scanf(const char8_t* pFormat, ...);
-	EASTDC_API int Sscanf(const char8_t*  pTextBuffer, const char8_t* pFormat, ...);
+	EASTDC_API int Cscanf(ReadFunction8 pReadFunction8, void* pContext, const char* pFormat, ...);
+	EASTDC_API int Fscanf(FILE* pFile, const char* pFormat, ...);
+	EASTDC_API int Scanf(const char* pFormat, ...);
+	EASTDC_API int Sscanf(const char*  pTextBuffer, const char* pFormat, ...);
 
 	EASTDC_API int Cscanf(ReadFunction16 pReadFunction16, void* pContext, const char16_t* pFormat, ...);
 	EASTDC_API int Fscanf(FILE* pFile, const char16_t* pFormat, ...);
@@ -174,10 +174,10 @@ namespace StdC
 	///////////////////////////////////////////////////////////////////////////////
 	/// Vscanf
 	///
-	EASTDC_API int Vcscanf(ReadFunction8 pReadFunction8, void* pContext, const char8_t* pFormat, va_list arguments);
-	EASTDC_API int Vfscanf(FILE* pFile, const char8_t* pFormat, va_list arguments);
-	EASTDC_API int Vscanf(const char8_t* pFormat, va_list arguments);
-	EASTDC_API int Vsscanf(const char8_t* pTextBuffer, const char8_t* pFormat, va_list arguments);
+	EASTDC_API int Vcscanf(ReadFunction8 pReadFunction8, void* pContext, const char* pFormat, va_list arguments);
+	EASTDC_API int Vfscanf(FILE* pFile, const char* pFormat, va_list arguments);
+	EASTDC_API int Vscanf(const char* pFormat, va_list arguments);
+	EASTDC_API int Vsscanf(const char* pTextBuffer, const char* pFormat, va_list arguments);
 
 	EASTDC_API int Vcscanf(ReadFunction16 pReadFunction16, void* pContext, const char16_t* pFormat, va_list arguments);
 	EASTDC_API int Vfscanf(FILE* pFile, const char16_t* pFormat, va_list arguments);

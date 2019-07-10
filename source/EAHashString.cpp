@@ -32,7 +32,7 @@ EASTDC_API uint32_t DJB2(const void* pData, size_t nLength, uint32_t nInitialVal
 }
 
 
-EASTDC_API uint32_t DJB2_String8(const char8_t* pData8, uint32_t nInitialValue, CharCase charCase)
+EASTDC_API uint32_t DJB2_String8(const char* pData8, uint32_t nInitialValue, CharCase charCase)
 {
 	uint32_t c;
 
@@ -48,14 +48,14 @@ EASTDC_API uint32_t DJB2_String8(const char8_t* pData8, uint32_t nInitialValue, 
 		case kCharCaseLower:
 		{
 			while((c = (uint8_t)*pData8++) != 0)
-				nInitialValue = ((nInitialValue << 5) + nInitialValue) + Tolower((char8_t)c);
+				nInitialValue = ((nInitialValue << 5) + nInitialValue) + Tolower((char)c);
 			break;
 		}
 
 		case kCharCaseUpper:
 		{
 			while((c = (uint8_t)*pData8++) != 0)
-				nInitialValue = ((nInitialValue << 5) + nInitialValue) + Toupper((char8_t)c);
+				nInitialValue = ((nInitialValue << 5) + nInitialValue) + Toupper((char)c);
 			break;
 		}
 	}
@@ -114,7 +114,7 @@ EASTDC_API uint32_t FNV1(const void* pData, size_t nLength, uint32_t nInitialVal
 }
 
 
-EASTDC_API uint32_t FNV1_String8(const char8_t* pData8, uint32_t nInitialValue, CharCase charCase)
+EASTDC_API uint32_t FNV1_String8(const char* pData8, uint32_t nInitialValue, CharCase charCase)
 {
 	uint32_t c;
 
@@ -130,14 +130,14 @@ EASTDC_API uint32_t FNV1_String8(const char8_t* pData8, uint32_t nInitialValue, 
 		case kCharCaseLower:
 		{
 			while((c = (uint8_t)*pData8++) != 0)
-				nInitialValue = (nInitialValue * 16777619) ^ Tolower((char8_t)c);
+				nInitialValue = (nInitialValue * 16777619) ^ Tolower((char)c);
 			break;
 		}
 
 		case kCharCaseUpper:
 		{
 			while((c = (uint8_t)*pData8++) != 0)
-				nInitialValue = (nInitialValue * 16777619) ^ Toupper((char8_t)c);
+				nInitialValue = (nInitialValue * 16777619) ^ Toupper((char)c);
 			break;
 		}
 	}
@@ -221,7 +221,7 @@ EASTDC_API uint64_t FNV64(const void* pData, size_t nLength, uint64_t nInitialVa
 }
 
 
-EASTDC_API uint64_t FNV64_String8(const char8_t* pData8, uint64_t nInitialValue, CharCase charCase)
+EASTDC_API uint64_t FNV64_String8(const char* pData8, uint64_t nInitialValue, CharCase charCase)
 {
 	uint64_t c;
 
@@ -237,14 +237,14 @@ EASTDC_API uint64_t FNV64_String8(const char8_t* pData8, uint64_t nInitialValue,
 		case kCharCaseLower:
 		{
 			while((c = (uint8_t)*pData8++) != 0)
-				nInitialValue = (nInitialValue * UINT64_C(1099511628211)) ^ Tolower((char8_t)c);
+				nInitialValue = (nInitialValue * UINT64_C(1099511628211)) ^ Tolower((char)c);
 			break;
 		}
 
 		case kCharCaseUpper:
 		{
 			while((c = (uint8_t)*pData8++) != 0)
-				nInitialValue = (nInitialValue * UINT64_C(1099511628211)) ^ Toupper((char8_t)c);
+				nInitialValue = (nInitialValue * UINT64_C(1099511628211)) ^ Toupper((char)c);
 			break;
 		}
 	}

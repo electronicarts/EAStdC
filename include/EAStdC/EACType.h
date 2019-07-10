@@ -38,108 +38,104 @@
 #include <EAStdC/internal/Config.h>
 
 
-#ifndef EA_WCHAR_UNIQUE
-#define EA_WCHAR_UNIQUE 0
-#endif
-
 
 namespace EA
 {
 namespace StdC
 {
 
-	EASTDC_API int      Isalnum(char8_t c);
+	EASTDC_API int      Isalnum(char c);
 	EASTDC_API int      Isalnum(char16_t c);
 	EASTDC_API int      Isalnum(char32_t c);
 	#if EA_WCHAR_UNIQUE
 		EASTDC_API int  Isalnum(wchar_t c);
 	#endif
 
-	EASTDC_API int      Isalpha(char8_t c);
+	EASTDC_API int      Isalpha(char c);
 	EASTDC_API int      Isalpha(char16_t c);
 	EASTDC_API int      Isalpha(char32_t c);
 	#if EA_WCHAR_UNIQUE
 		EASTDC_API int  Isalpha(wchar_t c);
 	#endif
 
-	EASTDC_API int      Isdigit(char8_t c);
+	EASTDC_API int      Isdigit(char c);
 	EASTDC_API int      Isdigit(char16_t c);
 	EASTDC_API int      Isdigit(char32_t c);
 	#if EA_WCHAR_UNIQUE
 		EASTDC_API int  Isdigit(wchar_t c);
 	#endif
 
-	EASTDC_API int      Isxdigit(char8_t c);
+	EASTDC_API int      Isxdigit(char c);
 	EASTDC_API int      Isxdigit(char16_t c);
 	EASTDC_API int      Isxdigit(char32_t c);
 	#if EA_WCHAR_UNIQUE
 		EASTDC_API int  Isxdigit(wchar_t c);
 	#endif
 
-	EASTDC_API int      Isgraph(char8_t c);
+	EASTDC_API int      Isgraph(char c);
 	EASTDC_API int      Isgraph(char16_t c);
 	EASTDC_API int      Isgraph(char32_t c);
 	#if EA_WCHAR_UNIQUE
 		EASTDC_API int  Isgraph(wchar_t c);
 	#endif
 
-	EASTDC_API int      Islower(char8_t c);
+	EASTDC_API int      Islower(char c);
 	EASTDC_API int      Islower(char16_t c);
 	EASTDC_API int      Islower(char32_t c);
 	#if EA_WCHAR_UNIQUE
 		EASTDC_API int  Islower(wchar_t c);
 	#endif
 
-	EASTDC_API char8_t  Tolower(char8_t c);
+	EASTDC_API char  Tolower(char c);
 	EASTDC_API char16_t Tolower(char16_t c);
 	EASTDC_API char32_t Tolower(char32_t c);
 	#if EA_WCHAR_UNIQUE
 		EASTDC_API wchar_t  Tolower(wchar_t c);
 	#endif
 
-	EASTDC_API int      Isupper(char8_t c);
+	EASTDC_API int      Isupper(char c);
 	EASTDC_API int      Isupper(char16_t c);
 	EASTDC_API int      Isupper(char32_t c);
 	#if EA_WCHAR_UNIQUE
 		EASTDC_API int  Isupper(wchar_t c);
 	#endif
 
-	EASTDC_API char8_t  Toupper(char8_t c);
+	EASTDC_API char  Toupper(char c);
 	EASTDC_API char16_t Toupper(char16_t c);
 	EASTDC_API char32_t Toupper(char32_t c);
 	#if EA_WCHAR_UNIQUE
 		EASTDC_API wchar_t  Toupper(wchar_t c);
 	#endif
 
-	EASTDC_API int      Isprint(char8_t c);
+	EASTDC_API int      Isprint(char c);
 	EASTDC_API int      Isprint(char16_t c);
 	EASTDC_API int      Isprint(char32_t c);
 	#if EA_WCHAR_UNIQUE
 		EASTDC_API int  Isprint(wchar_t c);
 	#endif
 
-	EASTDC_API int      Ispunct(char8_t c);
+	EASTDC_API int      Ispunct(char c);
 	EASTDC_API int      Ispunct(char16_t c);
 	EASTDC_API int      Ispunct(char32_t c);
 	#if EA_WCHAR_UNIQUE
 		EASTDC_API int  Ispunct(wchar_t c);
 	#endif
 
-	EASTDC_API int      Isspace(char8_t c);
+	EASTDC_API int      Isspace(char c);
 	EASTDC_API int      Isspace(char16_t c);
 	EASTDC_API int      Isspace(char32_t c);
 	#if EA_WCHAR_UNIQUE
 		EASTDC_API int  Isspace(wchar_t c);
 	#endif
 
-	EASTDC_API int      Iscntrl(char8_t c);
+	EASTDC_API int      Iscntrl(char c);
 	EASTDC_API int      Iscntrl(char16_t c);
 	EASTDC_API int      Iscntrl(char32_t c);
 	#if EA_WCHAR_UNIQUE
 		EASTDC_API int  Iscntrl(wchar_t c);
 	#endif
 
-	EASTDC_API int      Isascii(char8_t c);
+	EASTDC_API int      Isascii(char c);
 	EASTDC_API int      Isascii(char16_t c);
 	EASTDC_API int      Isascii(char32_t c);
 	#if EA_WCHAR_UNIQUE
@@ -183,7 +179,7 @@ namespace StdC
 
 
 
-	inline int Isalnum(char8_t c) // char8_t is the same as char -- it is a signed or unsigned 8 bit value
+	inline int Isalnum(char c) // char is the same as char -- it is a signed or unsigned 8 bit value
 	{
 		return EASTDC_WCTYPE_MAP[(uint8_t)c] & EASTDC_WCTYPE_ALNUM;
 	}
@@ -207,7 +203,7 @@ namespace StdC
 
 
 
-	inline int Isalpha(char8_t c)
+	inline int Isalpha(char c)
 	{
 		return EASTDC_WCTYPE_MAP[(uint8_t)c] & EASTDC_WCTYPE_ALPHA;
 	}
@@ -230,7 +226,7 @@ namespace StdC
 	#endif
 
 
-	inline int Isdigit(char8_t c)
+	inline int Isdigit(char c)
 	{
 		return EASTDC_WCTYPE_MAP[(uint8_t)c] & EASTDC_WCTYPE_DIGIT;
 
@@ -263,7 +259,7 @@ namespace StdC
 
 
 
-	inline int Isxdigit(char8_t c)
+	inline int Isxdigit(char c)
 	{
 		return EASTDC_WCTYPE_MAP[(uint8_t)c] & EASTDC_WCTYPE_XDIGIT;
 	}
@@ -287,7 +283,7 @@ namespace StdC
 
 
 
-	inline int Isgraph(char8_t c)
+	inline int Isgraph(char c)
 	{
 		return EASTDC_WCTYPE_MAP[(uint8_t)c] & EASTDC_WCTYPE_GRAPH;
 	}
@@ -310,7 +306,7 @@ namespace StdC
 	#endif
 
 
-	inline int Islower(char8_t c)
+	inline int Islower(char c)
 	{
 		return EASTDC_WCTYPE_MAP[(uint8_t)c] & EASTDC_WCTYPE_LOWER;
 	}
@@ -334,9 +330,9 @@ namespace StdC
 
 
 
-	inline char8_t Tolower(char8_t c)
+	inline char Tolower(char c)
 	{
-		return (char8_t)EASTDC_WLOWER_MAP[(uint8_t)c];
+		return (char)EASTDC_WLOWER_MAP[(uint8_t)c];
 	}
 
 	inline char16_t Tolower(char16_t c)
@@ -357,9 +353,9 @@ namespace StdC
 	#endif
 
 
-	inline int Isupper(char8_t c)
+	inline int Isupper(char c)
 	{
-		return (char8_t)EASTDC_WCTYPE_MAP[(uint8_t)c] & EASTDC_WCTYPE_UPPER;
+		return (char)EASTDC_WCTYPE_MAP[(uint8_t)c] & EASTDC_WCTYPE_UPPER;
 	}
 
 	inline int Isupper(char16_t c)
@@ -380,9 +376,9 @@ namespace StdC
 	#endif
 
 
-	inline char8_t Toupper(char8_t c)
+	inline char Toupper(char c)
 	{
-		return (char8_t)EASTDC_WUPPER_MAP[(uint8_t)c];
+		return (char)EASTDC_WUPPER_MAP[(uint8_t)c];
 	}
 
 	inline char16_t Toupper(char16_t c)
@@ -403,7 +399,7 @@ namespace StdC
 	#endif
 
 
-	inline int Isprint(char8_t c) 
+	inline int Isprint(char c) 
 	{
 		return EASTDC_WCTYPE_MAP[(uint8_t)c] & EASTDC_WCTYPE_PRINT;
 	}
@@ -426,7 +422,7 @@ namespace StdC
 	#endif
 
 
-	inline int Ispunct(char8_t c)
+	inline int Ispunct(char c)
 	{
 		return EASTDC_WCTYPE_MAP[(uint8_t)c] & EASTDC_WCTYPE_PUNCT;
 	}
@@ -449,7 +445,7 @@ namespace StdC
 	#endif
 
 
-	inline int Isspace(char8_t c)
+	inline int Isspace(char c)
 	{
 		return EASTDC_WCTYPE_MAP[(uint8_t)c] & EASTDC_WCTYPE_SPACE;
 	}
@@ -472,7 +468,7 @@ namespace StdC
 	#endif
 
 
-	inline int Iscntrl(char8_t c)
+	inline int Iscntrl(char c)
 	{
 		return EASTDC_WCTYPE_MAP[(uint8_t)c] & EASTDC_WCTYPE_CONTROL;
 	}
@@ -495,7 +491,7 @@ namespace StdC
 	#endif
 
 
-	inline int Isascii(char8_t c)
+	inline int Isascii(char c)
 	{
 		return (uint8_t)c < 0x80;
 	}

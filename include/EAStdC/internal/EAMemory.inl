@@ -86,67 +86,67 @@ namespace StdC
 	}
 
 
-	EASTDC_EAMEMORY_DECL char8_t* Memcpy(void* EA_RESTRICT pDestination, const void* EA_RESTRICT pSource, size_t nByteCount)
+	EASTDC_EAMEMORY_DECL char* Memcpy(void* EA_RESTRICT pDestination, const void* EA_RESTRICT pSource, size_t nByteCount)
 	{
 		EA_ASSERT((pSource      >= (const uint8_t*)pDestination + nByteCount) || // Verify the memory doesn't overlap.
 				  (pDestination >= (const uint8_t*)pSource      + nByteCount));
 
 			// Some compilers offer __builtin_memcpy, but we haven't found it to be faster than memcpy for any platforms
 			// and it's significantly slower than memcpy for some platform/compiler combinations (e.g. SN compiler on PS3).
-			return (char8_t*)memcpy(pDestination, pSource, nByteCount);
+			return (char*)memcpy(pDestination, pSource, nByteCount);
 	}
 
 
-	EASTDC_EAMEMORY_DECL char8_t* MemcpyC(void* EA_RESTRICT pDestination, const void* EA_RESTRICT pSource, size_t nByteCount)
+	EASTDC_EAMEMORY_DECL char* MemcpyC(void* EA_RESTRICT pDestination, const void* EA_RESTRICT pSource, size_t nByteCount)
 	{
 		EA_ASSERT((pSource      >= (const uint8_t*)pDestination + nByteCount) || // Verify the memory doesn't overlap.
 				  (pDestination >= (const uint8_t*)pSource      + nByteCount));
 
-		return (char8_t*)memcpy(pDestination, pSource, nByteCount);
+		return (char*)memcpy(pDestination, pSource, nByteCount);
 	}
 
 
-	EASTDC_EAMEMORY_DECL char8_t* MemcpyS(void* EA_RESTRICT pDestination, const void* EA_RESTRICT pSource, size_t nByteCount)
+	EASTDC_EAMEMORY_DECL char* MemcpyS(void* EA_RESTRICT pDestination, const void* EA_RESTRICT pSource, size_t nByteCount)
 	{
 		EA_ASSERT((pSource      >= (const uint8_t*)pDestination + nByteCount) || // Verify the memory doesn't overlap.
 				  (pDestination >= (const uint8_t*)pSource      + nByteCount));
 
 
-		return (char8_t*)memcpy(pDestination, pSource, nByteCount);
+		return (char*)memcpy(pDestination, pSource, nByteCount);
 	}
 
 
-	EASTDC_EAMEMORY_DECL char8_t* Memcpy128(void* EA_RESTRICT pDestination, const void* EA_RESTRICT pSource, size_t nByteCount)
+	EASTDC_EAMEMORY_DECL char* Memcpy128(void* EA_RESTRICT pDestination, const void* EA_RESTRICT pSource, size_t nByteCount)
 	{
 		EA_ASSERT((pSource      >= (const uint8_t*)pDestination + nByteCount) || // Verify the memory doesn't overlap.
 				  (pDestination >= (const uint8_t*)pSource      + nByteCount));
 
 		// This is expected to work with both cacheable and uncacheable memory, 
 		// thus we can't use all alternative optimized functions that exist for memcpy.
-		return (char8_t*)memcpy(pDestination, pSource, nByteCount);
+		return (char*)memcpy(pDestination, pSource, nByteCount);
 	}
 
 
-	EASTDC_EAMEMORY_DECL char8_t* Memcpy128C(void* EA_RESTRICT pDestination, const void* EA_RESTRICT pSource, size_t nByteCount)
+	EASTDC_EAMEMORY_DECL char* Memcpy128C(void* EA_RESTRICT pDestination, const void* EA_RESTRICT pSource, size_t nByteCount)
 	{
 		EA_ASSERT((pSource      >= (const uint8_t*)pDestination + nByteCount) || // Verify the memory doesn't overlap.
 				  (pDestination >= (const uint8_t*)pSource      + nByteCount));
 
-		return (char8_t*)memcpy(pDestination, pSource, nByteCount);
+		return (char*)memcpy(pDestination, pSource, nByteCount);
 	}
 
 
-	EASTDC_EAMEMORY_DECL char8_t* Memmove(void* pDestination, const void* pSource, size_t nByteCount)
+	EASTDC_EAMEMORY_DECL char* Memmove(void* pDestination, const void* pSource, size_t nByteCount)
 	{
 		// Some compilers offer __builtin_memmove, but we haven't found it to be faster than memcpy for any platforms
 		// and it's significantly slower than memcpy for some platform/compiler combinations (e.g. SN compiler on PS3).
-		return (char8_t*)memmove(pDestination, pSource, nByteCount);
+		return (char*)memmove(pDestination, pSource, nByteCount);
 	}
 
 
-	EASTDC_EAMEMORY_DECL char8_t* MemmoveC(void* pDestination, const void* pSource, size_t nByteCount)
+	EASTDC_EAMEMORY_DECL char* MemmoveC(void* pDestination, const void* pSource, size_t nByteCount)
 	{
-		return (char8_t*)memmove(pDestination, pSource, nByteCount);
+		return (char*)memmove(pDestination, pSource, nByteCount);
 	}
 
 } // namespace StdC

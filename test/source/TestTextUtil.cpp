@@ -17,7 +17,7 @@
 #endif
 
 
-typedef eastl::basic_string<char8_t>  String8;
+typedef eastl::basic_string<char>  String8;
 typedef eastl::basic_string<char16_t> String16;
 typedef eastl::basic_string<char32_t> String32;
 
@@ -30,10 +30,10 @@ static int TestUTF8()
 	int nErrorCount(0);
 
 	bool           bResult;
-	const char8_t* pResult;
+	const char* pResult;
 	char16_t       cResult;
 	size_t         nResult;
-	char8_t        buffer[32];
+	char        buffer[32];
 
 	// We would need a lot more strings than this to test this functionality well.
 	const uint8_t str1[]    = { 0 };
@@ -41,12 +41,12 @@ static int TestUTF8()
 	const uint8_t str3[]    = { 0xe8,    0x8f, 0xa4,    0xc8, 0x80,    0x61,    0 }; // 0x83e4, 0x0200, 0x0061
 	const uint8_t str4[]    = { 0x7f,    0xc4, 0x80,    0xef, 0xbf,    0xb0,    0 }; // 0x007f, 0x0100, 0xfff0
 
-	const char8_t* strArray[] =
+	const char* strArray[] =
 	{ 
-		reinterpret_cast<const char8_t*>(str1), 
-		reinterpret_cast<const char8_t*>(str2), 
-		reinterpret_cast<const char8_t*>(str3), 
-		reinterpret_cast<const char8_t*>(str4)
+		reinterpret_cast<const char*>(str1), 
+		reinterpret_cast<const char*>(str2), 
+		reinterpret_cast<const char*>(str3), 
+		reinterpret_cast<const char*>(str4)
 	};
 
 	// These represent bad combinations of bytes that any UTF8 decoder should recognize.
@@ -62,21 +62,21 @@ static int TestUTF8()
 	//const uint8_t strBad8[] = { 0xed, 0xbf, 0xbf, 0 };
 	//const uint8_t strBad9[] = { 0xef, 0xbf, 0xbe, 0 };
 
-	const char8_t* strBadArray[] =
+	const char* strBadArray[] =
 	{
-		reinterpret_cast<const char8_t*>(strBad1), 
-		reinterpret_cast<const char8_t*>(strBad2), 
-		reinterpret_cast<const char8_t*>(strBad3), 
-		reinterpret_cast<const char8_t*>(strBad4), 
-		reinterpret_cast<const char8_t*>(strBad5), 
-		reinterpret_cast<const char8_t*>(strBad6)
-	/*, reinterpret_cast<const char8_t*>(strBad7), 
-		reinterpret_cast<const char8_t*>(strBad8), 
-		reinterpret_cast<const char8_t*>(strBad9) */
+		reinterpret_cast<const char*>(strBad1), 
+		reinterpret_cast<const char*>(strBad2), 
+		reinterpret_cast<const char*>(strBad3), 
+		reinterpret_cast<const char*>(strBad4), 
+		reinterpret_cast<const char*>(strBad5), 
+		reinterpret_cast<const char*>(strBad6)
+	/*, reinterpret_cast<const char*>(strBad7), 
+		reinterpret_cast<const char*>(strBad8), 
+		reinterpret_cast<const char*>(strBad9) */
 	};
 
 
-	// bool UTF8Validate(const char8_t* p, size_t nLength);
+	// bool UTF8Validate(const char* p, size_t nLength);
 	for(size_t i = 0; i < sizeof(strArray)/sizeof(strArray[0]); ++i)
 	{
 		bResult = UTF8Validate(strArray[i], strlen(strArray[i]));
@@ -90,8 +90,8 @@ static int TestUTF8()
 	}
 
 
-	// char8_t* UTF8Increment(const char8_t* p, size_t n);
-	// char8_t* UTF8Decrement(const char8_t* p, size_t n);
+	// char* UTF8Increment(const char* p, size_t n);
+	// char* UTF8Decrement(const char* p, size_t n);
 	pResult = UTF8Increment(strArray[0], 1);
 	EATEST_VERIFY(pResult == (strArray[0] + 1));
 	pResult = UTF8Decrement(pResult, 1);
@@ -113,7 +113,7 @@ static int TestUTF8()
 	EATEST_VERIFY(pResult == strArray[3]);
 
 
-	// size_t UTF8Length(const char8_t* p);
+	// size_t UTF8Length(const char* p);
 	EATEST_VERIFY(UTF8Length("0123456789") == 10);
 	EATEST_VERIFY(UTF8Length("") == 0);
 	EATEST_VERIFY(UTF8Length("\xc2" "\xa2") == 1);
@@ -155,7 +155,7 @@ static int TestUTF8()
 	EATEST_VERIFY(UTF8Length(s32.c_str()) == 9);
 
 
-	// size_t UTF8CharSize(const char8_t* p);
+	// size_t UTF8CharSize(const char* p);
 	EATEST_VERIFY(UTF8CharSize(strArray[0]) == 1);
 	EATEST_VERIFY(UTF8CharSize(strArray[1]) == 1);
 	EATEST_VERIFY(UTF8CharSize(strArray[2] + 0) == 3);
@@ -204,7 +204,7 @@ static int TestUTF8()
 	EATEST_VERIFY(nResult == 3);
 
 
-	// char16_t UTF8ReadChar(const char8_t* p, const char8_t** ppEnd = NULL);
+	// char16_t UTF8ReadChar(const char* p, const char** ppEnd = NULL);
 	pResult = strArray[0];
 	cResult = UTF8ReadChar(pResult, &pResult);
 	EATEST_VERIFY((cResult == 0x0000) && (pResult == strArray[0] + 1));
@@ -237,63 +237,63 @@ static int TestUTF8()
 	EATEST_VERIFY((cResult == 0xfff0) && (pResult == strArray[3] + 6));
 
 
-	// char8_t* UTF8WriteChar(char8_t* p, char16_t c);
+	// char* UTF8WriteChar(char* p, char16_t c);
 	pResult = buffer;
-	pResult = UTF8WriteChar((char8_t*)pResult, (char16_t)0x83e4);
-	pResult = UTF8WriteChar((char8_t*)pResult, (char16_t)0x0200);
-	pResult = UTF8WriteChar((char8_t*)pResult, (char16_t)0x0061);
-	pResult = UTF8WriteChar((char8_t*)pResult, (char16_t)0x0000);
+	pResult = UTF8WriteChar((char*)pResult, (char16_t)0x83e4);
+	pResult = UTF8WriteChar((char*)pResult, (char16_t)0x0200);
+	pResult = UTF8WriteChar((char*)pResult, (char16_t)0x0061);
+	pResult = UTF8WriteChar((char*)pResult, (char16_t)0x0000);
 	EATEST_VERIFY((strcmp(buffer, strArray[2]) == 0) && (pResult == buffer + 7));
 
 
-	// char8_t* UTF8WriteChar(char8_t* p, char32_t c);
+	// char* UTF8WriteChar(char* p, char32_t c);
 	pResult = buffer;
-	pResult = UTF8WriteChar((char8_t*)pResult, (char32_t)0x83e4);
-	pResult = UTF8WriteChar((char8_t*)pResult, (char32_t)0x0200);
-	pResult = UTF8WriteChar((char8_t*)pResult, (char32_t)0x0061);
-	pResult = UTF8WriteChar((char8_t*)pResult, (char32_t)0x0000);
+	pResult = UTF8WriteChar((char*)pResult, (char32_t)0x83e4);
+	pResult = UTF8WriteChar((char*)pResult, (char32_t)0x0200);
+	pResult = UTF8WriteChar((char*)pResult, (char32_t)0x0061);
+	pResult = UTF8WriteChar((char*)pResult, (char32_t)0x0000);
 	EATEST_VERIFY((strcmp(buffer, strArray[2]) == 0) && (pResult == buffer + 7));
 
 
-	// bool UTF8IsSoloByte(char8_t c);
+	// bool UTF8IsSoloByte(char c);
 	EATEST_VERIFY( UTF8IsSoloByte('\0'));
 	EATEST_VERIFY( UTF8IsSoloByte('\n'));
 	EATEST_VERIFY( UTF8IsSoloByte('a'));
-	EATEST_VERIFY( UTF8IsSoloByte((char8_t)0x7f));
-	EATEST_VERIFY(!UTF8IsSoloByte((char8_t)0x80));
-	EATEST_VERIFY(!UTF8IsSoloByte((char8_t)0xfd));
-	EATEST_VERIFY(!UTF8IsSoloByte((char8_t)0xfe));
-	EATEST_VERIFY(!UTF8IsSoloByte((char8_t)0xff));
+	EATEST_VERIFY( UTF8IsSoloByte((char)0x7f));
+	EATEST_VERIFY(!UTF8IsSoloByte((char)0x80));
+	EATEST_VERIFY(!UTF8IsSoloByte((char)0xfd));
+	EATEST_VERIFY(!UTF8IsSoloByte((char)0xfe));
+	EATEST_VERIFY(!UTF8IsSoloByte((char)0xff));
 
 
-	// bool UTF8IsLeadByte(char8_t c);
+	// bool UTF8IsLeadByte(char c);
 	EATEST_VERIFY( UTF8IsSoloByte('\0'));
 	EATEST_VERIFY( UTF8IsSoloByte('\n'));
 	EATEST_VERIFY( UTF8IsSoloByte('a'));
-	EATEST_VERIFY( UTF8IsSoloByte((char8_t)0x7f));
-	EATEST_VERIFY(!UTF8IsSoloByte((char8_t)0xc0));
-	EATEST_VERIFY(!UTF8IsSoloByte((char8_t)0xd1));
-	EATEST_VERIFY(!UTF8IsSoloByte((char8_t)0xe4));
-	EATEST_VERIFY(!UTF8IsSoloByte((char8_t)0xf0));       // This assumes that we don't support 4, 5, 6 byte sequences.
-	EATEST_VERIFY(!UTF8IsSoloByte((char8_t)0xfe));
-	EATEST_VERIFY(!UTF8IsSoloByte((char8_t)0xff));
+	EATEST_VERIFY( UTF8IsSoloByte((char)0x7f));
+	EATEST_VERIFY(!UTF8IsSoloByte((char)0xc0));
+	EATEST_VERIFY(!UTF8IsSoloByte((char)0xd1));
+	EATEST_VERIFY(!UTF8IsSoloByte((char)0xe4));
+	EATEST_VERIFY(!UTF8IsSoloByte((char)0xf0));       // This assumes that we don't support 4, 5, 6 byte sequences.
+	EATEST_VERIFY(!UTF8IsSoloByte((char)0xfe));
+	EATEST_VERIFY(!UTF8IsSoloByte((char)0xff));
 
 
-	// bool UTF8IsFollowByte(char8_t c);
-	EATEST_VERIFY(!UTF8IsFollowByte((char8_t)0x00));
-	EATEST_VERIFY(!UTF8IsFollowByte((char8_t)0x7f));
-	EATEST_VERIFY( UTF8IsFollowByte((char8_t)0x80));
-	EATEST_VERIFY( UTF8IsFollowByte((char8_t)0xbf));
-	EATEST_VERIFY(!UTF8IsFollowByte((char8_t)0xc0));
-	EATEST_VERIFY(!UTF8IsFollowByte((char8_t)0xff));
+	// bool UTF8IsFollowByte(char c);
+	EATEST_VERIFY(!UTF8IsFollowByte((char)0x00));
+	EATEST_VERIFY(!UTF8IsFollowByte((char)0x7f));
+	EATEST_VERIFY( UTF8IsFollowByte((char)0x80));
+	EATEST_VERIFY( UTF8IsFollowByte((char)0xbf));
+	EATEST_VERIFY(!UTF8IsFollowByte((char)0xc0));
+	EATEST_VERIFY(!UTF8IsFollowByte((char)0xff));
 
-	// char8_t* UTF8ReplaceInvalidChar(char8_t* pIn, size_t nLength, char8_t replaceWith);
+	// char* UTF8ReplaceInvalidChar(char* pIn, size_t nLength, char replaceWith);
 	{
-		char outBuffer[256] = {0};
-
 		{
-			auto* pBad  = u8"foofoobaazong";
-			auto* pGood = u8"foofoobaazong";
+			char8_t outBuffer[256] = {0};
+
+			auto* pBad  = EA_CHAR8("foofoobaazong");
+			auto* pGood = EA_CHAR8("foofoobaazong");
 
 			auto* pOut = UTF8ReplaceInvalidChar(pBad, UTF8Length(pBad), outBuffer, '?');
 
@@ -302,6 +302,8 @@ static int TestUTF8()
 		}
 
 		{
+			char outBuffer[256] = {0};
+
 			auto* pBad = "foofoo\xfa" "baazong";
 			auto* pGood = "foofoo?baazong";
 
@@ -313,6 +315,8 @@ static int TestUTF8()
 
 
 		{
+			char outBuffer[256] = {0};
+
 			auto* pBad = "foofoo\xfa\xfa\xfa\xfa\xfa" "baazong";
 			auto* pGood = "foofoo?????baazong";
 
@@ -323,6 +327,8 @@ static int TestUTF8()
 		}
 
 		{
+			char outBuffer[256] = {0};
+
 			auto* pBad = "foo\xfa" "foo\xfa\xfa" "b\xfa" "a\xfa" "a\xfa" "z\xfa" "o\xfa" "n\xfa" "g\xfa";
 			auto* pGood = "foo?foo??b?a?a?z?o?n?g?";
 
@@ -350,7 +356,7 @@ int TestTextUtil()
 
 	// WildcardMatch
 	{
-		// char8_t
+		// char
 		EATEST_VERIFY(WildcardMatch("abcde", "*e",     false) == true);
 		EATEST_VERIFY(WildcardMatch("abcde", "*f",     false) == false);
 		EATEST_VERIFY(WildcardMatch("abcde", "???de",  false) == true);
@@ -415,8 +421,8 @@ int TestTextUtil()
 	}
 
 
-	// EASTDC_API bool ParseDelimitedText(const char8_t* pText, const char8_t* pTextEnd, char8_t cDelimiter, 
-	//                                    const char8_t*& pToken, const char8_t*& pTokenEnd, const char8_t** ppNewText);
+	// EASTDC_API bool ParseDelimitedText(const char* pText, const char* pTextEnd, char cDelimiter, 
+	//                                    const char*& pToken, const char*& pTokenEnd, const char** ppNewText);
 	// EASTDC_API bool ParseDelimitedText(const char16_t* pText, const char16_t* pTextEnd, char16_t cDelimiter, 
 	//                                    const char16_t*& pToken, const char16_t*& pTokenEnd, const char16_t** ppNewText);
 	// EASTDC_API bool ParseDelimitedText(const char32_t* pText, const char32_t* pTextEnd, char32_t cDelimiter, 
@@ -503,7 +509,7 @@ int TestTextUtil()
 	// ConvertBinaryDataToASCIIArray / ConvertASCIIArrayToBinaryData
 	{
 		uint8_t  data[4] = { 0x12, 0x34, 0x56, 0x78 };
-		char8_t  result8[32];
+		char  result8[32];
 		char16_t result16[32];
 		char32_t result32[32];
 
@@ -547,20 +553,20 @@ int TestTextUtil()
 	}
 
 
-	// EASTDC_API const char8_t*  GetTextLine(const char8_t* pText, const char8_t* pTextEnd, const char8_t** ppNewText);
+	// EASTDC_API const char*  GetTextLine(const char* pText, const char* pTextEnd, const char** ppNewText);
 	{
-		const char8_t* p1 = "";
-		const char8_t* p2 = "\n";
-		const char8_t* p3 = "\r\n";
-		const char8_t* p4 = "\r\n\n";
-		const char8_t* p5 = "\n\r\r";
-		const char8_t* p6 = "aaa\nbbb\rccc\r\nddd";
-		const char8_t* p7 = "aaa\nddd\n";
-		const char8_t* p8 = "aaa\nddd\r\n";
+		const char* p1 = "";
+		const char* p2 = "\n";
+		const char* p3 = "\r\n";
+		const char* p4 = "\r\n\n";
+		const char* p5 = "\n\r\r";
+		const char* p6 = "aaa\nbbb\rccc\r\nddd";
+		const char* p7 = "aaa\nddd\n";
+		const char* p8 = "aaa\nddd\r\n";
 
-		const char8_t* pLine;
-		const char8_t* pLineEnd;
-		const char8_t* pLineNext;
+		const char* pLine;
+		const char* pLineEnd;
+		const char* pLineNext;
 
 		pLine = p1;
 		pLineEnd = GetTextLine(pLine, p1 + Strlen(p1), &pLineNext);
@@ -810,7 +816,7 @@ int TestTextUtil()
 
 
 
-	// EASTDC_API bool SplitTokenDelimited(const char8_t*  pSource, size_t nSourceLength, char8_t  cDelimiter, char8_t*  pToken, size_t nTokenLength, const char8_t**  ppNewSource = NULL);
+	// EASTDC_API bool SplitTokenDelimited(const char*  pSource, size_t nSourceLength, char  cDelimiter, char*  pToken, size_t nTokenLength, const char**  ppNewSource = NULL);
 	{
 		// To do
 	}
@@ -1109,7 +1115,7 @@ int TestTextUtil()
 	}
 
 
-	// EASTDC_API bool SplitTokenSeparated(const char8_t*  pSource, size_t nSourceLength, char8_t  cDelimiter, char8_t*  pToken, size_t nTokenLength, const char8_t**  ppNewSource = NULL);
+	// EASTDC_API bool SplitTokenSeparated(const char*  pSource, size_t nSourceLength, char  cDelimiter, char*  pToken, size_t nTokenLength, const char**  ppNewSource = NULL);
 	{
 		// To do
 	}

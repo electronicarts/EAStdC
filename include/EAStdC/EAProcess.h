@@ -72,7 +72,7 @@ namespace EA
 		///     GetCurrentProcessPath(path, IO::kMaxPathLength);
 		///     printf("Path: %ls\n", path);
 		///
-		EASTDC_API size_t GetCurrentProcessPath(char8_t*  pPath, int pathCapacity = kMaxPathLength, int pathFlags = kPathFlagNone);
+		EASTDC_API size_t GetCurrentProcessPath(char*  pPath, int pathCapacity = kMaxPathLength, int pathFlags = kPathFlagNone);
 		EASTDC_API size_t GetCurrentProcessPath(char16_t* pPath, int pathCapacity = kMaxPathLength, int pathFlags = kPathFlagNone);
 		EASTDC_API size_t GetCurrentProcessPath(char32_t* pPath, int pathCapacity = kMaxPathLength, int pathFlags = kPathFlagNone);
 		#if defined(EA_WCHAR_UNIQUE) && EA_WCHAR_UNIQUE
@@ -86,7 +86,7 @@ namespace EA
 		/// to know it without being told. Subsequent calls to GetCurrentProcessPath with flags other
 		/// than kPathFlagNone will ignore such flags and simply return this path.
 		///
-		EASTDC_API void SetCurrentProcessPath(const char8_t* pPath);
+		EASTDC_API void SetCurrentProcessPath(const char* pPath);
 
 
 		/// GetCurrentProcessDirectory
@@ -108,7 +108,7 @@ namespace EA
 		///     GetCurrentProcessDirectory(dir, IO::kMaxDirectoryLength);
 		///     printf("Directory: %ls\n", dir);
 		///
-		EASTDC_API size_t GetCurrentProcessDirectory(char8_t*  pDirectory, int pathCapacity = kMaxDirectoryLength, int pathFlags = kPathFlagNone);
+		EASTDC_API size_t GetCurrentProcessDirectory(char*  pDirectory, int pathCapacity = kMaxDirectoryLength, int pathFlags = kPathFlagNone);
 		EASTDC_API size_t GetCurrentProcessDirectory(char16_t* pDirectory, int pathCapacity = kMaxDirectoryLength, int pathFlags = kPathFlagNone);
 		EASTDC_API size_t GetCurrentProcessDirectory(char32_t* pDirectory, int pathCapacity = kMaxDirectoryLength, int pathFlags = kPathFlagNone);
 		#if defined(EA_WCHAR_UNIQUE) && EA_WCHAR_UNIQUE
@@ -143,7 +143,7 @@ namespace EA
 		///     if(GetEnvironmentVar(L"UserName", pValue, 64) < 64)
 		///         printf("Path: %ls\n", pValue);
 		///
-		EASTDC_API size_t GetEnvironmentVar(const char8_t*  pName, char8_t*  pValue, size_t valueCapacity);
+		EASTDC_API size_t GetEnvironmentVar(const char*  pName, char*  pValue, size_t valueCapacity);
 		EASTDC_API size_t GetEnvironmentVar(const char16_t* pName, char16_t* pValue, size_t valueCapacity);
 		EASTDC_API size_t GetEnvironmentVar(const char32_t* pName, char32_t* pValue, size_t valueCapacity);
 		#if defined(EA_WCHAR_UNIQUE) && EA_WCHAR_UNIQUE
@@ -165,7 +165,7 @@ namespace EA
 		///     if(SetEnvironmentVar("User Name", "Lance Armstrong"))
 		///         printf("Success setting user name.\n");
 		///
-		EASTDC_API bool SetEnvironmentVar(const char8_t*  pName, const char8_t*  pValue);
+		EASTDC_API bool SetEnvironmentVar(const char*  pName, const char*  pValue);
 		EASTDC_API bool SetEnvironmentVar(const char16_t* pName, const char16_t* pValue);
 		EASTDC_API bool SetEnvironmentVar(const char32_t* pName, const char32_t* pValue);
 		#if defined(EA_WCHAR_UNIQUE) && EA_WCHAR_UNIQUE
@@ -199,7 +199,7 @@ namespace EA
 		///   const char16_t* ptrArray[4] = { EA_CHAR16("/System/Utilities/PingSomeAddresses.exe"), EA_CHAR16("www.bozo.com"), EA_CHAR16("www.nifty.com"), NULL };
 		///   int nReturnValue = Spawn("/System/Utilities/PingSomeAddresses.exe", ptrArray, true);
 		///
-		EASTDC_API int Spawn(const char8_t*  pPath, const char8_t*  const* pArgumentArray, bool wait = false);
+		EASTDC_API int Spawn(const char*  pPath, const char*  const* pArgumentArray, bool wait = false);
 		EASTDC_API int Spawn(const char16_t* pPath, const char16_t* const* pArgumentArray, bool wait = false);
 		EASTDC_API int Spawn(const char32_t* pPath, const char32_t* const* pArgumentArray, bool wait = false);
 		#if defined(EA_WCHAR_UNIQUE) && EA_WCHAR_UNIQUE
@@ -221,7 +221,7 @@ namespace EA
 		///
 		///    ExecuteShellCommand("su root\nrm /* -r");
 		///
-		EASTDC_API int ExecuteShellCommand(const char8_t*  pCommand);
+		EASTDC_API int ExecuteShellCommand(const char*  pCommand);
 		EASTDC_API int ExecuteShellCommand(const char16_t* pCommand);
 		EASTDC_API int ExecuteShellCommand(const char32_t* pCommand);
 		#if defined(EA_WCHAR_UNIQUE) && EA_WCHAR_UNIQUE
@@ -255,7 +255,7 @@ namespace EA
 		///     if(SearchEnvironmentPath("perforce.exe", fullPath, "PATH"))
 		///         printf("Full path to Perforce is "%ls\n", fullPath);
 		///
-		EASTDC_API bool SearchEnvironmentPath(const char8_t*  pFileName, char8_t*  pPath, const char8_t*  pEnvironmentVar = NULL);
+		EASTDC_API bool SearchEnvironmentPath(const char*  pFileName, char*  pPath, const char*  pEnvironmentVar = NULL);
 		EASTDC_API bool SearchEnvironmentPath(const char16_t* pFileName, char16_t* pPath, const char16_t* pEnvironmentVar = NULL);
 		EASTDC_API bool SearchEnvironmentPath(const char32_t* pFileName, char32_t* pPath, const char32_t* pEnvironmentVar = NULL);
 		#if defined(EA_WCHAR_UNIQUE) && EA_WCHAR_UNIQUE
@@ -277,7 +277,7 @@ namespace EA
 		///    OpenFile("/system/settings/somefile.html");
 		///    OpenFile("http://www.bozo.com/somefile.html");
 		///
-		EASTDC_API bool OpenFile(const char8_t*  pPath);
+		EASTDC_API bool OpenFile(const char*  pPath);
 		EASTDC_API bool OpenFile(const char16_t* pPath);
 		EASTDC_API bool OpenFile(const char32_t* pPath);
 		#if defined(EA_WCHAR_UNIQUE) && EA_WCHAR_UNIQUE

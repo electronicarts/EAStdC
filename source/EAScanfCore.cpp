@@ -291,7 +291,7 @@ double DoubleValue::ToDouble() const
 		// provided strtod function, which in many cases will implement such 
 		// an algorithm itself internally.
 
-		char8_t buffer[kMaxSignificandDigits + 12];
+		char buffer[kMaxSignificandDigits + 12];
 		int     i;
 
 		for(i = 0; i < mSigLen; ++i)
@@ -319,7 +319,7 @@ double DoubleValue::ToDouble() const
 
 			while(multiplier)
 			{
-				buffer[i++] = (char8_t)('0' + (e / multiplier));
+				buffer[i++] = (char)('0' + (e / multiplier));
 				e          %= multiplier;
 				multiplier /= 10;
 			}
@@ -669,7 +669,7 @@ public:
 						switch (stringTypeSize)
 						{
 							case 1:
-								*((char8_t*)pArgumentCurrent)  = 0;
+								*((char*)pArgumentCurrent)  = 0;
 								break;
 
 							case 2:
@@ -750,7 +750,7 @@ public:
 										//    ReportScanfWarning(loss of information);
 									#endif
 
-									*((char8_t*)pArgumentCurrent) = (char8_t)(uint8_t)(unsigned)c;
+									*((char*)pArgumentCurrent) = (char)(uint8_t)(unsigned)c;
 									break;
 
 								case 2:
@@ -961,16 +961,16 @@ private:
 				}
 				break;
 
-			case 'c': // We accept %hc, %c, %lc, %I8c, %I16c, %I32c (regular, regular, wide, char8_t, char16_t, char32_t)
-			case 'C': // We accept %hC, %C, %lC, %I8C, %I16C, %I32C (regular, wide,    wide, char8_t, char16_t, char32_t)
-			case 's': // We accept %hs, %s, %ls, %I8s, %I16s, %I32s (regular, regular, wide, char8_t, char16_t, char32_t)
-			case 'S': // We accept %hS, %S, %lS, %I8s, %I16s, %I32s (regular, wide,    wide, char8_t, char16_t, char32_t)
+			case 'c': // We accept %hc, %c, %lc, %I8c, %I16c, %I32c (regular, regular, wide, char, char16_t, char32_t)
+			case 'C': // We accept %hC, %C, %lC, %I8C, %I16C, %I32C (regular, wide,    wide, char, char16_t, char32_t)
+			case 's': // We accept %hs, %s, %ls, %I8s, %I16s, %I32s (regular, regular, wide, char, char16_t, char32_t)
+			case 'S': // We accept %hS, %S, %lS, %I8s, %I16s, %I32s (regular, wide,    wide, char, char16_t, char32_t)
 			{
 				// Microsoft's library goes against the C and C++ standard: %s is 
-				// not interpreted to mean char8_t string but instead is interpreted 
-				// to be either char8_t or wchar_t depending on what the output
+				// not interpreted to mean char string but instead is interpreted 
+				// to be either char or wchar_t depending on what the output
 				// text fd is. This is non-standard but has the convenience
-				// of allowing users to migrate between char8_t and wchar_t usage
+				// of allowing users to migrate between char and wchar_t usage
 				// more easily. So we allow EASCANF_MS_STYLE_S_FORMAT to control this.
 
 				if(fd.mModifier == kModifierLong)
@@ -981,9 +981,9 @@ private:
 				{
 					#if EASCANF_MS_STYLE_S_FORMAT
 						if((c == 's') || (c == 'c'))
-							fd.mModifier = (sizeof(*pFormat) == sizeof(char8_t)) ? kModifierChar : kModifierWChar;
+							fd.mModifier = (sizeof(*pFormat) == sizeof(char)) ? kModifierChar : kModifierWChar;
 						else
-							fd.mModifier = (sizeof(*pFormat) == sizeof(char8_t)) ? kModifierWChar : kModifierChar;
+							fd.mModifier = (sizeof(*pFormat) == sizeof(char)) ? kModifierWChar : kModifierChar;
 					#else
 						if((c == 's') || (c == 'c'))
 							fd.mModifier = kModifierChar;
@@ -1093,7 +1093,7 @@ private:
 				else if(fd.mModifier == kModifierNone)
 				{
 					#if EASCANF_MS_STYLE_S_FORMAT
-						fd.mModifier = (sizeof(*pFormat) == sizeof(char8_t)) ? kModifierChar : kModifierWChar;
+						fd.mModifier = (sizeof(*pFormat) == sizeof(char)) ? kModifierChar : kModifierWChar;
 					#else
 						fd.mModifier = (sizeof(*pFormat) == sizeof(char16_t)) ? kModifierWChar : kModifierChar;  //TODO: This condition seems odd, needs review.
 					#endif
@@ -1119,7 +1119,7 @@ private:
 				}
 
 				// To do: We need to read UTF8 character sequences here instead of just ascii values.
-				EA_ASSERT((sizeof(CharT) != sizeof(char8_t)) || ((uint8_t)(char8_t)c < 128)); // A c >= 128 refers to a UTF8 sequence, which we don't yet support.
+				EA_ASSERT((sizeof(CharT) != sizeof(char)) || ((uint8_t)(char)c < 128)); // A c >= 128 refers to a UTF8 sequence, which we don't yet support.
 
 				while(c && (c != ']'))  // Walk through the characters until we encounter a closing ']' char. Use '-' char to indicate character ranges, as in "a-d"
 				{
@@ -1468,7 +1468,7 @@ private:
 					if(Isdigit((CharT)c))
 					{
 						if(doubleValue.mSigLen < kMaxSignificandDigits)  // If we have any more room...
-							doubleValue.mSigStr[doubleValue.mSigLen++] = (char8_t)c;
+							doubleValue.mSigStr[doubleValue.mSigLen++] = (char)c;
 						else
 							nExponentAdd++; // Lose significant digits but increase the exponent multiplier, so that the final result is close intended value, though chopped.
 
@@ -1509,7 +1509,7 @@ private:
 							nExponentAdd--;  // Fractional digits reduce our multiplier.
 
 							if((c != '0') || doubleValue.mSigLen)
-								doubleValue.mSigStr[doubleValue.mSigLen++] = (char8_t)c;
+								doubleValue.mSigStr[doubleValue.mSigLen++] = (char)c;
 						} // Else lose the remaining fractional part.
 
 						c = pReadFunction(kReadActionRead, 0, pContext);
@@ -1780,9 +1780,9 @@ private:
 
 bool ReadFormatSpan8(FormatData& fd, int& c, ReadFunction8 pReadFunction, void* pContext, int stringTypeSize, char*& pArgumentCurrent, int& nReadCount)
 {
-	while(fd.mnWidth-- && ((c = pReadFunction(kReadActionRead, 0, pContext)) != -1) && fd.mCharBitmap.Get((char8_t)c)) 
+	while(fd.mnWidth-- && ((c = pReadFunction(kReadActionRead, 0, pContext)) != -1) && fd.mCharBitmap.Get((char)c)) 
 	{
-		uint8_t c8 = (uint8_t)c; // It's easier to work with uint8_t instead of char8_t, which might be signed.
+		uint8_t c8 = (uint8_t)c; // It's easier to work with uint8_t instead of char, which might be signed.
 
 		switch (stringTypeSize)
 		{
@@ -1806,13 +1806,13 @@ bool ReadFormatSpan8(FormatData& fd, int& c, ReadFunction8 pReadFunction, void* 
 					// We need to convert from UTF8 to UCS here. However, this can be complicated because 
 					// multiple UTF8 chars may correspond to a single UCS char. Luckily, the UTF8 format  
 					// allows us to know how many chars are in a multi-byte sequence based on the char value.
-					char8_t      buffer[7];
+					char      buffer[7];
 					const size_t utf8Len = utf8lengthTable[c8];
 					char16_t     c16[2];
 					char32_t     c32[2];
 					int          result;
 
-					buffer[0] = (char8_t)c8;
+					buffer[0] = (char)c8;
 
 					for(size_t i = 1; i < utf8Len; ++i)
 					{
@@ -1822,7 +1822,7 @@ bool ReadFormatSpan8(FormatData& fd, int& c, ReadFunction8 pReadFunction, void* 
 							return false;
 	 
 						++nReadCount;
-						buffer[i] = (char8_t)c;
+						buffer[i] = (char)c;
 					}
 
 							
@@ -1862,7 +1862,7 @@ bool ReadFormatSpan16(FormatData& fd, int& c, ReadFunction16 pReadFunction, void
 			// We need to convert from UCS2 to UTF8 here. One UCS2 char may convert to 
 			// as many as six UTF8 chars (though usually no more than three). 
 			// This Strlcpy (16 to 8) can never fail.
-			pArgumentCurrent += Strlcpy((char8_t*)pArgumentCurrent, &c16, 7, 1);
+			pArgumentCurrent += Strlcpy((char*)pArgumentCurrent, &c16, 7, 1);
 			break;
 
 		case 2:
@@ -1893,7 +1893,7 @@ bool ReadFormatSpan32(FormatData& fd, int& c, ReadFunction32 pReadFunction, void
 			// We need to convert from UCS4 to UTF8 here. One UCS4 char may convert to 
 			// as many as six UTF8 chars (though usually no more than three). 
 			// This Strlcpy (32 to 8) can never fail.
-			pArgumentCurrent += Strlcpy((char8_t*)pArgumentCurrent, &c32, 7, 1);
+			pArgumentCurrent += Strlcpy((char*)pArgumentCurrent, &c32, 7, 1);
 			break;
 
 		case 2:
@@ -1916,9 +1916,9 @@ typedef bool(*ReadFormatSpanFunction8)(FormatData& fd, int& c, ReadFunction8 pRe
 typedef bool(*ReadFormatSpanFunction16)(FormatData& fd, int& c, ReadFunction16 pReadFunction, void* pContext, int stringTypeSize, char*& pArgumentCurrent, int& nReadCount);
 typedef bool(*ReadFormatSpanFunction32)(FormatData& fd, int& c, ReadFunction32 pReadFunction, void* pContext, int stringTypeSize, char*& pArgumentCurrent, int& nReadCount);
 
-int VscanfCore(ReadFunction8 pReadFunction8, void* pContext, const char8_t* pFormat, va_list arguments)
+int VscanfCore(ReadFunction8 pReadFunction8, void* pContext, const char* pFormat, va_list arguments)
 {
-	VscanfUtil<ReadFunction8, ReadFormatSpanFunction8, char8_t> scanner;
+	VscanfUtil<ReadFunction8, ReadFormatSpanFunction8, char> scanner;
 	return scanner.VscanfCore(pReadFunction8, ReadFormatSpan8, pContext, pFormat, arguments);
 }
 

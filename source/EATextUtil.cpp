@@ -53,7 +53,7 @@ extern uint8_t utf8lengthTable[256];
 // See 'http://www.cl.cam.ac.uk/~mgk25/unicode.html' or search for "UTF8 FAQ"
 // on the Internet for more details on UTF8 and Unicode.
 //
-EASTDC_API bool UTF8Validate(const char8_t* pText, size_t nLength)
+EASTDC_API bool UTF8Validate(const char* pText, size_t nLength)
 {
 	const uint8_t*       pSource8    = (const uint8_t*)pText;
 	const uint8_t* const pSource8End = pSource8 + nLength;
@@ -145,7 +145,7 @@ EASTDC_API bool UTF8Validate(const char8_t* pText, size_t nLength)
 // The string must be a valid UTF8 string or else the behavior is undefined.
 // If the string is not known to be valid, then it should be first validated independently
 // or a validating version of this function should be used instead.
-EASTDC_API char8_t* UTF8Increment(const char8_t* p, size_t n)
+EASTDC_API char* UTF8Increment(const char* p, size_t n)
 {
 	while(n--)
 	{
@@ -169,7 +169,7 @@ EASTDC_API char8_t* UTF8Increment(const char8_t* p, size_t n)
 			p += 1;           // Error. We return 1 instead of 0 or -1 because the user is probably iterating a string and so this is safer.
 	}
 
-	return (char8_t*)p;
+	return (char*)p;
 }
 
 
@@ -179,7 +179,7 @@ EASTDC_API char8_t* UTF8Increment(const char8_t* p, size_t n)
 // The string must be a valid UTF8 string or else the behavior is undefined.
 // If the string is not known to be valid, then it should be first validated independently
 // or a validating version of this function should be used instead.
-EASTDC_API char8_t* UTF8Decrement(const char8_t* p, size_t n)
+EASTDC_API char* UTF8Decrement(const char* p, size_t n)
 {
 	while(n)
 	{
@@ -187,7 +187,7 @@ EASTDC_API char8_t* UTF8Decrement(const char8_t* p, size_t n)
 			--n;
 	}
 
-	return (char8_t*)p;
+	return (char*)p;
 }
 
 
@@ -197,7 +197,7 @@ EASTDC_API char8_t* UTF8Decrement(const char8_t* p, size_t n)
 // The string must be a valid UTF8 string or else the behavior is undefined.
 // If the string is not known to be valid, then it should be first validated independently
 // or a validating version of this function should be used instead.
-EASTDC_API size_t UTF8Length(const char8_t* p)
+EASTDC_API size_t UTF8Length(const char* p)
 {
 	size_t n = 0;
 
@@ -280,7 +280,7 @@ EASTDC_API size_t UTF8Length(const char32_t* p)
 // 0xfc-0xfd are first byte of a 6-tuplet.
 // 0xfe-0xff are invalid values for a leading UTF8 char.
 //
-EASTDC_API size_t UTF8CharSize(const char8_t* p)
+EASTDC_API size_t UTF8CharSize(const char* p)
 {
 	// To do: Change this code to instead use the utf8lengthTable fropm EAString.cpp
 
@@ -345,10 +345,10 @@ EASTDC_API size_t UTF8CharSize(char32_t c)
 }
 
 
-EASTDC_API char16_t UTF8ReadChar(const char8_t* p, const char8_t** ppEnd)
+EASTDC_API char16_t UTF8ReadChar(const char* p, const char** ppEnd)
 {
 	char16_t        c = 0;
-	const char8_t*  pCurrent;
+	const char*  pCurrent;
 	uint8_t         cChar0((uint8_t)*p), cChar1, cChar2, cChar3;
 
 	//assert((cChar0 != 0xFE) && (cChar0 != 0xFF));     //  No byte can contain 0xFE or 0xFF
@@ -423,29 +423,29 @@ EASTDC_API char16_t UTF8ReadChar(const char8_t* p, const char8_t** ppEnd)
 // This function assumes that there is enough space at p to write the char.
 // At most three bytes are needed to write a char16_t value and 6 bytes are
 // needed to write a char32_t value.
-EASTDC_API char8_t* UTF8WriteChar(char8_t* p, char16_t c)
+EASTDC_API char* UTF8WriteChar(char* p, char16_t c)
 {
 	if(c < 0x80)
 	{
-		*p++ = (char8_t)(uint8_t)c;
+		*p++ = (char)(uint8_t)c;
 	}
 	else if(c < 0x0800)
 	{
-		*p++ = (char8_t)(uint8_t)((c >> 6) | 0xC0);
-		*p++ = (char8_t)(uint8_t)((c & 0x3F) | 0x80);
+		*p++ = (char)(uint8_t)((c >> 6) | 0xC0);
+		*p++ = (char)(uint8_t)((c & 0x3F) | 0x80);
 	}
 	else // if(c < 0x00010000)
 	{
-		*p++ = (char8_t)(uint8_t)((c >> 12) | 0xE0);
-		*p++ = (char8_t)(uint8_t)(((c >> 6) & 0x3F) | 0x80);
-		*p++ = (char8_t)(uint8_t)((c & 0x3F) | 0x80);
+		*p++ = (char)(uint8_t)((c >> 12) | 0xE0);
+		*p++ = (char)(uint8_t)(((c >> 6) & 0x3F) | 0x80);
+		*p++ = (char)(uint8_t)((c & 0x3F) | 0x80);
 	}
 	//else
 	//{
-	//    *p++ = (char8_t)(uint8_t)((c >> 18) | 0xF0);
-	//    *p++ = (char8_t)(uint8_t)(((c >> 12) & 0x3F) | 0x80);
-	//    *p++ = (char8_t)(uint8_t)(((c >> 6) & 0x3F) | 0x80);
-	//    *p++ = (char8_t)(uint8_t)((c & 0x3F) | 0x80);
+	//    *p++ = (char)(uint8_t)((c >> 18) | 0xF0);
+	//    *p++ = (char)(uint8_t)(((c >> 12) & 0x3F) | 0x80);
+	//    *p++ = (char)(uint8_t)(((c >> 6) & 0x3F) | 0x80);
+	//    *p++ = (char)(uint8_t)((c & 0x3F) | 0x80);
 	//}
 
 	return p;
@@ -454,29 +454,29 @@ EASTDC_API char8_t* UTF8WriteChar(char8_t* p, char16_t c)
 // This function assumes that there is enough space at p to write the char.
 // At most three bytes are needed to write a char32_t value and 6 bytes are
 // needed to write a char32_t value.
-EASTDC_API char8_t* UTF8WriteChar(char8_t* p, char32_t c)
+EASTDC_API char* UTF8WriteChar(char* p, char32_t c)
 {
 	if((uint32_t)c < 0x80)
 	{
-		*p++ = (char8_t)(uint8_t)c;
+		*p++ = (char)(uint8_t)c;
 	}
 	else if((uint32_t)c < 0x0800)
 	{
-		*p++ = (char8_t)(uint8_t)((c >> 6) | 0xC0);
-		*p++ = (char8_t)(uint8_t)((c & 0x3F) | 0x80);
+		*p++ = (char)(uint8_t)((c >> 6) | 0xC0);
+		*p++ = (char)(uint8_t)((c & 0x3F) | 0x80);
 	}
 	else if((uint32_t)c < 0x00010000)
 	{
-		*p++ = (char8_t)(uint8_t)((c >> 12) | 0xE0);
-		*p++ = (char8_t)(uint8_t)(((c >> 6) & 0x3F) | 0x80);
-		*p++ = (char8_t)(uint8_t)((c & 0x3F) | 0x80);
+		*p++ = (char)(uint8_t)((c >> 12) | 0xE0);
+		*p++ = (char)(uint8_t)(((c >> 6) & 0x3F) | 0x80);
+		*p++ = (char)(uint8_t)((c & 0x3F) | 0x80);
 	}
 	else
 	{
-		*p++ = (char8_t)(uint8_t)((c >> 18) | 0xF0);
-		*p++ = (char8_t)(uint8_t)(((c >> 12) & 0x3F) | 0x80);
-		*p++ = (char8_t)(uint8_t)(((c >> 6) & 0x3F) | 0x80);
-		*p++ = (char8_t)(uint8_t)((c & 0x3F) | 0x80);
+		*p++ = (char)(uint8_t)((c >> 18) | 0xF0);
+		*p++ = (char)(uint8_t)(((c >> 12) & 0x3F) | 0x80);
+		*p++ = (char)(uint8_t)(((c >> 6) & 0x3F) | 0x80);
+		*p++ = (char)(uint8_t)((c & 0x3F) | 0x80);
 	}
 
 	return p;
@@ -489,7 +489,7 @@ EASTDC_API char8_t* UTF8WriteChar(char8_t* p, char32_t c)
 /// entirely valid UTF8 content. It only trims the string if there is an incomplete UTF8 sequence at the
 /// end. The resulting string will always be a valid UTF8 string, whereas the input string may not be.
 /// Returns the strlen of the trimmed string.
-size_t UTF8TrimPartialChar(char8_t* pString, size_t nLength)
+size_t UTF8TrimPartialChar(char* pString, size_t nLength)
 {
 	size_t validPos = 0;
 
@@ -516,7 +516,7 @@ size_t UTF8TrimPartialChar(char8_t* pString, size_t nLength)
 // This function replaces all invalidate UTF8 characters with the user provided
 // 8-bit replacement. The returned character array is guaranteed null-terminated.
 //
-EASTDC_API char8_t* UTF8ReplaceInvalidChar(const char8_t* pIn, size_t nLength, char8_t* pOut, char8_t replaceWith)
+EASTDC_API char* UTF8ReplaceInvalidChar(const char* pIn, size_t nLength, char* pOut, char replaceWith)
 {
 	size_t validPos = 0;
 
@@ -588,16 +588,16 @@ bool MatchPattern(const CharT* pElement, const CharT* pPattern)
 //
 // We go through extra effort below to avoid doing memory allocation in most cases.
 //
-EASTDC_API bool WildcardMatch(const char8_t* pString, const char8_t* pPattern, bool bCaseSensitive)
+EASTDC_API bool WildcardMatch(const char* pString, const char* pPattern, bool bCaseSensitive)
 {
 	if(bCaseSensitive)
 		return MatchPattern(pString, pPattern);
 	else
 	{
 		// Do efficient string conversion to lower case...
-		char8_t  pStringLBuffer[384];
-		char8_t* pStringL;
-		char8_t* pStringLAllocated;
+		char  pStringLBuffer[384];
+		char* pStringL;
+		char* pStringLAllocated;
 		size_t   nStringLLength = Strlen(pString);
 
 		if(nStringLLength >= (sizeof(pStringLBuffer) / sizeof(pStringLBuffer[0]) - 1))
@@ -614,9 +614,9 @@ EASTDC_API bool WildcardMatch(const char8_t* pString, const char8_t* pPattern, b
 		Strlwr(pStringL);
 
 		// Do efficient pattern conversion to lower case...
-		char8_t  pPatternLBuffer[32];
-		char8_t* pPatternL;
-		char8_t* pPatternLAllocated;
+		char  pPatternLBuffer[32];
+		char* pPatternL;
+		char* pPatternLAllocated;
 		size_t   nPatternLLength = Strlen(pPattern);
 
 		if(nPatternLLength >= (sizeof(pPatternLBuffer) / sizeof(pPatternLBuffer[0]) - 1))
@@ -762,7 +762,7 @@ EASTDC_API bool WildcardMatch(const char32_t* pString, const char32_t* pPattern,
 //////////////////////////////////////////////////////////////////////////
 // GetTextLine
 //
-EASTDC_API const char8_t* GetTextLine(const char8_t* pText, const char8_t* pTextEnd, const char8_t** ppNewText)
+EASTDC_API const char* GetTextLine(const char* pText, const char* pTextEnd, const char** ppNewText)
 {
 	if(pText < pTextEnd)
 	{
@@ -843,8 +843,8 @@ EASTDC_API const char32_t* GetTextLine(const char32_t* pText, const char32_t* pT
 
 
 
-EASTDC_API bool ParseDelimitedText(const char8_t* pText, const char8_t* pTextEnd, char8_t cDelimiter, 
-								   const char8_t*& pToken, const char8_t*& pTokenEnd, const char8_t** ppNewText)
+EASTDC_API bool ParseDelimitedText(const char* pText, const char* pTextEnd, char cDelimiter, 
+								   const char*& pToken, const char*& pTokenEnd, const char** ppNewText)
 {
 	int  nQuoteLevel     = 0;
 	bool bDelimiterFound = false;
@@ -1045,18 +1045,18 @@ EASTDC_API bool ParseDelimitedText(const char32_t* pText, const char32_t* pTextE
 // array  must have space for at least twice the amount of bytes
 // as 'nBinaryDataLength' + 1.
 //
-EASTDC_API void ConvertBinaryDataToASCIIArray(const void* pBinaryData_, size_t nBinaryDataLength, char8_t* pASCIIArray)
+EASTDC_API void ConvertBinaryDataToASCIIArray(const void* pBinaryData_, size_t nBinaryDataLength, char* pASCIIArray)
 {
 	const uint8_t* pBinaryData = (uint8_t*)pBinaryData_;
 	const uint8_t* pEnd = pBinaryData + nBinaryDataLength;
 
 	while(pBinaryData < pEnd)
 	{
-		*pASCIIArray = (char8_t)('0' + ((*pBinaryData & 0xf0) >> 4));  // Convert the high byte to a number between 1 and 15.
+		*pASCIIArray = (char)('0' + ((*pBinaryData & 0xf0) >> 4));  // Convert the high byte to a number between 1 and 15.
 		if(*pASCIIArray > '9')
 			*pASCIIArray += 7; // Convert the ':' to 'A', for example.
 		pASCIIArray++;
-		*pASCIIArray = (char8_t)('0' + (*pBinaryData & 0x0f));         // Convert the low byte to a number between 1 and 15.
+		*pASCIIArray = (char)('0' + (*pBinaryData & 0x0f));         // Convert the low byte to a number between 1 and 15.
 		if(*pASCIIArray > '9')
 			*pASCIIArray += 7; // Convert the ':' to 'A', for example.
 		pASCIIArray++;
@@ -1117,11 +1117,11 @@ EASTDC_API void ConvertBinaryDataToASCIIArray(const void* pBinaryData_, size_t n
 // corrupt. We check for this corruption and return false if so, while converting
 // all corrupt bytes to valid ones.
 //
-EASTDC_API bool ConvertASCIIArrayToBinaryData(const char8_t* pASCIIArray, size_t nASCIIArrayLength, void* pBinaryData)
+EASTDC_API bool ConvertASCIIArrayToBinaryData(const char* pASCIIArray, size_t nASCIIArrayLength, void* pBinaryData)
 {
 	uint8_t*        pBinaryData8 = (uint8_t*)pBinaryData;
-	const char8_t*  pEnd = pASCIIArray + nASCIIArrayLength;
-	char8_t         cTemp;
+	const char*  pEnd = pASCIIArray + nASCIIArrayLength;
+	char         cTemp;
 	bool            bReturnValue(true);
 
 	while(pASCIIArray < pEnd)
@@ -1283,8 +1283,8 @@ EASTDC_API bool ConvertASCIIArrayToBinaryData(const char32_t* pASCIIArray, size_
 //////////////////////////////////////////////////////////////////////////////
 // SplitTokenDelimited (8 bit version)
 //  
-EASTDC_API bool SplitTokenDelimited(const char8_t* pSource, size_t nSourceLength, char8_t cDelimiter, 
-									char8_t* pToken, size_t nTokenLength, const char8_t** ppNewSource)
+EASTDC_API bool SplitTokenDelimited(const char* pSource, size_t nSourceLength, char cDelimiter, 
+									char* pToken, size_t nTokenLength, const char** ppNewSource)
 {
 	// terminate the token (so it appears empty if we don't find anything)
 	if(pToken && nTokenLength)
@@ -1295,7 +1295,7 @@ EASTDC_API bool SplitTokenDelimited(const char8_t* pSource, size_t nSourceLength
 		// look for the delimiter
 		for(size_t i = 0; i < nSourceLength && *pSource; i++)
 		{
-			const char8_t cTemp(*pSource);
+			const char cTemp(*pSource);
 
 			// update new source pointer if present
 			if(ppNewSource)
@@ -1419,8 +1419,8 @@ EASTDC_API bool SplitTokenDelimited(const char32_t* pSource, size_t nSourceLengt
 //////////////////////////////////////////////////////////////////////////////
 // SplitTokenSeparated (8 bit version)
 //
-EASTDC_API bool SplitTokenSeparated(const char8_t* pSource, size_t nSourceLength, char8_t c, 
-									char8_t* pToken, size_t nTokenLength, const char8_t** ppNewSource)
+EASTDC_API bool SplitTokenSeparated(const char* pSource, size_t nSourceLength, char c, 
+									char* pToken, size_t nTokenLength, const char** ppNewSource)
 {
 	// terminate the token (so it appears empty if we don't find anything)
 
@@ -1440,7 +1440,7 @@ EASTDC_API bool SplitTokenSeparated(const char8_t* pSource, size_t nSourceLength
 		for(size_t i = 0; i < nSourceLength; i++)
 		{
 			// get the character
-			const char8_t cTemp(*pSource);
+			const char cTemp(*pSource);
 
 			// quit if we found the terminating null character
 			if(cTemp != '\0')

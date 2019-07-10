@@ -42,12 +42,12 @@ static const int kSpanFormatCapacity = 16;
 
 struct Span8
 {
-	const char8_t* mpBegin;                         // The first char in the span.
-	const char8_t* mpEnd;                           // One-past the last used char.
+	const char* mpBegin;                         // The first char in the span.
+	const char* mpEnd;                           // One-past the last used char.
 	Modifier       mType;                           // This tells us what the type of the argument is (e.g. kModifierInt).
 	AllTypes       mValue;                          // This stores the value, which is of type mType.
-	char8_t        mFormat[kSpanFormatCapacity];    // The format to use (e.g. %5.3f). If empty then this is a string span.
-	char8_t        mFormatChar;                     // The last char in the mFormat string.
+	char        mFormat[kSpanFormatCapacity];    // The format to use (e.g. %5.3f). If empty then this is a string span.
+	char        mFormatChar;                     // The last char in the mFormat string.
 	int            mUserIndex;                      // The index the user assigned to this format. Negative value if this is a string span.
 	bool           mbEscapePresent;                 // True if the span is a string and it has a %% sequence. We can optimize writes if we know that it doesn't.
 
@@ -106,7 +106,7 @@ struct Span32
 
 // This function exists for the sole purpose of passing an arbitrary argument to VprintfCore
 // along with an existing WriteFunction8/pWriteFunctionContext8. 
-static int CallVprintfCore(WriteFunction8 pWriteFunction8, void* EA_RESTRICT pWriteFunctionContext8, const char8_t* EA_RESTRICT pFormat, ...)
+static int CallVprintfCore(WriteFunction8 pWriteFunction8, void* EA_RESTRICT pWriteFunctionContext8, const char* EA_RESTRICT pFormat, ...)
 {
 	va_list arguments;
 	va_start(arguments, pFormat);
@@ -143,7 +143,7 @@ static int CallVprintfCore(WriteFunction32 pWriteFunction32, void* EA_RESTRICT p
 // Non-format segments are simply copied to the output. Format segments are written to the output
 // by a call to VPrintfCore each. 
 //
-static int OVprintfCore(WriteFunction8 pWriteFunction8, void* EA_RESTRICT pWriteFunctionContext8, const char8_t* EA_RESTRICT pFormat, va_list arguments)
+static int OVprintfCore(WriteFunction8 pWriteFunction8, void* EA_RESTRICT pWriteFunctionContext8, const char* EA_RESTRICT pFormat, va_list arguments)
 {
 	const int       kArgCapacity = 10;           // Currently only single digit ('0'-'9') order values are supported.
 	const int       kSpanCapacity = 21;          // Worst case scenario of 21 spans. For example: " %2:d %7:d %1:d %6:d %3:d %5:d %4:d %0:d %8:d %9:d " or "%0:d%1:d%2:d%3:d%4:d%5:d%6:d%7:d%8:d%9:d"
@@ -155,8 +155,8 @@ static int OVprintfCore(WriteFunction8 pWriteFunction8, void* EA_RESTRICT pWrite
 	int             nFormatLength      = 0;
 	int             nWriteCountSum     = 0;
 	int             startIndex         = 1;      // This is 1 or 0, and it defaults to 1 (but may change below) in order to mean that user formats start at 1, as in "%1:d". However, we have a feature whereby we detect that the user is using %0 as the start index.
-	const char8_t*  p;
-	const char8_t*  pEnd;
+	const char*  p;
+	const char*  pEnd;
 	int             result;
 
 	static_assert((EAArrayCount(spans) == kSpanCapacity) && (EAArrayCount(spanArgOrder) == kArgCapacity), "spans and spanArgOrder are not using constants for their array size.");
@@ -1240,30 +1240,30 @@ static int OVprintfCore(WriteFunction32 pWriteFunction32, void* EA_RESTRICT pWri
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// char8_t
+// char
 ///////////////////////////////////////////////////////////////////////////////
 
-EASTDC_API int OVcprintf(WriteFunction8 pWriteFunction8, void* EA_RESTRICT pContext, const char8_t* EA_RESTRICT pFormat, va_list arguments)
+EASTDC_API int OVcprintf(WriteFunction8 pWriteFunction8, void* EA_RESTRICT pContext, const char* EA_RESTRICT pFormat, va_list arguments)
 {
 	return SprintfLocal::OVprintfCore(pWriteFunction8, pContext, pFormat, arguments);
 }
 
-EASTDC_API int OVfprintf(FILE* EA_RESTRICT pFile, const char8_t* EA_RESTRICT pFormat, va_list arguments)
+EASTDC_API int OVfprintf(FILE* EA_RESTRICT pFile, const char* EA_RESTRICT pFormat, va_list arguments)
 {
 	return SprintfLocal::OVprintfCore(SprintfLocal::FILEWriter8, pFile, pFormat, arguments);
 }
 
-EASTDC_API int OVprintf(const char8_t* EA_RESTRICT pFormat, va_list arguments)
+EASTDC_API int OVprintf(const char* EA_RESTRICT pFormat, va_list arguments)
 {
 	return SprintfLocal::OVprintfCore(SprintfLocal::FILEWriter8, stdout, pFormat, arguments);
 }
 
-EASTDC_API int OVsprintf(char8_t* EA_RESTRICT pDestination, const char8_t* EA_RESTRICT pFormat, va_list arguments)
+EASTDC_API int OVsprintf(char* EA_RESTRICT pDestination, const char* EA_RESTRICT pFormat, va_list arguments)
 {
 	return OVsnprintf(pDestination, (size_t)-1, pFormat, arguments);
 }
 
-EASTDC_API int OVsnprintf(char8_t* EA_RESTRICT pDestination, size_t n, const char8_t* EA_RESTRICT pFormat, va_list arguments)
+EASTDC_API int OVsnprintf(char* EA_RESTRICT pDestination, size_t n, const char* EA_RESTRICT pFormat, va_list arguments)
 {
 	SprintfLocal::SnprintfContext8 sc(pDestination, 0, pDestination ? n : 0);
 
@@ -1292,20 +1292,20 @@ EASTDC_API int OVsnprintf(char8_t* EA_RESTRICT pDestination, size_t n, const cha
 	#endif
 }
 
-EASTDC_API int OVscprintf(const char8_t* EA_RESTRICT pFormat, va_list arguments)
+EASTDC_API int OVscprintf(const char* EA_RESTRICT pFormat, va_list arguments)
 {
 	// vscprintf returns the number of chars that are needed for a printf operation.
 	return OVsnprintf(NULL, 0, pFormat, arguments);
 }
 
-EASTDC_API int OCprintf(WriteFunction8 pWriteFunction, void* EA_RESTRICT pContext, const char8_t* EA_RESTRICT pFormat, ...)
+EASTDC_API int OCprintf(WriteFunction8 pWriteFunction, void* EA_RESTRICT pContext, const char* EA_RESTRICT pFormat, ...)
 {
 	va_list arguments;
 	va_start(arguments, pFormat);
 	return SprintfLocal::OVprintfCore(pWriteFunction, pContext, pFormat, arguments);
 }
 
-EASTDC_API int OFprintf(FILE* EA_RESTRICT pFile, const char8_t* EA_RESTRICT pFormat, ...)
+EASTDC_API int OFprintf(FILE* EA_RESTRICT pFile, const char* EA_RESTRICT pFormat, ...)
 {
 	va_list arguments;
 	va_start(arguments, pFormat);
@@ -1313,7 +1313,7 @@ EASTDC_API int OFprintf(FILE* EA_RESTRICT pFile, const char8_t* EA_RESTRICT pFor
 	return SprintfLocal::OVprintfCore(SprintfLocal::FILEWriter8, pFile, pFormat, arguments);
 }
 
-EASTDC_API int OPrintf(const char8_t* EA_RESTRICT pFormat, ...)
+EASTDC_API int OPrintf(const char* EA_RESTRICT pFormat, ...)
 {
 	va_list arguments;
 	va_start(arguments, pFormat);
@@ -1321,7 +1321,7 @@ EASTDC_API int OPrintf(const char8_t* EA_RESTRICT pFormat, ...)
 	return SprintfLocal::OVprintfCore(SprintfLocal::FILEWriter8, stdout, pFormat, arguments);
 }
 
-EASTDC_API int OSprintf(char8_t* EA_RESTRICT pDestination, const char8_t* EA_RESTRICT pFormat, ...)
+EASTDC_API int OSprintf(char* EA_RESTRICT pDestination, const char* EA_RESTRICT pFormat, ...)
 {
 	va_list arguments;
 	va_start(arguments, pFormat);
@@ -1329,7 +1329,7 @@ EASTDC_API int OSprintf(char8_t* EA_RESTRICT pDestination, const char8_t* EA_RES
 	return OVsnprintf(pDestination, (size_t)SprintfLocal::kNoPrecision, pFormat, arguments);
 }
 
-EASTDC_API int OSnprintf(char8_t* EA_RESTRICT pDestination, size_t n, const char8_t* EA_RESTRICT pFormat, ...)
+EASTDC_API int OSnprintf(char* EA_RESTRICT pDestination, size_t n, const char* EA_RESTRICT pFormat, ...)
 {
 	va_list arguments;
 	va_start(arguments, pFormat);

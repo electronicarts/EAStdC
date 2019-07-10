@@ -13,10 +13,10 @@
 //    char_t*  Strcpy(char_t* pDestination, const char_t* pSource);
 //    char_t*  Strncpy(char_t* pDestination, const char_t* pSource, size_t n);
 //    size_t   Strlcpy(char_t* pDestination, const char_t* pSource, size_t n);
-//    int      Strlcpy(char16_t* pDestination, const char8_t*  pSource, size_t nDestCapacity, size_t nSourceLength = kSizeTypeUnset);
-//    int      Strlcpy(char8_t*  pDestination, const char16_t* pSource, size_t nDestCapacity, size_t nSourceLength = kSizeTypeUnset);
+//    int      Strlcpy(char16_t* pDestination, const char*  pSource, size_t nDestCapacity, size_t nSourceLength = kSizeTypeUnset);
+//    int      Strlcpy(char*  pDestination, const char16_t* pSource, size_t nDestCapacity, size_t nSourceLength = kSizeTypeUnset);
 //    size_t   Strlen(const char_t* pString);
-//    size_t   StrlenUTF8Decoded(const char8_t* pString);
+//    size_t   StrlenUTF8Decoded(const char* pString);
 //    size_t   StrlenUTF8Encoded(const char16_t* pString);
 //    char_t*  Strend(const char_t* pString);
 //    size_t   Strxfrm(char_t* pDest, const char_t* pSource, size_t n);
@@ -124,11 +124,14 @@ static const size_t kSizeTypeUnset = (size_t)~0;
 /// Returns the length of pString, not including the terminating 0 char.
 /// This function acts the same as strlen.
 ///
-EASTDC_API size_t Strlen(const char8_t*  pString);
+EASTDC_API size_t Strlen(const char*  pString);
 EASTDC_API size_t Strlen(const char16_t* pString);
 EASTDC_API size_t Strlen(const char32_t* pString);
 #if EA_WCHAR_UNIQUE
 	EASTDC_API size_t Strlen(const wchar_t* pString);
+#endif
+#if EA_CHAR8_UNIQUE
+	inline size_t Strlen(const char8_t* pString) { return Strlen((const char*)pString); }
 #endif
 
 /// StrlenUTF8Decoded
@@ -140,7 +143,7 @@ EASTDC_API size_t Strlen(const char32_t* pString);
 ///
 /// Note: this function is a duplicate of the EATextUtil.h UTF8Length(const char16_t*) function and is deprecated in favor of the EATextUtil.h version.
 ///
-EASTDC_API size_t StrlenUTF8Decoded(const char8_t* pString);
+EASTDC_API size_t StrlenUTF8Decoded(const char* pString);
 
 
 /// StrlenUTF8Encoded
@@ -150,7 +153,7 @@ EASTDC_API size_t StrlenUTF8Decoded(const char8_t* pString);
 /// the same as Strlen. For text with Unicode values > 0x7f, this function 
 /// will return a value greater that Strlen.
 ///
-/// Note: this function is a duplicate of the EATextUtil.h UTF8Length(const char8_t*) function  and is deprecated in favor of the EATextUtil.h version.
+/// Note: this function is a duplicate of the EATextUtil.h UTF8Length(const char*) function  and is deprecated in favor of the EATextUtil.h version.
 ///
 EASTDC_API size_t StrlenUTF8Encoded(const char16_t* pString);
 EASTDC_API size_t StrlenUTF8Encoded(const char32_t* pString);
@@ -160,7 +163,7 @@ EASTDC_API size_t StrlenUTF8Encoded(const char32_t* pString);
 ///
 /// Returns the end of the string, which is the same thing as (pStr + Strlen(pStr)). 
 ///
-EASTDC_API char8_t*  Strend(const char8_t*  pString);
+EASTDC_API char*  Strend(const char*  pString);
 EASTDC_API char16_t* Strend(const char16_t* pString);
 EASTDC_API char32_t* Strend(const char32_t* pString);
 #if EA_WCHAR_UNIQUE
@@ -174,7 +177,7 @@ EASTDC_API char32_t* Strend(const char32_t* pString);
 /// Considering using Strlcpy as a safe alternative to Strcat.
 /// This function acts the same as strcpy.
 ///
-EASTDC_API char8_t*  Strcpy(char8_t*  pDestination, const char8_t*  pSource);
+EASTDC_API char*  Strcpy(char*  pDestination, const char*  pSource);
 EASTDC_API char16_t* Strcpy(char16_t* pDestination, const char16_t* pSource);
 EASTDC_API char32_t* Strcpy(char32_t* pDestination, const char32_t* pSource);
 #if EA_WCHAR_UNIQUE
@@ -200,7 +203,7 @@ EASTDC_API char32_t* Strcpy(char32_t* pDestination, const char32_t* pSource);
 ///     Strncpy(buffer, pSomeString, 32);
 ///     buffer[31] = 0;
 ///
-EASTDC_API char8_t*  Strncpy(char8_t*  pDestination, const char8_t*  pSource, size_t n);
+EASTDC_API char*  Strncpy(char*  pDestination, const char*  pSource, size_t n);
 EASTDC_API char16_t* Strncpy(char16_t* pDestination, const char16_t* pSource, size_t n);
 EASTDC_API char32_t* Strncpy(char32_t* pDestination, const char32_t* pSource, size_t n);
 #if EA_WCHAR_UNIQUE
@@ -215,7 +218,7 @@ EASTDC_API char32_t* Strncpy(char32_t* pDestination, const char32_t* pSource, si
 /// bugs that may be in the StringnCopy function.
 /// Users are advised to use Strlcat instead of Strncat or StringnCat.
 ///
-EASTDC_API char8_t*  StringnCopy(char8_t*  pDestination, const char8_t*  pSource, size_t n);
+EASTDC_API char*  StringnCopy(char*  pDestination, const char*  pSource, size_t n);
 EASTDC_API char16_t* StringnCopy(char16_t* pDestination, const char16_t* pSource, size_t n);
 EASTDC_API char32_t* StringnCopy(char32_t* pDestination, const char32_t* pSource, size_t n);
 #if EA_WCHAR_UNIQUE
@@ -276,7 +279,7 @@ EASTDC_API char32_t* StringnCopy(char32_t* pDestination, const char32_t* pSource
 ///      if(Strlcat(path, file, EAArrayCount(path)) >= EAArrayCount(path))
 ///          goto toolong;
 /// 
-EASTDC_API size_t Strlcpy(char8_t*  pDestination, const char8_t*  pSource, size_t nDestCapacity);
+EASTDC_API size_t Strlcpy(char*     pDestination, const char*     pSource, size_t nDestCapacity);
 EASTDC_API size_t Strlcpy(char16_t* pDestination, const char16_t* pSource, size_t nDestCapacity);
 EASTDC_API size_t Strlcpy(char32_t* pDestination, const char32_t* pSource, size_t nDestCapacity);
 
@@ -294,26 +297,55 @@ EASTDC_API size_t Strlcpy(char32_t* pDestination, const char32_t* pSource, size_
 /// nSourceLength is the strlen of the source and thus doesn't include the source's
 /// own trailing 0 byte.
 ///
-EASTDC_API int Strlcpy(char16_t* pDestination, const char8_t*  pSource, size_t nDestCapacity, size_t nSourceLength = kSizeTypeUnset);
-EASTDC_API int Strlcpy(char8_t*  pDestination, const char16_t* pSource, size_t nDestCapacity, size_t nSourceLength = kSizeTypeUnset);
+EASTDC_API int Strlcpy(char16_t* pDestination, const char*  pSource, size_t nDestCapacity, size_t nSourceLength = kSizeTypeUnset);
+EASTDC_API int Strlcpy(char*  pDestination, const char16_t* pSource, size_t nDestCapacity, size_t nSourceLength = kSizeTypeUnset);
 
-EASTDC_API int Strlcpy(char32_t* pDestination, const char8_t*  pSource, size_t nDestCapacity, size_t nSourceLength = kSizeTypeUnset);
-EASTDC_API int Strlcpy(char8_t*  pDestination, const char32_t* pSource, size_t nDestCapacity, size_t nSourceLength = kSizeTypeUnset);
+EASTDC_API int Strlcpy(char32_t* pDestination, const char*  pSource, size_t nDestCapacity, size_t nSourceLength = kSizeTypeUnset);
+EASTDC_API int Strlcpy(char*  pDestination, const char32_t* pSource, size_t nDestCapacity, size_t nSourceLength = kSizeTypeUnset);
 
 EASTDC_API int Strlcpy(char32_t* pDest, const char16_t* pSource, size_t nDestCapacity, size_t nSourceLength = kSizeTypeUnset);
 EASTDC_API int Strlcpy(char16_t* pDest, const char32_t* pSource, size_t nDestCapacity, size_t nSourceLength = kSizeTypeUnset);
 
+#if EA_CHAR8_UNIQUE
+	inline int Strlcpy(char8_t* pDestination, const char* pSource, size_t nDestCapacity, size_t nSourceLength = kSizeTypeUnset)
+	{
+		return (int)Strlcpy((char*)pDestination, pSource, nDestCapacity);
+	}
+	inline int Strlcpy(char* pDestination, const char8_t* pSource, size_t nDestCapacity, size_t nSourceLength = kSizeTypeUnset)
+	{
+		return (int)Strlcpy(pDestination, (const char*)pSource, nDestCapacity);
+	}
+
+	inline int Strlcpy(char8_t* pDestination, const char16_t* pSource, size_t nDestCapacity, size_t nSourceLength = kSizeTypeUnset)
+	{
+		return (int)Strlcpy((char*)pDestination, pSource, nDestCapacity, nSourceLength);
+	}
+	inline int Strlcpy(char16_t* pDestination, const char8_t* pSource, size_t nDestCapacity, size_t nSourceLength = kSizeTypeUnset)
+	{
+		return (int)Strlcpy(pDestination, (const char*)pSource, nDestCapacity, nSourceLength);
+	}
+
+	inline int Strlcpy(char8_t* pDestination, const char32_t* pSource, size_t nDestCapacity, size_t nSourceLength = kSizeTypeUnset)
+	{
+		return (int)Strlcpy((char*)pDestination, pSource, nDestCapacity, nSourceLength);
+	}
+	inline int Strlcpy(char32_t* pDestination, const char8_t* pSource, size_t nDestCapacity, size_t nSourceLength = kSizeTypeUnset)
+	{
+		return (int)Strlcpy(pDestination, (const char*)pSource, nDestCapacity, nSourceLength);
+	}
+#endif
+
 #if EA_WCHAR_UNIQUE
-	EASTDC_API int Strlcpy(char8_t* pDestination, const wchar_t* pSource, size_t nDestCapacity, size_t nSourceLength = kSizeTypeUnset);
+	EASTDC_API int Strlcpy(char* pDestination, const wchar_t* pSource, size_t nDestCapacity, size_t nSourceLength = kSizeTypeUnset);
 	EASTDC_API int Strlcpy(char16_t* pDestination, const wchar_t* pSource, size_t nDestCapacity, size_t nSourceLength = kSizeTypeUnset);
 	EASTDC_API int Strlcpy(char32_t* pDestination, const wchar_t* pSource, size_t nDestCapacity, size_t nSourceLength = kSizeTypeUnset);
-	EASTDC_API int Strlcpy(wchar_t* pDestination, const char8_t* pSource, size_t nDestCapacity, size_t nSourceLength = kSizeTypeUnset);
+	EASTDC_API int Strlcpy(wchar_t* pDestination, const char* pSource, size_t nDestCapacity, size_t nSourceLength = kSizeTypeUnset);
 	EASTDC_API int Strlcpy(wchar_t* pDestination, const char16_t* pSource, size_t nDestCapacity, size_t nSourceLength = kSizeTypeUnset);
 	EASTDC_API int Strlcpy(wchar_t* pDestination, const char32_t* pSource, size_t nDestCapacity, size_t nSourceLength = kSizeTypeUnset);
 #endif
 
 // To consider: Enable this for completeness with the above:
-//EASTDC_API int Strlcpy(char8_t*  pDestination, const char8_t*  pSource, size_t nDestCapacity, size_t nSourceLength); // nSourceLength = kSizeTypeUnset
+//EASTDC_API int Strlcpy(char*  pDestination, const char*  pSource, size_t nDestCapacity, size_t nSourceLength); // nSourceLength = kSizeTypeUnset
 //EASTDC_API int Strlcpy(char16_t* pDestination, const char16_t* pSource, size_t nDestCapacity, size_t nSourceLength); // nSourceLength = kSizeTypeUnset. We can't define the default parameter because if we did then Strlcpy would conflict with the other version of Strlcpy.
 //EASTDC_API int Strlcpy(char32_t* pDestination, const char32_t* pSource, size_t nDestCapacity, size_t nSourceLength); // nSourceLength = kSizeTypeUnset. We can't define the default parameter because if we did then Strlcpy would conflict with the other version of Strlcpy.
 
@@ -336,19 +368,19 @@ EASTDC_API int Strlcpy(char16_t* pDest, const char32_t* pSource, size_t nDestCap
 /// the string copy will stop after a null is found.  In that case, nSourceUsed will have the
 /// value of nSourceLength.
 ///
-EASTDC_API bool Strlcpy(char8_t* pDest, const char16_t* pSource, size_t nDestCapacity, size_t nSourceLength, size_t& nDestUsed, size_t& nSourceUsed);
-EASTDC_API bool Strlcpy(char8_t* pDest, const char32_t* pSource, size_t nDestCapacity, size_t nSourceLength, size_t& nDestUsed, size_t& nSourceUsed);
-EASTDC_API bool Strlcpy(char16_t* pDest, const char8_t* pSource, size_t nDestCapacity, size_t nSourceLength, size_t& nDestUsed, size_t& nSourceUsed);
+EASTDC_API bool Strlcpy(char*     pDest, const char16_t* pSource, size_t nDestCapacity, size_t nSourceLength, size_t& nDestUsed, size_t& nSourceUsed);
+EASTDC_API bool Strlcpy(char*     pDest, const char32_t* pSource, size_t nDestCapacity, size_t nSourceLength, size_t& nDestUsed, size_t& nSourceUsed);
+EASTDC_API bool Strlcpy(char16_t* pDest, const char*     pSource, size_t nDestCapacity, size_t nSourceLength, size_t& nDestUsed, size_t& nSourceUsed);
 EASTDC_API bool Strlcpy(char16_t* pDest, const char32_t* pSource, size_t nDestCapacity, size_t nSourceLength, size_t& nDestUsed, size_t& nSourceUsed);
-EASTDC_API bool Strlcpy(char32_t* pDest, const char8_t* pSource, size_t nDestCapacity, size_t nSourceLength, size_t& nDestUsed, size_t& nSourceUsed);
+EASTDC_API bool Strlcpy(char32_t* pDest, const char*     pSource, size_t nDestCapacity, size_t nSourceLength, size_t& nDestUsed, size_t& nSourceUsed);
 EASTDC_API bool Strlcpy(char32_t* pDest, const char16_t* pSource, size_t nDestCapacity, size_t nSourceLength, size_t& nDestUsed, size_t& nSourceUsed);
 #if EA_WCHAR_UNIQUE
-	EASTDC_API bool Strlcpy(char8_t* pDestination, const wchar_t* pSource, size_t nDestCapacity, size_t nSourceLength, size_t& nDestUsed, size_t& nSourceUsed);
-	EASTDC_API bool Strlcpy(char16_t* pDestination, const wchar_t* pSource, size_t nDestCapacity, size_t nSourceLength, size_t& nDestUsed, size_t& nSourceUsed);
-	EASTDC_API bool Strlcpy(char32_t* pDestination, const wchar_t* pSource, size_t nDestCapacity, size_t nSourceLength, size_t& nDestUsed, size_t& nSourceUsed);
-	EASTDC_API bool Strlcpy(wchar_t* pDestination, const char8_t* pSource, size_t nDestCapacity, size_t nSourceLength, size_t& nDestUsed, size_t& nSourceUsed);
-	EASTDC_API bool Strlcpy(wchar_t* pDestination, const char16_t* pSource, size_t nDestCapacity, size_t nSourceLength, size_t& nDestUsed, size_t& nSourceUsed);
-	EASTDC_API bool Strlcpy(wchar_t* pDestination, const char32_t* pSource, size_t nDestCapacity, size_t nSourceLength, size_t& nDestUsed, size_t& nSourceUsed);
+	EASTDC_API bool Strlcpy(char*     pDestination, const wchar_t*  pSource, size_t nDestCapacity, size_t nSourceLength, size_t& nDestUsed, size_t& nSourceUsed);
+	EASTDC_API bool Strlcpy(char16_t* pDestination, const wchar_t*  pSource, size_t nDestCapacity, size_t nSourceLength, size_t& nDestUsed, size_t& nSourceUsed);
+	EASTDC_API bool Strlcpy(char32_t* pDestination, const wchar_t*  pSource, size_t nDestCapacity, size_t nSourceLength, size_t& nDestUsed, size_t& nSourceUsed);
+	EASTDC_API bool Strlcpy(wchar_t*  pDestination, const char*     pSource, size_t nDestCapacity, size_t nSourceLength, size_t& nDestUsed, size_t& nSourceUsed);
+	EASTDC_API bool Strlcpy(wchar_t*  pDestination, const char16_t* pSource, size_t nDestCapacity, size_t nSourceLength, size_t& nDestUsed, size_t& nSourceUsed);
+	EASTDC_API bool Strlcpy(wchar_t*  pDestination, const char32_t* pSource, size_t nDestCapacity, size_t nSourceLength, size_t& nDestUsed, size_t& nSourceUsed);
 #endif
 
 /// Strlcpy
@@ -537,7 +569,7 @@ inline Dest Strlcpy(const Source& s)
 /// Implements a generic STL/EASTL 8 <--> 16 conversion via Strlcpy.
 ///
 /// Example usage:
-///    eastl::string16 s16 = Strlcpy<eastl::string16, char8_t>("hello world");
+///    eastl::string16 s16 = Strlcpy<eastl::string16, char>("hello world");
 ///
 namespace Internal
 {
@@ -589,7 +621,7 @@ inline Dest Strlcpy(const Source* pSource, size_t sourceLength = kSizeTypeUnset)
 /// is (Strlen(pSource) + Strlen(pDestination) + 1).
 /// Considering using Strlcat as a safer alternative to Strcat.
 ///
-EASTDC_API char8_t*  Strcat(char8_t*  pDestination, const char8_t*  pSource);
+EASTDC_API char*  Strcat(char*  pDestination, const char*  pSource);
 EASTDC_API char16_t* Strcat(char16_t* pDestination, const char16_t* pSource);
 EASTDC_API char32_t* Strcat(char32_t* pDestination, const char32_t* pSource);
 #if EA_WCHAR_UNIQUE
@@ -604,7 +636,7 @@ EASTDC_API char32_t* Strcat(char32_t* pDestination, const char32_t* pSource);
 /// Considering using Strlcat as a safer alternative to Strncat.
 /// This function acts the same as strncat
 ///
-EASTDC_API char8_t*  Strncat(char8_t*  pDestination, const char8_t*  pSource, size_t n);
+EASTDC_API char*  Strncat(char*  pDestination, const char*  pSource, size_t n);
 EASTDC_API char16_t* Strncat(char16_t* pDestination, const char16_t* pSource, size_t n);
 EASTDC_API char32_t* Strncat(char32_t* pDestination, const char32_t* pSource, size_t n);
 #if EA_WCHAR_UNIQUE
@@ -619,7 +651,7 @@ EASTDC_API char32_t* Strncat(char32_t* pDestination, const char32_t* pSource, si
 /// bugs that may be in the StringnCopy function.
 /// Users are advised to use Strlcat instead of Strncat or StringnCat.
 ///
-EASTDC_API char8_t*  StringnCat(char8_t*  pDestination, const char8_t*  pSource, size_t n);
+EASTDC_API char*  StringnCat(char*  pDestination, const char*  pSource, size_t n);
 EASTDC_API char16_t* StringnCat(char16_t* pDestination, const char16_t* pSource, size_t n);
 EASTDC_API char32_t* StringnCat(char32_t* pDestination, const char32_t* pSource, size_t n);
 #if EA_WCHAR_UNIQUE
@@ -681,25 +713,25 @@ EASTDC_API char32_t* StringnCat(char32_t* pDestination, const char32_t* pSource,
 ///      if(Strlcat(path, file, EAArrayCount(path)) >= EAArrayCount(path))
 ///          goto toolong;
 ///
-EASTDC_API size_t Strlcat(char8_t*  pDestination, const char8_t*  pSource, size_t nDestCapacity);
+EASTDC_API size_t Strlcat(char*     pDestination, const char*     pSource, size_t nDestCapacity);
 EASTDC_API size_t Strlcat(char16_t* pDestination, const char16_t* pSource, size_t nDestCapacity);
 EASTDC_API size_t Strlcat(char32_t* pDestination, const char32_t* pSource, size_t nDestCapacity);
 #if EA_WCHAR_UNIQUE
-	EASTDC_API size_t Strlcat(wchar_t* pDestination, const wchar_t* pSource, size_t nDestCapacity);
-	EASTDC_API size_t Strlcat(wchar_t* pDestination, const char8_t* pSource, size_t nDestCapacity);
-	EASTDC_API size_t Strlcat(wchar_t* pDestination, const char16_t* pSource, size_t nDestCapacity);
-	EASTDC_API size_t Strlcat(wchar_t* pDestination, const char32_t* pSource, size_t nDestCapacity);
-	EASTDC_API size_t Strlcat(char8_t* pDestination, const wchar_t* pSource, size_t nDestCapacity);
-	EASTDC_API size_t Strlcat(char16_t* pDestination, const wchar_t* pSource, size_t nDestCapacity);
-	EASTDC_API size_t Strlcat(char32_t* pDestination, const wchar_t* pSource, size_t nDestCapacity);
+	EASTDC_API size_t Strlcat(wchar_t*  pDestination, const wchar_t*  pSource, size_t nDestCapacity);
+	EASTDC_API size_t Strlcat(wchar_t*  pDestination, const char*     pSource, size_t nDestCapacity);
+	EASTDC_API size_t Strlcat(wchar_t*  pDestination, const char16_t* pSource, size_t nDestCapacity);
+	EASTDC_API size_t Strlcat(wchar_t*  pDestination, const char32_t* pSource, size_t nDestCapacity);
+	EASTDC_API size_t Strlcat(char*     pDestination, const wchar_t*  pSource, size_t nDestCapacity);
+	EASTDC_API size_t Strlcat(char16_t* pDestination, const wchar_t*  pSource, size_t nDestCapacity);
+	EASTDC_API size_t Strlcat(char32_t* pDestination, const wchar_t*  pSource, size_t nDestCapacity);
 #endif
 
 // UTF8 <-> UTF16 <-> UTF32 encoding conversion 
-EASTDC_API size_t Strlcat(char16_t* pDestination, const char8_t*  pSource, size_t nDestCapacity);
-EASTDC_API size_t Strlcat(char8_t*  pDestination, const char16_t* pSource, size_t nDestCapacity);
+EASTDC_API size_t Strlcat(char16_t* pDestination, const char*  pSource, size_t nDestCapacity);
+EASTDC_API size_t Strlcat(char*  pDestination, const char16_t* pSource, size_t nDestCapacity);
 
-EASTDC_API size_t Strlcat(char32_t* pDestination, const char8_t*  pSource, size_t nDestCapacity);
-EASTDC_API size_t Strlcat(char8_t*  pDestination, const char32_t* pSource, size_t nDestCapacity);
+EASTDC_API size_t Strlcat(char32_t* pDestination, const char*  pSource, size_t nDestCapacity);
+EASTDC_API size_t Strlcat(char*  pDestination, const char32_t* pSource, size_t nDestCapacity);
 
 EASTDC_API size_t Strlcat(char16_t* pDestination, const char32_t*  pSource, size_t nDestCapacity);
 EASTDC_API size_t Strlcat(char32_t* pDestination, const char16_t*  pSource, size_t nDestCapacity);
@@ -713,7 +745,7 @@ EASTDC_API size_t Strlcat(char32_t* pDestination, const char16_t*  pSource, size
 ///    eastl::wstring sW(L"hello ");
 ///    eastl::string8 s8("world");
 ///
-///    EA::StdC::Strlcat(sW, s8);  // char8_t -> wchar_t. Becomes L"hello world."
+///    EA::StdC::Strlcat(sW, s8);  // char -> wchar_t. Becomes L"hello world."
 ///
 namespace Internal
 {
@@ -758,7 +790,7 @@ inline bool Strlcat(Dest& d, const Source& s)
 ///
 /// Example usage:
 ///    eastl::wstring sW(L"hello ");
-///    EA::StdC::Strlcat(sW, "world");  // char8_t -> wchar_t. Becomes L"hello world."
+///    EA::StdC::Strlcat(sW, "world");  // char -> wchar_t. Becomes L"hello world."
 ///
 namespace Internal
 {
@@ -812,7 +844,7 @@ inline bool Strlcat(Dest& d, const Source* pSource, size_t sourceLength = kSizeT
 /// doesn't do any transformation other than simply copy.
 /// This is similar to the strxfrm C function.
 ///
-EASTDC_API size_t Strxfrm(char8_t*  pDest, const char8_t*  pSource, size_t n);
+EASTDC_API size_t Strxfrm(char*     pDest, const char*     pSource, size_t n);
 EASTDC_API size_t Strxfrm(char16_t* pDest, const char16_t* pSource, size_t n);
 EASTDC_API size_t Strxfrm(char32_t* pDest, const char32_t* pSource, size_t n);
 #if EA_WCHAR_UNIQUE
@@ -827,7 +859,7 @@ EASTDC_API size_t Strxfrm(char32_t* pDest, const char32_t* pSource, size_t n);
 /// If Strdup resides in a DLL or similar kind of independent library, Strldel is required.
 /// This is similar to the strdup C function.
 ///
-EASTDC_API char8_t*  Strdup(const char8_t*  pString);
+EASTDC_API char*  Strdup(const char*  pString);
 EASTDC_API char16_t* Strdup(const char16_t* pString);
 EASTDC_API char32_t* Strdup(const char32_t* pString);
 #if EA_WCHAR_UNIQUE
@@ -839,7 +871,7 @@ EASTDC_API char32_t* Strdup(const char32_t* pString);
 ///
 /// Deletes a string returned by Strdup.
 ///
-EASTDC_API void Strdel(char8_t*  pString);
+EASTDC_API void Strdel(char*  pString);
 EASTDC_API void Strdel(char16_t* pString);
 EASTDC_API void Strdel(char32_t* pString);
 #if EA_WCHAR_UNIQUE
@@ -856,7 +888,7 @@ EASTDC_API void Strdel(char32_t* pString);
 /// The Unicode module may be split off into a  unique package by the time you read this.
 /// This is similar to the sometimes seen _strupr C function.
 ///
-EASTDC_API char8_t*  Strupr(char8_t*  pString);
+EASTDC_API char*  Strupr(char*  pString);
 EASTDC_API char16_t* Strupr(char16_t* pString);
 EASTDC_API char32_t* Strupr(char32_t* pString);
 #if EA_WCHAR_UNIQUE
@@ -873,7 +905,7 @@ EASTDC_API char32_t* Strupr(char32_t* pString);
 /// The Unicode module may be split off into a  unique package by the time you read this.
 /// This is similar to the sometimes seen _strlwr C function.
 ///
-EASTDC_API char8_t*  Strlwr(char8_t*  pString);
+EASTDC_API char*  Strlwr(char*  pString);
 EASTDC_API char16_t* Strlwr(char16_t* pString);
 EASTDC_API char32_t* Strlwr(char32_t* pString);
 #if EA_WCHAR_UNIQUE
@@ -894,7 +926,7 @@ EASTDC_API char32_t* Strlwr(char32_t* pString);
 ///
 /// This function is currently provided for compatibility with the rwstdc package. 
 ///
-EASTDC_API char8_t*  Strmix(char8_t*  pDestination, const char8_t*  pSource, const char8_t*  pDelimiters);
+EASTDC_API char*  Strmix(char*  pDestination, const char*  pSource, const char*  pDelimiters);
 EASTDC_API char16_t* Strmix(char16_t* pDestination, const char16_t* pSource, const char16_t* pDelimiters);
 EASTDC_API char32_t* Strmix(char32_t* pDestination, const char32_t* pSource, const char32_t* pDelimiters);
 #if EA_WCHAR_UNIQUE
@@ -908,7 +940,7 @@ EASTDC_API char32_t* Strmix(char32_t* pDestination, const char32_t* pSource, con
 /// The null-terminating character is included as part of the string and can also be searched.
 /// This is similar to the strchr C function.
 ///
-EASTDC_API char8_t*  Strchr(const char8_t*  pString, int      c);
+EASTDC_API char*  Strchr(const char*  pString, int      c);
 EASTDC_API char16_t* Strchr(const char16_t* pString, char16_t c);
 EASTDC_API char32_t* Strchr(const char32_t* pString, char32_t c);
 #if EA_WCHAR_UNIQUE
@@ -923,7 +955,7 @@ EASTDC_API char32_t* Strchr(const char32_t* pString, char32_t c);
 /// This differs from some implementations that let you search past the null-terminator of pString. If you'd like to do that, use EA::StdC::Memchr
 ///  Some other C library strnchr functions have the last two arguments switched relative to this version.
 ///
-EASTDC_API char8_t*  Strnchr(const char8_t*  pString, int      c, size_t n);
+EASTDC_API char*  Strnchr(const char*  pString, int      c, size_t n);
 EASTDC_API char16_t* Strnchr(const char16_t* pString, char16_t c, size_t n);
 EASTDC_API char32_t* Strnchr(const char32_t* pString, char32_t c, size_t n);
 #if EA_WCHAR_UNIQUE
@@ -939,7 +971,7 @@ EASTDC_API char32_t* Strnchr(const char32_t* pString, char32_t c, size_t n);
 /// the length of pString1 if none of the characters included in pString2 is in pString1.
 /// This is similar to the strcspn C function.
 ///
-EASTDC_API size_t  Strcspn(const char8_t*  pString1, const char8_t*  pString2);
+EASTDC_API size_t  Strcspn(const char*  pString1, const char*  pString2);
 EASTDC_API size_t  Strcspn(const char16_t* pString1, const char16_t* pString2);
 EASTDC_API size_t  Strcspn(const char32_t* pString1, const char32_t* pString2);
 #if EA_WCHAR_UNIQUE
@@ -954,7 +986,7 @@ EASTDC_API size_t  Strcspn(const char32_t* pString1, const char32_t* pString2);
 /// does not includes the terminating null characters.
 /// This is similar to the strpbrk C function.
 ///
-EASTDC_API char8_t*  Strpbrk(const char8_t*  pString1, const char8_t*  pString2);
+EASTDC_API char*  Strpbrk(const char*  pString1, const char*  pString2);
 EASTDC_API char16_t* Strpbrk(const char16_t* pString1, const char16_t* pString2);
 EASTDC_API char32_t* Strpbrk(const char32_t* pString1, const char32_t* pString2);
 #if EA_WCHAR_UNIQUE
@@ -968,7 +1000,7 @@ EASTDC_API char32_t* Strpbrk(const char32_t* pString1, const char32_t* pString2)
 /// The null-terminating character is included as part of the string and can also be searched.
 /// This is similar to the strrchr C function.
 ///
-EASTDC_API char8_t*  Strrchr(const char8_t*  pString, int      c);
+EASTDC_API char*  Strrchr(const char*  pString, int      c);
 EASTDC_API char16_t* Strrchr(const char16_t* pString, char16_t c);
 EASTDC_API char32_t* Strrchr(const char32_t* pString, char32_t c);
 #if EA_WCHAR_UNIQUE
@@ -980,7 +1012,7 @@ EASTDC_API char32_t* Strrchr(const char32_t* pString, char32_t c);
 ///
 /// This is similar to the strspn C function.
 ///
-EASTDC_API size_t Strspn(const char8_t*  pString, const char8_t*  pSubString);
+EASTDC_API size_t Strspn(const char*  pString, const char*  pSubString);
 EASTDC_API size_t Strspn(const char16_t* pString, const char16_t* pSubString);
 EASTDC_API size_t Strspn(const char32_t* pString, const char32_t* pSubString);
 #if EA_WCHAR_UNIQUE
@@ -999,7 +1031,7 @@ EASTDC_API size_t Strspn(const char32_t* pString, const char32_t* pSubString);
 /// it could break users who expect a non-const return value from the const 
 /// argument version.
 /// 
-EASTDC_API char8_t*  Strstr(const char8_t*  pString, const char8_t*  pSubString);
+EASTDC_API char*  Strstr(const char*  pString, const char*  pSubString);
 EASTDC_API char16_t* Strstr(const char16_t* pString, const char16_t* pSubString);
 EASTDC_API char32_t* Strstr(const char32_t* pString, const char32_t* pSubString);
 #if EA_WCHAR_UNIQUE
@@ -1017,7 +1049,7 @@ EASTDC_API char32_t* Strstr(const char32_t* pString, const char32_t* pSubString)
 /// This is similar to the stristr and wcsstr C functions. See the notes for
 /// those functions for some additional info.
 ///
-EASTDC_API char8_t*  Stristr(const char8_t*  pString, const char8_t*  pSubString);
+EASTDC_API char*  Stristr(const char*  pString, const char*  pSubString);
 EASTDC_API char16_t* Stristr(const char16_t* pString, const char16_t* pSubString);
 EASTDC_API char32_t* Stristr(const char32_t* pString, const char32_t* pSubString);
 #if EA_WCHAR_UNIQUE
@@ -1032,7 +1064,7 @@ EASTDC_API char32_t* Stristr(const char32_t* pString, const char32_t* pSubString
 /// This is similar to the strrstr C function. See the notes for
 /// Strstr for some additional info.
 ///
-EASTDC_API char8_t*  Strrstr(const char8_t*  pString, const char8_t*  pSubString);
+EASTDC_API char*  Strrstr(const char*  pString, const char*  pSubString);
 EASTDC_API char16_t* Strrstr(const char16_t* pString, const char16_t* pSubString);
 EASTDC_API char32_t* Strrstr(const char32_t* pString, const char32_t* pSubString);
 #if EA_WCHAR_UNIQUE
@@ -1047,7 +1079,7 @@ EASTDC_API char32_t* Strrstr(const char32_t* pString, const char32_t* pSubString
 /// This is similar to the strirstr C function. See the notes for
 /// Strstr for some additional info.
 ///
-EASTDC_API char8_t*  Strirstr(const char8_t*  pString, const char8_t*  pSubString);
+EASTDC_API char*  Strirstr(const char*  pString, const char*  pSubString);
 EASTDC_API char16_t* Strirstr(const char16_t* pString, const char16_t* pSubString);
 EASTDC_API char32_t* Strirstr(const char32_t* pString, const char32_t* pSubString);
 #if EA_WCHAR_UNIQUE
@@ -1061,7 +1093,7 @@ EASTDC_API char32_t* Strirstr(const char32_t* pString, const char32_t* pSubStrin
 /// Both strings must be non-null, but either can be empty.
 /// An empty pPrefix results in success, regardless of what pString is.
 ///
-EASTDC_API bool Strstart(const char8_t* pString, const char8_t* pPrefix);
+EASTDC_API bool Strstart(const char* pString, const char* pPrefix);
 EASTDC_API bool Strstart(const char16_t* pString, const char16_t* pPrefix);
 EASTDC_API bool Strstart(const char32_t* pString, const char32_t* pPrefix);
 #if EA_WCHAR_UNIQUE
@@ -1076,7 +1108,7 @@ EASTDC_API bool Strstart(const char32_t* pString, const char32_t* pPrefix);
 /// An empty pPrefix results in success, regardless of what pString is.
 /// Supports ASCII case comparisons only.
 ///
-EASTDC_API bool Stristart(const char8_t* pString, const char8_t* pPrefix);
+EASTDC_API bool Stristart(const char* pString, const char* pPrefix);
 EASTDC_API bool Stristart(const char16_t* pString, const char16_t* pPrefix);
 EASTDC_API bool Stristart(const char32_t* pString, const char32_t* pPrefix);
 #if EA_WCHAR_UNIQUE
@@ -1094,7 +1126,7 @@ EASTDC_API bool Stristart(const char32_t* pString, const char32_t* pPrefix);
 /// If stringLength is the default value then it will be calculated, resulting in 
 /// slower execution than otherwise.
 ///
-EASTDC_API bool Strend(const char8_t* pString, const char8_t* pSuffix, size_t stringLength = kSizeTypeUnset, size_t suffixLength = kSizeTypeUnset);
+EASTDC_API bool Strend(const char* pString, const char* pSuffix, size_t stringLength = kSizeTypeUnset, size_t suffixLength = kSizeTypeUnset);
 EASTDC_API bool Strend(const char16_t* pString, const char16_t* pSuffix, size_t stringLength = kSizeTypeUnset, size_t suffixLength = kSizeTypeUnset);
 EASTDC_API bool Strend(const char32_t* pString, const char32_t* pSuffix, size_t stringLength = kSizeTypeUnset, size_t suffixLength = kSizeTypeUnset);
 
@@ -1108,7 +1140,7 @@ EASTDC_API bool Strend(const char32_t* pString, const char32_t* pSuffix, size_t 
 /// slower execution than otherwise.
 /// Supports ASCII case comparisons only.
 ///
-EASTDC_API bool Striend(const char8_t* pString, const char8_t* pSuffix, size_t stringLength = kSizeTypeUnset, size_t suffixLength = kSizeTypeUnset);
+EASTDC_API bool Striend(const char* pString, const char* pSuffix, size_t stringLength = kSizeTypeUnset, size_t suffixLength = kSizeTypeUnset);
 EASTDC_API bool Striend(const char16_t* pString, const char16_t* pSuffix, size_t stringLength = kSizeTypeUnset, size_t suffixLength = kSizeTypeUnset);
 EASTDC_API bool Striend(const char32_t* pString, const char32_t* pSuffix, size_t stringLength = kSizeTypeUnset, size_t suffixLength = kSizeTypeUnset);
 
@@ -1152,23 +1184,23 @@ EASTDC_API bool Striend(const char32_t* pString, const char32_t* pSuffix, size_t
 /// from pContext and behave as described above.
 /// 
 /// Example:
-///     char8_t* pContext = NULL;
-///     char8_t* pString  = "000\t000\n000\t000";
-///     char8_t* pResult;
+///     char* pContext = NULL;
+///     char* pString  = "000\t000\n000\t000";
+///     char* pResult;
 ///
 ///     while((pResult = Strtok(pContext ? NULL : pString, "\t\n", &pContext)) != NULL)
 ///         printf("%s\n", pResult);
 ///     
 /// Example:
-///    char8_t* p = "-abc-=-def";
-///    char8_t* p1;
-///    char8_t* r;
+///    char* p = "-abc-=-def";
+///    char* p1;
+///    char* r;
 ///
 ///    r = Strtok8(p,    "-",  &p1);    // r = "abc", p1 = "=-def", p = "abc\0=-def"
 ///    r = Strtok8(NULL, "-=", &p1);    // r = "def", p1 = NULL,    p = "abc\0=-def"
 ///    r = Strtok8(NULL, "=",  &p1);    // r = NULL,  p1 = NULL,    p = "abc\0=-def"
 /// 
-EASTDC_API char8_t*  Strtok(char8_t*  pString, const char8_t*  pDelimiters, char8_t**  pContext);
+EASTDC_API char*  Strtok(char*  pString, const char*  pDelimiters, char**  pContext);
 EASTDC_API char16_t* Strtok(char16_t* pString, const char16_t* pDelimiters, char16_t** pContext);
 EASTDC_API char32_t* Strtok(char32_t* pString, const char32_t* pDelimiters, char32_t** pContext);
 #if EA_WCHAR_UNIQUE
@@ -1192,7 +1224,7 @@ EASTDC_API char32_t* Strtok(char32_t* pString, const char32_t* pDelimiters, char
 /// in the string; you may want to try using the parsing functions in EATextUtil.h 
 /// in order to avoid this.
 /// 
-EASTDC_API const char8_t*  Strtok2(const char8_t*  pString, const char8_t*  pDelimiters, size_t* pResultLength, bool bFirst);
+EASTDC_API const char*  Strtok2(const char*  pString, const char*  pDelimiters, size_t* pResultLength, bool bFirst);
 EASTDC_API const char16_t* Strtok2(const char16_t* pString, const char16_t* pDelimiters, size_t* pResultLength, bool bFirst);
 EASTDC_API const char32_t* Strtok2(const char32_t* pString, const char32_t* pDelimiters, size_t* pResultLength, bool bFirst);
 #if EA_WCHAR_UNIQUE
@@ -1203,12 +1235,12 @@ EASTDC_API const char32_t* Strtok2(const char32_t* pString, const char32_t* pDel
 /// Strset
 ///
 /// Sets all characters up to but not including the terminating 0 char in 
-/// pString with the value c. The char8_t version uses int instead of char8_t
+/// pString with the value c. The char version uses int instead of char
 /// in order to be compatible with the C strset function.
 /// Returns pString.
 /// This is similar to the sometimes seen _strset C function.
 ///
-EASTDC_API char8_t*  Strset(char8_t*  pString, int      c);
+EASTDC_API char*  Strset(char*  pString, int      c);
 EASTDC_API char16_t* Strset(char16_t* pString, char16_t c);
 EASTDC_API char32_t* Strset(char32_t* pString, char32_t c);
 #if EA_WCHAR_UNIQUE
@@ -1222,7 +1254,7 @@ EASTDC_API char32_t* Strset(char32_t* pString, char32_t c);
 /// Strlen of pString, the Strlen(pString) is used instead of n. 
 /// This is similar to the sometimes seen _strnset C function.
 ///
-EASTDC_API char8_t*  Strnset(char8_t*  pString, int c,      size_t n);
+EASTDC_API char*  Strnset(char*  pString, int c,      size_t n);
 EASTDC_API char16_t* Strnset(char16_t* pString, char16_t c, size_t n);
 EASTDC_API char32_t* Strnset(char32_t* pString, char32_t c, size_t n);
 #if EA_WCHAR_UNIQUE
@@ -1234,7 +1266,7 @@ EASTDC_API char32_t* Strnset(char32_t* pString, char32_t c, size_t n);
 ///
 /// This is similar to the sometimes seen _strrev C function.
 ///
-EASTDC_API char8_t*  Strrev(char8_t*  pString);
+EASTDC_API char*  Strrev(char*  pString);
 EASTDC_API char16_t* Strrev(char16_t* pString);
 EASTDC_API char32_t* Strrev(char32_t* pString);
 #if EA_WCHAR_UNIQUE
@@ -1252,7 +1284,7 @@ EASTDC_API char32_t* Strrev(char32_t* pString);
 /// that pointer instead of pString.
 /// This is similar to the sometimes seen strstrip C function.
 ///
-EASTDC_API char8_t*  Strstrip(char8_t*  pString);
+EASTDC_API char*  Strstrip(char*  pString);
 EASTDC_API char16_t* Strstrip(char16_t* pString);
 EASTDC_API char32_t* Strstrip(char32_t* pString);
 #if EA_WCHAR_UNIQUE
@@ -1264,11 +1296,15 @@ EASTDC_API char32_t* Strstrip(char32_t* pString);
 ///
 /// This is similar to the strcmp C function.
 ///
-EASTDC_API int Strcmp(const char8_t*  pString1, const char8_t*  pString2);
+EASTDC_API int Strcmp(const char*  pString1, const char*  pString2);
 EASTDC_API int Strcmp(const char16_t* pString1, const char16_t* pString2);
 EASTDC_API int Strcmp(const char32_t* pString1, const char32_t* pString2);
 #if EA_WCHAR_UNIQUE
 	EASTDC_API int Strcmp(const wchar_t* pString1, const wchar_t* pString2);
+#endif
+#if EA_CHAR8_UNIQUE
+	inline int Strcmp(const char8_t* pString1, const char8_t* pString2)
+		{ return Strcmp((const char*)pString1, (const char*)pString2); }
 #endif
 
 
@@ -1276,7 +1312,7 @@ EASTDC_API int Strcmp(const char32_t* pString1, const char32_t* pString2);
 ///
 /// This is similar to the strncmp C function.
 ///
-EASTDC_API int Strncmp(const char8_t*  pString1, const char8_t*  pString2, size_t n);
+EASTDC_API int Strncmp(const char*  pString1, const char*  pString2, size_t n);
 EASTDC_API int Strncmp(const char16_t* pString1, const char16_t* pString2, size_t n);
 EASTDC_API int Strncmp(const char32_t* pString1, const char32_t* pString2, size_t n);
 #if EA_WCHAR_UNIQUE
@@ -1288,7 +1324,7 @@ EASTDC_API int Strncmp(const char32_t* pString1, const char32_t* pString2, size_
 ///
 /// This is similar to the sometimes seen _stricmp or strcasecmp C function.
 ///
-EASTDC_API int Stricmp(const char8_t*  pString1, const char8_t*  pString2);
+EASTDC_API int Stricmp(const char*  pString1, const char*  pString2);
 EASTDC_API int Stricmp(const char16_t* pString1, const char16_t* pString2);
 EASTDC_API int Stricmp(const char32_t* pString1, const char32_t* pString2);
 #if EA_WCHAR_UNIQUE
@@ -1300,7 +1336,7 @@ EASTDC_API int Stricmp(const char32_t* pString1, const char32_t* pString2);
 ///
 /// This is similar to the sometimes seen _strnicmp or strncasecmp C function.
 ///
-EASTDC_API int Strnicmp(const char8_t*  pString1, const char8_t*  pString2, size_t n);
+EASTDC_API int Strnicmp(const char*  pString1, const char*  pString2, size_t n);
 EASTDC_API int Strnicmp(const char16_t* pString1, const char16_t* pString2, size_t n);
 EASTDC_API int Strnicmp(const char32_t* pString1, const char32_t* pString2, size_t n);
 #if EA_WCHAR_UNIQUE
@@ -1340,11 +1376,11 @@ EASTDC_API int Strnicmp(const char32_t* pString1, const char32_t* pString2, size
 ///    EATEST_VERIFY(StrcmpAlnum("abc1.1", "abc1.02")  < 0);       // Verify that '.' is not treated as a decimal point.
 ///    EATEST_VERIFY(StrcmpAlnum("44",     "044")     == 0);       // Verify that digit spans are treated as base 10 numbers.
 ///
-EASTDC_API int StrcmpAlnum(const char8_t*  pString1, const char8_t*  pString2);
+EASTDC_API int StrcmpAlnum(const char*  pString1, const char*  pString2);
 EASTDC_API int StrcmpAlnum(const char16_t* pString1, const char16_t* pString2);
 // No 32 bit version because this function is deprecated.
 
-EASTDC_API int StricmpAlnum(const char8_t*  pString1, const char8_t*  pString2);
+EASTDC_API int StricmpAlnum(const char*  pString1, const char*  pString2);
 EASTDC_API int StricmpAlnum(const char16_t* pString1, const char16_t* pString2);
 // No 32 bit version because this function is deprecated.
 
@@ -1397,14 +1433,14 @@ EASTDC_API int StricmpAlnum(const char16_t* pString1, const char16_t* pString2);
 ///    EATEST_VERIFY(StrcmpNumeric("abc1.1", "abc1.02")  > 0);
 ///    EATEST_VERIFY(StrcmpNumeric("44",     "044")     == 0);
 ///
-EASTDC_API int StrcmpNumeric (const char8_t*  pString1, const char8_t*  pString2, size_t length1 = kSizeTypeUnset, size_t length2 = kSizeTypeUnset, char8_t  decimal = '.', char8_t  thousandsSeparator = ',');
+EASTDC_API int StrcmpNumeric (const char*  pString1, const char*  pString2, size_t length1 = kSizeTypeUnset, size_t length2 = kSizeTypeUnset, char  decimal = '.', char  thousandsSeparator = ',');
 EASTDC_API int StrcmpNumeric (const char16_t* pString1, const char16_t* pString2, size_t length1 = kSizeTypeUnset, size_t length2 = kSizeTypeUnset, char16_t decimal = '.', char16_t thousandsSeparator = ',');
 EASTDC_API int StrcmpNumeric (const char32_t* pString1, const char32_t* pString2, size_t length1 = kSizeTypeUnset, size_t length2 = kSizeTypeUnset, char32_t decimal = '.', char32_t thousandsSeparator = ',');
 #if EA_WCHAR_UNIQUE
 	EASTDC_API int StrcmpNumeric (const wchar_t* pString1, const wchar_t* pString2, size_t length1 = kSizeTypeUnset, size_t length2 = kSizeTypeUnset, wchar_t decimal = '.', wchar_t thousandsSeparator = ',');
 #endif
 
-EASTDC_API int StricmpNumeric(const char8_t*  pString1, const char8_t*  pString2, size_t length1 = kSizeTypeUnset, size_t length2 = kSizeTypeUnset, char8_t  decimal = '.', char8_t  thousandsSeparator = ',');
+EASTDC_API int StricmpNumeric(const char*  pString1, const char*  pString2, size_t length1 = kSizeTypeUnset, size_t length2 = kSizeTypeUnset, char  decimal = '.', char  thousandsSeparator = ',');
 EASTDC_API int StricmpNumeric(const char16_t* pString1, const char16_t* pString2, size_t length1 = kSizeTypeUnset, size_t length2 = kSizeTypeUnset, char16_t decimal = '.', char16_t thousandsSeparator = ',');
 EASTDC_API int StricmpNumeric(const char32_t* pString1, const char32_t* pString2, size_t length1 = kSizeTypeUnset, size_t length2 = kSizeTypeUnset, char32_t decimal = '.', char32_t thousandsSeparator = ',');
 #if EA_WCHAR_UNIQUE
@@ -1422,7 +1458,7 @@ EASTDC_API int StricmpNumeric(const char32_t* pString1, const char32_t* pString2
 /// The Unicode module may be split off into a  unique package by the time you read this.
 /// This is similar to the strcoll C function.
 ///
-EASTDC_API int Strcoll(const char8_t*  pString1, const char8_t*  pString2);
+EASTDC_API int Strcoll(const char*  pString1, const char*  pString2);
 EASTDC_API int Strcoll(const char16_t* pString1, const char16_t* pString2);
 EASTDC_API int Strcoll(const char32_t* pString1, const char32_t* pString2);
 #if EA_WCHAR_UNIQUE
@@ -1437,7 +1473,7 @@ EASTDC_API int Strcoll(const char32_t* pString1, const char32_t* pString2);
 /// The Unicode module may be split off into a  unique package by the time you read this.
 /// This is similar to the sometimes seen _strncoll C function.
 ///
-EASTDC_API int Strncoll(const char8_t*  pString1, const char8_t*  pString2, size_t n);
+EASTDC_API int Strncoll(const char*  pString1, const char*  pString2, size_t n);
 EASTDC_API int Strncoll(const char16_t* pString1, const char16_t* pString2, size_t n);
 EASTDC_API int Strncoll(const char32_t* pString1, const char32_t* pString2, size_t n);
 #if EA_WCHAR_UNIQUE
@@ -1449,7 +1485,7 @@ EASTDC_API int Strncoll(const char32_t* pString1, const char32_t* pString2, size
 ///
 /// This is similar to the sometimes seen _stricoll C function.
 ///
-EASTDC_API int Stricoll(const char8_t*  pString1, const char8_t*  pString2);
+EASTDC_API int Stricoll(const char*  pString1, const char*  pString2);
 EASTDC_API int Stricoll(const char16_t* pString1, const char16_t* pString2);
 EASTDC_API int Stricoll(const char32_t* pString1, const char32_t* pString2);
 #if EA_WCHAR_UNIQUE
@@ -1464,7 +1500,7 @@ EASTDC_API int Stricoll(const char32_t* pString1, const char32_t* pString2);
 /// The Unicode module may be split off into a  unique package by the time you read this.
 /// This is similar to the sometimes seen _strnicoll C function.
 ///
-EASTDC_API int Strnicoll(const char8_t*  pString1, const char8_t*  pString2, size_t n);
+EASTDC_API int Strnicoll(const char*  pString1, const char*  pString2, size_t n);
 EASTDC_API int Strnicoll(const char16_t* pString1, const char16_t* pString2, size_t n);
 EASTDC_API int Strnicoll(const char32_t* pString1, const char32_t* pString2, size_t n);
 #if EA_WCHAR_UNIQUE
@@ -1511,7 +1547,7 @@ EASTDC_API int Strnicoll(const char32_t* pString1, const char32_t* pString2, siz
 ///
 const int kEcvtBufMaxSize = 350;
 
-EASTDC_API char8_t*  EcvtBuf(double dValue, int nDigitCount, int* pDecimalPos, int* pSign, char8_t*  pBuffer);
+EASTDC_API char*  EcvtBuf(double dValue, int nDigitCount, int* pDecimalPos, int* pSign, char*  pBuffer);
 EASTDC_API char16_t* EcvtBuf(double dValue, int nDigitCount, int* pDecimalPos, int* pSign, char16_t* pBuffer);
 EASTDC_API char32_t* EcvtBuf(double dValue, int nDigitCount, int* pDecimalPos, int* pSign, char32_t* pBuffer);
 #if EA_WCHAR_UNIQUE
@@ -1531,7 +1567,7 @@ EASTDC_API char32_t* EcvtBuf(double dValue, int nDigitCount, int* pDecimalPos, i
 ///
 const int kFcvtBufMaxSize = 350;
 
-EASTDC_API char8_t*  FcvtBuf(double dValue, int nDigitCountAfterDecimal, int* pDecimalPos, int* pSign, char8_t*  pBuffer);
+EASTDC_API char*  FcvtBuf(double dValue, int nDigitCountAfterDecimal, int* pDecimalPos, int* pSign, char*  pBuffer);
 EASTDC_API char16_t* FcvtBuf(double dValue, int nDigitCountAfterDecimal, int* pDecimalPos, int* pSign, char16_t* pBuffer);
 EASTDC_API char32_t* FcvtBuf(double dValue, int nDigitCountAfterDecimal, int* pDecimalPos, int* pSign, char32_t* pBuffer);
 #if EA_WCHAR_UNIQUE
@@ -1554,7 +1590,7 @@ const int kUint64MinCapacity = 21;
 ///
 /// Buffer must hold at least kInt32MinCapacity (12) chars.
 ///
-EASTDC_API char8_t*  I32toa(int32_t nValue, char8_t*  pBuffer, int nBase);
+EASTDC_API char*  I32toa(int32_t nValue, char*  pBuffer, int nBase);
 EASTDC_API char16_t* I32toa(int32_t nValue, char16_t* pBuffer, int nBase);
 EASTDC_API char32_t* I32toa(int32_t nValue, char32_t* pBuffer, int nBase);
 #if EA_WCHAR_UNIQUE
@@ -1566,7 +1602,7 @@ EASTDC_API char32_t* I32toa(int32_t nValue, char32_t* pBuffer, int nBase);
 ///
 /// Buffer must hold at least kUint32MinCapacity (11) chars.
 ///
-EASTDC_API char8_t*  U32toa(uint32_t nValue, char8_t*  pBuffer, int nBase);
+EASTDC_API char*  U32toa(uint32_t nValue, char*  pBuffer, int nBase);
 EASTDC_API char16_t* U32toa(uint32_t nValue, char16_t* pBuffer, int nBase);
 EASTDC_API char32_t* U32toa(uint32_t nValue, char32_t* pBuffer, int nBase);
 #if EA_WCHAR_UNIQUE
@@ -1578,7 +1614,7 @@ EASTDC_API char32_t* U32toa(uint32_t nValue, char32_t* pBuffer, int nBase);
 ///
 /// Buffer must hold at least kInt64MinCapacity (21) chars.
 ///
-EASTDC_API char8_t*  I64toa(int64_t nValue, char8_t*  pBuffer, int nBase);
+EASTDC_API char*  I64toa(int64_t nValue, char*  pBuffer, int nBase);
 EASTDC_API char16_t* I64toa(int64_t nValue, char16_t* pBuffer, int nBase);
 EASTDC_API char32_t* I64toa(int64_t nValue, char32_t* pBuffer, int nBase);
 #if EA_WCHAR_UNIQUE
@@ -1590,7 +1626,7 @@ EASTDC_API char32_t* I64toa(int64_t nValue, char32_t* pBuffer, int nBase);
 ///
 /// Buffer must hold at least kUint64MinCapacity (21) chars.
 ///
-EASTDC_API char8_t*  U64toa(uint64_t nValue, char8_t*  pBuffer, int nBase);
+EASTDC_API char*  U64toa(uint64_t nValue, char*  pBuffer, int nBase);
 EASTDC_API char16_t* U64toa(uint64_t nValue, char16_t* pBuffer, int nBase);
 EASTDC_API char32_t* U64toa(uint64_t nValue, char32_t* pBuffer, int nBase);
 #if EA_WCHAR_UNIQUE
@@ -1625,14 +1661,14 @@ EASTDC_API char32_t* U64toa(uint64_t nValue, char32_t* pBuffer, int nBase);
 ///
 /// This function has the same effect as Strtod(pString, NULL);
 ///
-EASTDC_API double Strtod(const char8_t*  pString, char8_t**  ppStringEnd);
+EASTDC_API double Strtod(const char*  pString, char**  ppStringEnd);
 EASTDC_API double Strtod(const char16_t* pString, char16_t** ppStringEnd);
 EASTDC_API double Strtod(const char32_t* pString, char32_t** ppStringEnd);
 #if EA_WCHAR_UNIQUE
 	EASTDC_API double Strtod(const wchar_t* pString, wchar_t** ppStringEnd);
 #endif
 
-EASTDC_API float StrtoF32(const char8_t*  pString, char8_t**  ppStringEnd);
+EASTDC_API float StrtoF32(const char*  pString, char**  ppStringEnd);
 EASTDC_API float StrtoF32(const char16_t* pString, char16_t** ppStringEnd);
 EASTDC_API float StrtoF32(const char32_t* pString, char32_t** ppStringEnd);
 #if EA_WCHAR_UNIQUE
@@ -1646,14 +1682,14 @@ EASTDC_API float StrtoF32(const char32_t* pString, char32_t** ppStringEnd);
 /// setting is. This is useful for being able to interpret numbers
 /// in a constant way with respect to decimal point usage, etc.
 ///
-EASTDC_API double StrtodEnglish(const char8_t*  pString, char8_t**  ppStringEnd);
+EASTDC_API double StrtodEnglish(const char*  pString, char**  ppStringEnd);
 EASTDC_API double StrtodEnglish(const char16_t* pString, char16_t** ppStringEnd);
 EASTDC_API double StrtodEnglish(const char32_t* pString, char32_t** ppStringEnd);
 #if EA_WCHAR_UNIQUE
 	EASTDC_API double StrtodEnglish(const wchar_t* pString, wchar_t** ppStringEnd);
 #endif
 
-EASTDC_API float  StrtoF32English(const char8_t*  pString, char8_t**  ppStringEnd);
+EASTDC_API float  StrtoF32English(const char*  pString, char**  ppStringEnd);
 EASTDC_API float  StrtoF32English(const char16_t* pString, char16_t** ppStringEnd);
 EASTDC_API float  StrtoF32English(const char32_t* pString, char32_t** ppStringEnd);
 #if EA_WCHAR_UNIQUE
@@ -1665,7 +1701,7 @@ EASTDC_API float  StrtoF32English(const char32_t* pString, char32_t** ppStringEn
 ///
 /// It is similar to the C strtol function.
 ///
-EASTDC_API int32_t StrtoI32(const char8_t*  pString, char8_t**  ppStringEnd, int nBase);
+EASTDC_API int32_t StrtoI32(const char*  pString, char**  ppStringEnd, int nBase);
 EASTDC_API int32_t StrtoI32(const char16_t* pString, char16_t** ppStringEnd, int nBase);
 EASTDC_API int32_t StrtoI32(const char32_t* pString, char32_t** ppStringEnd, int nBase);
 #if EA_WCHAR_UNIQUE
@@ -1677,7 +1713,7 @@ EASTDC_API int32_t StrtoI32(const char32_t* pString, char32_t** ppStringEnd, int
 ///
 /// It is similar to the C strtoul function.
 ///
-EASTDC_API uint32_t StrtoU32(const char8_t*  pString, char8_t**  ppStringEnd, int nBase);
+EASTDC_API uint32_t StrtoU32(const char*  pString, char**  ppStringEnd, int nBase);
 EASTDC_API uint32_t StrtoU32(const char16_t* pString, char16_t** ppStringEnd, int nBase);
 EASTDC_API uint32_t StrtoU32(const char32_t* pString, char32_t** ppStringEnd, int nBase);
 #if EA_WCHAR_UNIQUE
@@ -1706,7 +1742,7 @@ EASTDC_API uint32_t StrtoU32(const char32_t* pString, char32_t** ppStringEnd, in
 /// StrtoI64 allows a plus (+) or minus (-) sign prefix; a leading minus sign indicates 
 /// that the return value is negated.
 ///
-EASTDC_API int64_t StrtoI64(const char8_t*  pString, char8_t**  ppStringEnd, int nBase);
+EASTDC_API int64_t StrtoI64(const char*  pString, char**  ppStringEnd, int nBase);
 EASTDC_API int64_t StrtoI64(const char16_t* pString, char16_t** ppStringEnd, int nBase);
 EASTDC_API int64_t StrtoI64(const char32_t* pString, char32_t** ppStringEnd, int nBase);
 #if EA_WCHAR_UNIQUE
@@ -1718,7 +1754,7 @@ EASTDC_API int64_t StrtoI64(const char32_t* pString, char32_t** ppStringEnd, int
 ///
 /// It is similar to the C strtoull function.
 ///
-EASTDC_API uint64_t StrtoU64(const char8_t*  pString, char8_t**  ppStringEnd, int nBase);
+EASTDC_API uint64_t StrtoU64(const char*  pString, char**  ppStringEnd, int nBase);
 EASTDC_API uint64_t StrtoU64(const char16_t* pString, char16_t** ppStringEnd, int nBase);
 EASTDC_API uint64_t StrtoU64(const char32_t* pString, char32_t** ppStringEnd, int nBase);
 #if EA_WCHAR_UNIQUE
@@ -1731,7 +1767,7 @@ EASTDC_API uint64_t StrtoU64(const char32_t* pString, char32_t** ppStringEnd, in
 /// This function has the same effect as StrtoI32(pString, NULL, 10);
 /// It is similar to the C atoll function.
 /// 
-EASTDC_API int32_t AtoI32(const char8_t*  pString);
+EASTDC_API int32_t AtoI32(const char*  pString);
 EASTDC_API int32_t AtoI32(const char16_t* pString);
 EASTDC_API int32_t AtoI32(const char32_t* pString);
 #if EA_WCHAR_UNIQUE
@@ -1744,7 +1780,7 @@ EASTDC_API int32_t AtoI32(const char32_t* pString);
 /// This function has the same effect as StrtoU32(pString, NULL, 10);
 /// It is similar to the C atoul function.
 /// 
-EASTDC_API uint32_t AtoU32(const char8_t*  pString);
+EASTDC_API uint32_t AtoU32(const char*  pString);
 EASTDC_API uint32_t AtoU32(const char16_t* pString);
 EASTDC_API uint32_t AtoU32(const char32_t* pString);
 #if EA_WCHAR_UNIQUE
@@ -1756,7 +1792,7 @@ EASTDC_API uint32_t AtoU32(const char32_t* pString);
 /// This function has the same effect as StrtoI64(pString, NULL, 10);
 /// It is similar to the C atoll function.
 /// 
-EASTDC_API int64_t AtoI64(const char8_t*  pString);
+EASTDC_API int64_t AtoI64(const char*  pString);
 EASTDC_API int64_t AtoI64(const char16_t* pString);
 EASTDC_API int64_t AtoI64(const char32_t* pString);
 #if EA_WCHAR_UNIQUE
@@ -1769,7 +1805,7 @@ EASTDC_API int64_t AtoI64(const char32_t* pString);
 /// This function has the same effect as StrtoU64(pString, NULL, 10);
 /// It is similar to the C atoull function.
 /// 
-EASTDC_API uint64_t AtoU64(const char8_t*  pString);
+EASTDC_API uint64_t AtoU64(const char*  pString);
 EASTDC_API uint64_t AtoU64(const char16_t* pString);
 EASTDC_API uint64_t AtoU64(const char32_t* pString);
 #if EA_WCHAR_UNIQUE
@@ -1809,14 +1845,14 @@ EASTDC_API uint64_t AtoU64(const char32_t* pString);
 ///
 /// This function has the same effect as Strtod(pString, NULL);
 ///
-EASTDC_API double Atof(const char8_t*  pString);
+EASTDC_API double Atof(const char*  pString);
 EASTDC_API double Atof(const char16_t* pString);
 EASTDC_API double Atof(const char32_t* pString);
 #if EA_WCHAR_UNIQUE
 	EASTDC_API double Atof(const wchar_t* pString);
 #endif
 
-EASTDC_API float  AtoF32(const char8_t*  pString);
+EASTDC_API float  AtoF32(const char*  pString);
 EASTDC_API float  AtoF32(const char16_t* pString);
 EASTDC_API float  AtoF32(const char32_t* pString);
 #if EA_WCHAR_UNIQUE
@@ -1833,14 +1869,14 @@ EASTDC_API float  AtoF32(const char32_t* pString);
 /// what the C runtime library language setting is. This is useful for being able to 
 /// interpret numbers in a constant way with respect to decimal point usage, etc.
 /// 
-EASTDC_API double AtofEnglish(const char8_t*  pString);
+EASTDC_API double AtofEnglish(const char*  pString);
 EASTDC_API double AtofEnglish(const char16_t* pString);
 EASTDC_API double AtofEnglish(const char32_t* pString);
 #if EA_WCHAR_UNIQUE
 	EASTDC_API double AtofEnglish(const wchar_t* pString);
 #endif
 
-EASTDC_API float  AtoF32English(const char8_t*  pString);
+EASTDC_API float  AtoF32English(const char*  pString);
 EASTDC_API float  AtoF32English(const char16_t* pString);
 EASTDC_API float  AtoF32English(const char32_t* pString);
 #if EA_WCHAR_UNIQUE
@@ -1865,7 +1901,7 @@ EASTDC_API float  AtoF32English(const char32_t* pString);
 /// pResult should generally have at least 32 characters to deal with all 
 /// floating point values.
 ///
-EASTDC_API char8_t*  Ftoa(double dValue, char8_t*  pResult, int nResultCapacity, int nPrecision, bool bExponentEnabled);
+EASTDC_API char*  Ftoa(double dValue, char*  pResult, int nResultCapacity, int nPrecision, bool bExponentEnabled);
 EASTDC_API char16_t* Ftoa(double dValue, char16_t* pResult, int nResultCapacity, int nPrecision, bool bExponentEnabled);
 EASTDC_API char32_t* Ftoa(double dValue, char32_t* pResult, int nResultCapacity, int nPrecision, bool bExponentEnabled);
 #if EA_WCHAR_UNIQUE
@@ -1919,7 +1955,7 @@ EASTDC_API char32_t* Ftoa(double dValue, char32_t* pResult, int nResultCapacity,
 ///     FtoaEnglish(.123450000, pResult, 20, 20, false);
 ///     returns pResult and "0.12345"
 ///
-EASTDC_API char8_t*  FtoaEnglish(double dValue, char8_t*  pResult, int nResultCapacity, int nPrecision, bool bExponentEnabled);
+EASTDC_API char*  FtoaEnglish(double dValue, char*  pResult, int nResultCapacity, int nPrecision, bool bExponentEnabled);
 EASTDC_API char16_t* FtoaEnglish(double dValue, char16_t* pResult, int nResultCapacity, int nPrecision, bool bExponentEnabled);
 EASTDC_API char32_t* FtoaEnglish(double dValue, char32_t* pResult, int nResultCapacity, int nPrecision, bool bExponentEnabled);
 #if EA_WCHAR_UNIQUE
@@ -1959,7 +1995,7 @@ EASTDC_API char32_t* FtoaEnglish(double dValue, char32_t* pResult, int nResultCa
 ///    "23.43e10"
 ///    "15e-0"
 ///
-EASTDC_API size_t ReduceFloatString(char8_t*  pString, size_t nLength = kSizeTypeUnset);
+EASTDC_API size_t ReduceFloatString(char*  pString, size_t nLength = kSizeTypeUnset);
 EASTDC_API size_t ReduceFloatString(char16_t* pString, size_t nLength = kSizeTypeUnset);
 EASTDC_API size_t ReduceFloatString(char32_t* pString, size_t nLength = kSizeTypeUnset);
 #if EA_WCHAR_UNIQUE
@@ -1982,7 +2018,7 @@ namespace EA
 namespace StdC
 {
 
-	inline EASTDC_API int32_t AtoI32(const char8_t* pString)
+	inline EASTDC_API int32_t AtoI32(const char* pString)
 	{
 		return StrtoI32(pString, NULL, 10);
 	}
@@ -1999,7 +2035,7 @@ namespace StdC
 
 
 
-	inline EASTDC_API uint32_t AtoU32(const char8_t* pString)
+	inline EASTDC_API uint32_t AtoU32(const char* pString)
 	{
 		return StrtoU32(pString, NULL, 10);
 	}
@@ -2016,7 +2052,7 @@ namespace StdC
 
 
 
-	inline EASTDC_API int64_t AtoI64(const char8_t* pString)
+	inline EASTDC_API int64_t AtoI64(const char* pString)
 	{
 		return StrtoI64(pString, NULL, 10);
 	}
@@ -2033,7 +2069,7 @@ namespace StdC
 
 
 
-	inline EASTDC_API uint64_t AtoU64(const char8_t*  pString)
+	inline EASTDC_API uint64_t AtoU64(const char*  pString)
 	{
 		return StrtoU64(pString, NULL, 10);
 	}
@@ -2050,7 +2086,7 @@ namespace StdC
 
 
 
-	inline EASTDC_API double Strtod(const char8_t* pString, char8_t** ppStringEnd)
+	inline EASTDC_API double Strtod(const char* pString, char** ppStringEnd)
 	{
 		return strtod(pString, ppStringEnd); // strtod is well-implemented by most standard libraries.
 	}
@@ -2068,15 +2104,15 @@ namespace StdC
 			// which makes wchar_t be 16 bit. But the GCC standard library linked in is still the one with 
 			// 32 bit wchar_t. So we can't call wcstod here as it will treat our char16_t string as a 32 bit string.
 			// It's possible that the user could recompile libc to use 16 bit strings, but that's a pain for most users.
-			char8_t  buffer8[64];
-			char8_t* p    = buffer8;
-			char8_t* pEnd = buffer8 + 63; 
+			char  buffer8[64];
+			char* p    = buffer8;
+			char* pEnd = buffer8 + 63; 
 
 			while(p != pEnd)
 			{   //             '+'                  'z'
 				if((*pString < 0x2b) || (*pString > 0x7a)) // This includes a '\0' check.
 					break;
-				*p++ = (char8_t)(int16_t)(uint16_t)*pString++;
+				*p++ = (char)(int16_t)(uint16_t)*pString++;
 			}
 			*p = 0;
 
@@ -2093,16 +2129,16 @@ namespace StdC
 		#if (EA_WCHAR_SIZE == 4) && defined(EA_HAVE_WCHAR_IMPL)
 			return wcstod(reinterpret_cast<const wchar_t*>(pString), reinterpret_cast<wchar_t**>(ppStringEnd));
 		#else
-			// We convert from char32_t to char8_t and convert that.
-			char8_t  buffer8[64]; buffer8[0] = 0;
-			char8_t* p    = buffer8;
-			char8_t* pEnd = buffer8 + 63; 
+			// We convert from char32_t to char and convert that.
+			char  buffer8[64]; buffer8[0] = 0;
+			char* p    = buffer8;
+			char* pEnd = buffer8 + 63; 
 
 			while(p != pEnd)
 			{   //             '+'                  'z'
 				if((*pString < 0x2b) || (*pString > 0x7a)) // This includes a '\0' check.
 					break;
-				*p++ = (char8_t)(int32_t)(uint32_t)*pString++;
+				*p++ = (char)(int32_t)(uint32_t)*pString++;
 			}
 			*p = 0;
 
@@ -2116,7 +2152,7 @@ namespace StdC
 
 
 
-	inline EASTDC_API float StrtoF32(const char8_t* pString, char8_t** ppStringEnd)
+	inline EASTDC_API float StrtoF32(const char* pString, char** ppStringEnd)
 	{
 		return (float)strtod(pString, ppStringEnd); // strtod is well-implemented by most standard libraries.
 	}
@@ -2134,7 +2170,7 @@ namespace StdC
 
 
 
-	inline EASTDC_API float StrtoF32English(const char8_t*  pString, char8_t** ppStringEnd)
+	inline EASTDC_API float StrtoF32English(const char*  pString, char** ppStringEnd)
 	{
 		return (float)StrtodEnglish(pString, ppStringEnd);
 	}
@@ -2151,7 +2187,7 @@ namespace StdC
 
 
 
-	inline EASTDC_API double Atof(const char8_t* pString)
+	inline EASTDC_API double Atof(const char* pString)
 	{
 		return atof(pString); // atof is well-implemented by most standard libraries.
 	}
@@ -2168,7 +2204,7 @@ namespace StdC
 
 
 
-	inline EASTDC_API float AtoF32(const char8_t* pString)
+	inline EASTDC_API float AtoF32(const char* pString)
 	{
 		return (float)atof(pString); // atof is well-implemented by most standard libraries.
 	}
@@ -2185,7 +2221,7 @@ namespace StdC
 
 
 
-	inline EASTDC_API double AtofEnglish(const char8_t* pString)
+	inline EASTDC_API double AtofEnglish(const char* pString)
 	{
 		return StrtodEnglish(pString, NULL);
 	}
@@ -2202,7 +2238,7 @@ namespace StdC
 
 
 
-	inline EASTDC_API float AtoF32English(const char8_t*  pString)
+	inline EASTDC_API float AtoF32English(const char*  pString)
 	{
 		return (float)StrtodEnglish(pString, NULL);
 	}
@@ -2219,7 +2255,7 @@ namespace StdC
 
 
 
-	inline EASTDC_API char8_t* Ftoa(double dValue, char8_t* pResult, int nResultCapacity, int nPrecision, bool bExponentEnabled)
+	inline EASTDC_API char* Ftoa(double dValue, char* pResult, int nResultCapacity, int nPrecision, bool bExponentEnabled)
 	{
 		// An implementation which calls sprintf might be a better idea.
 		return FtoaEnglish(dValue, pResult, nResultCapacity, nPrecision, bExponentEnabled);
@@ -2313,7 +2349,7 @@ namespace StdC
 		return Strlcpy(EASTDC_UNICODE_CHAR_PTR_CAST(pDestination), EASTDC_UNICODE_CONST_CHAR_PTR_CAST(pSource), nDestCapacity);
 	}
 
-	inline int Strlcpy(wchar_t* pDestination, const char8_t* pSource, size_t nDestCapacity, size_t nSourceLength)
+	inline int Strlcpy(wchar_t* pDestination, const char* pSource, size_t nDestCapacity, size_t nSourceLength)
 	{
 		return static_cast<int>(Strlcpy(EASTDC_UNICODE_CHAR_PTR_CAST(pDestination), pSource, nDestCapacity, nSourceLength));
 	}
@@ -2338,7 +2374,7 @@ namespace StdC
 		#endif
 	}
 	
-	inline int Strlcpy(char8_t* pDestination, const wchar_t* pSource, size_t nDestCapacity, size_t nSourceLength)
+	inline int Strlcpy(char* pDestination, const wchar_t* pSource, size_t nDestCapacity, size_t nSourceLength)
 	{
 		return static_cast<int>(Strlcpy(pDestination, EASTDC_UNICODE_CONST_CHAR_PTR_CAST(pSource), nDestCapacity, nSourceLength));
 	}
@@ -2363,7 +2399,7 @@ namespace StdC
 		#endif
 	}
 
-	inline bool Strlcpy(char8_t* pDestination, const wchar_t* pSource, size_t nDestCapacity, size_t nSourceLength, size_t& nDestUsed, size_t& nSourceUsed)
+	inline bool Strlcpy(char* pDestination, const wchar_t* pSource, size_t nDestCapacity, size_t nSourceLength, size_t& nDestUsed, size_t& nSourceUsed)
 	{
 		return Strlcpy(pDestination, EASTDC_UNICODE_CONST_CHAR_PTR_CAST(pSource), nDestCapacity, nSourceLength, nDestUsed, nSourceUsed);
 	}
@@ -2390,7 +2426,7 @@ namespace StdC
 		#endif
 	}
 
-	inline bool Strlcpy(wchar_t* pDestination, const char8_t* pSource, size_t nDestCapacity, size_t nSourceLength, size_t& nDestUsed, size_t& nSourceUsed)
+	inline bool Strlcpy(wchar_t* pDestination, const char* pSource, size_t nDestCapacity, size_t nSourceLength, size_t& nDestUsed, size_t& nSourceUsed)
 	{
 		return Strlcpy(EASTDC_UNICODE_CHAR_PTR_CAST(pDestination), pSource, nDestCapacity, nSourceLength, nDestUsed, nSourceUsed);
 	}
@@ -2437,7 +2473,7 @@ namespace StdC
 		return Strlcat(EASTDC_UNICODE_CHAR_PTR_CAST(pDestination), EASTDC_UNICODE_CONST_CHAR_PTR_CAST(pSource), nDestCapacity);
 	}
 
-	inline size_t Strlcat(wchar_t* pDestination, const char8_t*  pSource, size_t nDestCapacity)
+	inline size_t Strlcat(wchar_t* pDestination, const char*  pSource, size_t nDestCapacity)
 	{
 		return Strlcat(EASTDC_UNICODE_CHAR_PTR_CAST(pDestination), pSource, nDestCapacity);
 	}
@@ -2452,7 +2488,7 @@ namespace StdC
 		return Strlcat(EASTDC_UNICODE_CHAR_PTR_CAST(pDestination), pSource, nDestCapacity);
 	}
 
-	inline size_t Strlcat(char8_t* pDestination, const wchar_t*  pSource, size_t nDestCapacity)
+	inline size_t Strlcat(char* pDestination, const wchar_t*  pSource, size_t nDestCapacity)
 	{
 		return Strlcat(pDestination, EASTDC_UNICODE_CONST_CHAR_PTR_CAST(pSource), nDestCapacity);
 	}
@@ -2780,6 +2816,11 @@ namespace StdC
 	{
 		return ReduceFloatString(EASTDC_UNICODE_CHAR_PTR_CAST(pString), nLength);
 	}
+
+#endif
+
+
+#if defined(EA_CHAR8_UNIQUE) && EA_CHAR8_UNIQUE
 
 #endif
 

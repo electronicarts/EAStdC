@@ -52,7 +52,7 @@ namespace EA
 	namespace StdC
 	{
 		//Used to determine if a given path is a bundle extension
-			const char8_t* kBundleExtensions[] = {
+			const char* kBundleExtensions[] = {
 			".app",
 			".bundle",
 			".plugin"
@@ -82,11 +82,11 @@ namespace StdC
 #endif
 
 #if EASTDC_SETCURRENTPROCESSPATH_REQUIRED
-	static char8_t gCurrentProcessPath[kMaxPathLength] = { 0 };
+	static char gCurrentProcessPath[kMaxPathLength] = { 0 };
 #endif
 
 
-EASTDC_API void SetCurrentProcessPath(const char8_t* pPath)
+EASTDC_API void SetCurrentProcessPath(const char* pPath)
 {
 	#if EASTDC_SETCURRENTPROCESSPATH_REQUIRED
 		Strlcpy(gCurrentProcessPath, pPath, EAArrayCount(gCurrentProcessPath));
@@ -120,7 +120,7 @@ EASTDC_API void SetCurrentProcessPath(const char8_t* pPath)
 		return 0;
 	}
 
-	EASTDC_API size_t GetCurrentProcessPath(char8_t* pPath, int pathCapacity, int pathFlags)
+	EASTDC_API size_t GetCurrentProcessPath(char* pPath, int pathCapacity, int pathFlags)
 	{
 		EA_ASSERT(pathCapacity > 0); EA_UNUSED(pathCapacity);
 
@@ -163,7 +163,7 @@ EASTDC_API void SetCurrentProcessPath(const char8_t* pPath)
 		return 0;
 	}
 
-	EASTDC_API size_t GetCurrentProcessDirectory(char8_t* pDirectory, int pathCapacity, int pathFlags)
+	EASTDC_API size_t GetCurrentProcessDirectory(char* pDirectory, int pathCapacity, int pathFlags)
 	{
 		EA_ASSERT(pathCapacity > 0); EA_UNUSED(pathCapacity);
 
@@ -185,7 +185,7 @@ EASTDC_API void SetCurrentProcessPath(const char8_t* pPath)
 	// Gets the application file path. The path can only be obtained for applications run 
 	// from the host PC (run by Visual Studio, Neighborhood or the -run command).
 
-	EASTDC_API size_t GetCurrentProcessPath(char8_t* pPath, int pathCapacity, int /*pathFlags*/)
+	EASTDC_API size_t GetCurrentProcessPath(char* pPath, int pathCapacity, int /*pathFlags*/)
 	{
 		EA_ASSERT(pathCapacity > 0);
 
@@ -216,7 +216,7 @@ EASTDC_API void SetCurrentProcessPath(const char8_t* pPath)
 	{
 		EA_ASSERT(pathCapacity > 0);
 
-		char8_t path8[kMaxPathLength];
+		char path8[kMaxPathLength];
 		GetCurrentProcessPath(path8, EAArrayCount(path8), pathFlags);
 
 		const int intendedStrlen = Strlcpy(pPath, path8, pathCapacity);
@@ -228,7 +228,7 @@ EASTDC_API void SetCurrentProcessPath(const char8_t* pPath)
 		return 0;
 	}
 
-	EASTDC_API size_t GetCurrentProcessDirectory(char8_t* pDirectory, int pathCapacity, int /*pathFlags*/)
+	EASTDC_API size_t GetCurrentProcessDirectory(char* pDirectory, int pathCapacity, int /*pathFlags*/)
 	{
 		int32_t result;
 		if (gCurrentProcessPath[0])
@@ -263,7 +263,7 @@ EASTDC_API void SetCurrentProcessPath(const char8_t* pPath)
 	{
 		EA_ASSERT(pathCapacity > 0);
 
-		char8_t path8[kMaxDirectoryLength];    // We don't have access to EAIO here.
+		char path8[kMaxDirectoryLength];    // We don't have access to EAIO here.
 		GetCurrentProcessDirectory(path8, EAArrayCount(path8), pathFlags);
 
 		const int intendedStrlen = Strlcpy(pDirectory, path8, pathCapacity);
@@ -281,7 +281,7 @@ EASTDC_API void SetCurrentProcessPath(const char8_t* pPath)
 	{
 		EA_ASSERT(pathCapacity > 0); EA_UNUSED(pathCapacity);
 
-		char8_t path8[kMaxPathLength];
+		char path8[kMaxPathLength];
 		GetCurrentProcessPath(path8, EAArrayCount(path8), pathFlags);
 
 		const int intendedStrlen = Strlcpy(pPath, path8, pathCapacity);
@@ -293,7 +293,7 @@ EASTDC_API void SetCurrentProcessPath(const char8_t* pPath)
 		return 0;
 	}
 	
-	static bool IsBundleFolder(char8_t* pPath, int pathCapacity)
+	static bool IsBundleFolder(char* pPath, int pathCapacity)
 	{
 		for(size_t i = 0; i < EAArrayCount(kBundleExtensions); i++)
 		{
@@ -308,7 +308,7 @@ EASTDC_API void SetCurrentProcessPath(const char8_t* pPath)
 	// To consider: add a flag so user can specify if they want the path to the actual executable even if it is in a .extension
 	// EG: /path/to/MyApp.extension or /path/to/MyApp.extension/MyExecutable
 	// Currently /path/to/.extension is returned if it exists, otherwise it returns the executable path
-	EASTDC_API size_t GetCurrentProcessPath(char8_t* pPath, int pathCapacity, int pathFlags)
+	EASTDC_API size_t GetCurrentProcessPath(char* pPath, int pathCapacity, int pathFlags)
 	{
 		EA_ASSERT(pathCapacity > 0);
 
@@ -321,14 +321,14 @@ EASTDC_API void SetCurrentProcessPath(const char8_t* pPath)
 		if(result == 0)
 		{
 			EA_ASSERT(pathCapacity >= kMaxPathLength);
-			char8_t absolutePath[PATH_MAX];
+			char absolutePath[PATH_MAX];
 
 			if(realpath(pPath, absolutePath) != NULL) // Obtain canonicalized absolute pathname.
 			{
 				if(pathFlags & kPathFlagBundlePath)
 				{
 					// We recursively call dirname() until we find .extension
-					char8_t appPath[kMaxPathLength];
+					char appPath[kMaxPathLength];
 					EA::StdC::Strlcpy(appPath, absolutePath, kMaxPathLength);
 					bool found = IsBundleFolder(appPath, kMaxPathLength);
 
@@ -360,7 +360,7 @@ EASTDC_API void SetCurrentProcessPath(const char8_t* pPath)
 	{
 		EA_ASSERT(pathCapacity > 0); EA_UNUSED(pathCapacity);
 
-		char8_t path8[kMaxDirectoryLength];    // We don't have access to EAIO here.
+		char path8[kMaxDirectoryLength];    // We don't have access to EAIO here.
 		GetCurrentProcessDirectory(path8, EAArrayCount(path8), pathFlags);
 
 		const int intendedStrlen = Strlcpy(pDirectory, path8, pathCapacity);
@@ -372,7 +372,7 @@ EASTDC_API void SetCurrentProcessPath(const char8_t* pPath)
 		return 0;
 	}
 
-	EASTDC_API size_t GetCurrentProcessDirectory(char8_t* pDirectory, int pathCapacity, int pathFlags)
+	EASTDC_API size_t GetCurrentProcessDirectory(char* pDirectory, int pathCapacity, int pathFlags)
 	{
 		EA_ASSERT(pathCapacity > 0);
 
@@ -393,7 +393,7 @@ EASTDC_API void SetCurrentProcessPath(const char8_t* pPath)
 
 			if(intendedStrlen < (size_t)pathCapacity) // If succeeded...
 			{
-				for(char8_t* p = pDirectory + intendedStrlen; p > pDirectory; --p)
+				for(char* p = pDirectory + intendedStrlen; p > pDirectory; --p)
 				{
 					if(p[-1] == '/')
 					{
@@ -417,7 +417,7 @@ EASTDC_API void SetCurrentProcessPath(const char8_t* pPath)
 
 #elif defined(EA_PLATFORM_LINUX)
 
-	EASTDC_API size_t GetCurrentProcessPath(char8_t* pPath, int pathCapacity, int /*pathFlags*/)
+	EASTDC_API size_t GetCurrentProcessPath(char* pPath, int pathCapacity, int /*pathFlags*/)
 	{
 		EA_ASSERT(pathCapacity > 0); EA_UNUSED(pathCapacity);
 
@@ -439,7 +439,7 @@ EASTDC_API void SetCurrentProcessPath(const char8_t* pPath)
 	{
 		EA_ASSERT(pathCapacity > 0); EA_UNUSED(pathCapacity);
 
-		char8_t path8[kMaxPathLength];
+		char path8[kMaxPathLength];
 		GetCurrentProcessPath(path8, EAArrayCount(path8), pathFlags);
 
 		const int intendedStrlen = Strlcpy(pPath, path8, pathCapacity);
@@ -451,7 +451,7 @@ EASTDC_API void SetCurrentProcessPath(const char8_t* pPath)
 		return 0;
 	}
 
-	EASTDC_API size_t GetCurrentProcessDirectory(char8_t* pDirectory, int pathCapacity, int /*pathFlags*/)
+	EASTDC_API size_t GetCurrentProcessDirectory(char* pDirectory, int pathCapacity, int /*pathFlags*/)
 	{
 		EA_ASSERT(pathCapacity > 0); EA_UNUSED(pathCapacity);
 
@@ -478,7 +478,7 @@ EASTDC_API void SetCurrentProcessPath(const char8_t* pPath)
 	{
 		EA_ASSERT(pathCapacity > 0); EA_UNUSED(pathCapacity);
 
-		char8_t path8[kMaxDirectoryLength];    // We don't have access to EAIO here.
+		char path8[kMaxDirectoryLength];    // We don't have access to EAIO here.
 		GetCurrentProcessDirectory(path8, EAArrayCount(path8), pathFlags);
 
 		const int intendedStrlen = Strlcpy(pDirectory, path8, pathCapacity);
@@ -561,7 +561,7 @@ EASTDC_API void SetCurrentProcessPath(const char8_t* pPath)
 	{
 		EA_ASSERT(pathCapacity > 0);
 
-		char8_t path8[kMaxPathLength];
+		char path8[kMaxPathLength];
 		GetCurrentProcessPath(path8, EAArrayCount(path8), pathFlags);
 
 		const int intendedStrlen = Strlcpy(pPath, path8, (size_t)pathCapacity);
@@ -573,7 +573,7 @@ EASTDC_API void SetCurrentProcessPath(const char8_t* pPath)
 		return 0;
 	}
 
-	EASTDC_API size_t GetCurrentProcessPath(char8_t* pPath, int pathCapacity, int /*pathFlags*/)
+	EASTDC_API size_t GetCurrentProcessPath(char* pPath, int pathCapacity, int /*pathFlags*/)
 	{
 		EA_ASSERT(pathCapacity > 0);
 
@@ -592,7 +592,7 @@ EASTDC_API void SetCurrentProcessPath(const char8_t* pPath)
 
 	EASTDC_API size_t GetCurrentProcessDirectory(char16_t* pDirectory, int pathCapacity, int pathFlags)
 	{
-		char8_t dir8[kMaxDirectoryLength];
+		char dir8[kMaxDirectoryLength];
 		GetCurrentProcessDirectory(dir8, EAArrayCount(dir8), pathFlags);
 
 		const int intendedStrlen = Strlcpy(pDirectory, dir8, (size_t)pathCapacity);
@@ -604,7 +604,7 @@ EASTDC_API void SetCurrentProcessPath(const char8_t* pPath)
 		return 0;
 	}
 
-	EASTDC_API size_t GetCurrentProcessDirectory(char8_t* pDirectory, int pathCapacity, int pathFlags)
+	EASTDC_API size_t GetCurrentProcessDirectory(char* pDirectory, int pathCapacity, int pathFlags)
 	{
 		EA_ASSERT(pathCapacity > 0);
 
@@ -638,7 +638,7 @@ EASTDC_API size_t GetCurrentProcessPath(char32_t* pPath, int pathCapacity, int p
 {
 	EA_ASSERT(pathCapacity > 0); EA_UNUSED(pathCapacity);
 
-	char8_t path8[kMaxPathLength];
+	char path8[kMaxPathLength];
 	GetCurrentProcessPath(path8, EAArrayCount(path8), pathFlags);
 
 	const int intendedStrlen = Strlcpy(pPath, path8, (size_t)pathCapacity);
@@ -654,7 +654,7 @@ EASTDC_API size_t GetCurrentProcessDirectory(char32_t* pDirectory, int pathCapac
 {
 	EA_ASSERT(pathCapacity > 0); EA_UNUSED(pathCapacity);
 
-	char8_t path8[kMaxDirectoryLength];    // We don't have access to EAIO here.
+	char path8[kMaxDirectoryLength];    // We don't have access to EAIO here.
 	GetCurrentProcessDirectory(path8, EAArrayCount(path8), pathFlags);
 
 	const int intendedStrlen = Strlcpy(pDirectory, path8, (size_t)pathCapacity);
@@ -687,8 +687,8 @@ EASTDC_API size_t GetEnvironmentVar(const char16_t* pName, char16_t* pValue, siz
 		return (size_t)dwLength;
 
 	#else
-		char8_t name8[260];    
-		char8_t value8[260];    
+		char name8[260];    
+		char value8[260];    
 
 		Strlcpy(name8, pName, 260);
 		const size_t len = GetEnvironmentVar(name8, value8, 260);
@@ -701,7 +701,7 @@ EASTDC_API size_t GetEnvironmentVar(const char16_t* pName, char16_t* pValue, siz
 }
 
 
-EASTDC_API size_t GetEnvironmentVar(const char8_t* pName, char8_t* pValue, size_t valueCapacity)
+EASTDC_API size_t GetEnvironmentVar(const char* pName, char* pValue, size_t valueCapacity)
 {
 	#if defined(EA_PLATFORM_WINDOWS) && EA_WINAPI_FAMILY_PARTITION(EA_WINAPI_PARTITION_DESKTOP)
 		DWORD dwLength = GetEnvironmentVariableA(pName, pValue, (DWORD)valueCapacity);
@@ -717,7 +717,7 @@ EASTDC_API size_t GetEnvironmentVar(const char8_t* pName, char8_t* pValue, size_
 		return (size_t)dwLength;
 
 	#elif defined(EA_PLATFORM_UNIX)
-		const char8_t* const var = getenv(pName);
+		const char* const var = getenv(pName);
 		if (var)
 			return Strlcpy(pValue, var, valueCapacity);
 		return (size_t)-1;
@@ -738,10 +738,10 @@ EASTDC_API bool SetEnvironmentVar(const char16_t* pName, const char16_t* pValue)
 		const BOOL bResult = SetEnvironmentVariableW(reinterpret_cast<const wchar_t*>(pName), reinterpret_cast<const wchar_t*>(pValue)); // Windows has the same behavior as us: NULL pValue removes the variable.
 		return (bResult != 0);
 	#else
-		char8_t name8[260];
+		char name8[260];
 		Strlcpy(name8, pName, 260);
 
-		char8_t value8[260];
+		char value8[260];
 		Strlcpy(value8, pValue, 260);
 
 		return SetEnvironmentVar(name8, value8);
@@ -749,7 +749,7 @@ EASTDC_API bool SetEnvironmentVar(const char16_t* pName, const char16_t* pValue)
 }
 
 
-EASTDC_API bool SetEnvironmentVar(const char8_t* pName, const char8_t* pValue)
+EASTDC_API bool SetEnvironmentVar(const char* pName, const char* pValue)
 {
 	#if defined(EA_PLATFORM_WINDOWS) && EA_WINAPI_FAMILY_PARTITION(EA_WINAPI_PARTITION_DESKTOP)
 		const BOOL bResult = SetEnvironmentVariableA(pName, pValue); // Windows has the same behavior as us: NULL pValue removes the variable.
@@ -784,14 +784,14 @@ EASTDC_API int Spawn(const char16_t* pPath, const char16_t* const* pArgumentArra
 		EA_UNUSED(pArgumentArray);
 		EA_UNUSED(wait);
 
-		// TODO: convert and call char8_t version
+		// TODO: convert and call char version
 		EA_FAIL_MESSAGE("Spawn: Not implemented for this platform.");
 		return -1;
 	#endif
 }
 
 
-EASTDC_API int Spawn(const char8_t* pPath, const char8_t* const* pArgumentArray, bool wait)
+EASTDC_API int Spawn(const char* pPath, const char* const* pArgumentArray, bool wait)
 {
 	#if defined(EA_PLATFORM_WINDOWS) && EA_WINAPI_FAMILY_PARTITION(EA_WINAPI_PARTITION_DESKTOP)
 		if(wait)
@@ -840,7 +840,7 @@ EASTDC_API int ExecuteShellCommand(const char16_t* pCommand)
 		// Todo: verify that newlines work here and support them if not.
 		return _wsystem(reinterpret_cast<const wchar_t*>(pCommand)); // We could do this via the shell api as well.
 	#else
-		char8_t command8[260];   
+		char command8[260];   
 		Strlcpy(command8, pCommand, 260);
 
 		return ExecuteShellCommand(command8);
@@ -848,7 +848,7 @@ EASTDC_API int ExecuteShellCommand(const char16_t* pCommand)
 }
 
 
-int ExecuteShellCommand(const char8_t* pCommand)
+int ExecuteShellCommand(const char* pCommand)
 {
 	#if defined(EA_PLATFORM_WINDOWS) && EA_WINAPI_FAMILY_PARTITION(EA_WINAPI_PARTITION_DESKTOP)
 		// Todo: verify that newlines work here and support them if not.
@@ -864,7 +864,7 @@ int ExecuteShellCommand(const char8_t* pCommand)
 
 
 #if defined(DISABLED_____EA_PLATFORM_UNIX) // Need to implement this in a way that doesn't use EASTL or an allocator.
-	EASTDC_API bool SearchEnvPathWithMode(const char8_t* pathListVar, const char8_t* fileName, int mode, eastl::string8* fullPath)
+	EASTDC_API bool SearchEnvPathWithMode(const char* pathListVar, const char* fileName, int mode, eastl::string8* fullPath)
 	{
 		if (*fileName == '/' || *fileName == '\\')
 		{
@@ -921,8 +921,8 @@ EASTDC_API bool SearchEnvironmentPath(const char16_t* pFileName, char16_t* pPath
 		return (*pPath != 0);
 
 	#else 
-		char8_t path8    [260]; 
-		char8_t fileName8[260]; 
+		char path8    [260]; 
+		char fileName8[260]; 
 
 		Strlcpy(path8,     pPath,     260);
 		Strlcpy(fileName8, pFileName, 260);
@@ -931,7 +931,7 @@ EASTDC_API bool SearchEnvironmentPath(const char16_t* pFileName, char16_t* pPath
 
 		if (pEnvironmentVar)
 		{
-			char8_t environmentVariable8[260]; 
+			char environmentVariable8[260]; 
 			Strlcpy(environmentVariable8, pEnvironmentVar, 260);
 
 			success = EA::StdC::SearchEnvironmentPath(fileName8, path8, environmentVariable8);
@@ -945,7 +945,7 @@ EASTDC_API bool SearchEnvironmentPath(const char16_t* pFileName, char16_t* pPath
 }
 
 
-EASTDC_API bool SearchEnvironmentPath(const char8_t* pFileName, char8_t* pPath, const char8_t* pEnvironmentVar)
+EASTDC_API bool SearchEnvironmentPath(const char* pFileName, char* pPath, const char* pEnvironmentVar)
 {
 	#if defined(EA_PLATFORM_WINDOWS) && EA_WINAPI_FAMILY_PARTITION(EA_WINAPI_PARTITION_DESKTOP)
 		if(!pEnvironmentVar)
@@ -1025,7 +1025,7 @@ EASTDC_API bool SearchEnvironmentPath(const char8_t* pFileName, char8_t* pPath, 
 		return ((uintptr_t)hInstance > 32);
 	}
 
-	EASTDC_API bool OpenFile(const char8_t* pPath)
+	EASTDC_API bool OpenFile(const char* pPath)
 	{
 		char16_t path16[260]; 
 		Strlcpy(path16, pPath, 260);
@@ -1037,16 +1037,16 @@ EASTDC_API bool SearchEnvironmentPath(const char8_t* pFileName, char8_t* pPath, 
 
 	EASTDC_API bool OpenFile(const char16_t* pPath)
 	{
-		char8_t path8[260];
+		char path8[260];
 		Strlcpy(path8, pPath, 260);
 
 		return OpenFile(path8);
 	}
 
-	EASTDC_API bool OpenFile(const char8_t* pPath)
+	EASTDC_API bool OpenFile(const char* pPath)
 	{
 		#if defined (EA_PLATFORM_OSX)
-			const char8_t* args[] =
+			const char* args[] =
 			{
 				"open",
 				pPath,

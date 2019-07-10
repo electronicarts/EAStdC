@@ -20,7 +20,7 @@
 
 
 #if defined(EA_PLATFORM_WINDOWS) && EA_WINAPI_FAMILY_PARTITION(EA_WINAPI_PARTITION_DESKTOP)
-	template <typename T> // T is one of char8_t, char16_t, char32_t.
+	template <typename T> // T is one of char, char16_t, char32_t.
 	static void TestEnvironmentVar(int& nErrorCount)
 	{
 		using namespace EA::StdC;
@@ -73,14 +73,14 @@
 		nRequiredStrlen = GetEnvironmentVar(name, valueOut, EAArrayCount(valueOut));
 		EATEST_VERIFY((nRequiredStrlen == 17) && (Strcmp(valueIn, valueOut) == 0));
 
-		// Verify that GetEnvironmentVar(T) yields the same result as GetEnvironmentVar(char8_t) (T may be char16_t).
-		char8_t valueOut8[32];
+		// Verify that GetEnvironmentVar(T) yields the same result as GetEnvironmentVar(char) (T may be char16_t).
+		char valueOut8[32];
 		T       valueOutT[32];
 		nRequiredStrlen = GetEnvironmentVar("NameExisting", valueOut8, EAArrayCount(valueOut8));
-		Strlcpy(valueOutT, valueOut8, EAArrayCount(valueOutT)); // Need to convert char8_t to T, as Strcmp only exists for like types.
+		Strlcpy(valueOutT, valueOut8, EAArrayCount(valueOutT)); // Need to convert char to T, as Strcmp only exists for like types.
 		EATEST_VERIFY((nRequiredStrlen == 17) && (Strcmp(valueOut, valueOutT) == 0));
 
-		// Verify that GetEnvironmentVar(T) yields the same result as GetEnvironmentVar(char16_t) (T may be char8_t).
+		// Verify that GetEnvironmentVar(T) yields the same result as GetEnvironmentVar(char16_t) (T may be char).
 		char16_t name16[32];
 		char16_t valueOut16[32];
 		Strlcpy(name16, name, EAArrayCount(name16));
@@ -99,17 +99,17 @@ int TestProcess()
 	EA::UnitTest::Report("TestProcess\n");
 
 	{
-		// size_t GetCurrentProcessPath(char8_t*  pPath);
+		// size_t GetCurrentProcessPath(char*  pPath);
 		// size_t GetCurrentProcessPath(char16_t* pPath);
 		// size_t GetCurrentProcessPath(char32_t* pPath);
-		// size_t GetCurrentProcessDirectory(char8_t*  pDirectory);
+		// size_t GetCurrentProcessDirectory(char*  pDirectory);
 		// size_t GetCurrentProcessDirectory(char16_t* pDirectory);
 		// size_t GetCurrentProcessDirectory(char32_t* pDirectory);
 	
 		// Currently we have known support for Windows. With other platforms support is inconsistent.
 		#if EA_WINAPI_FAMILY_PARTITION(EA_WINAPI_PARTITION_DESKTOP) || defined(EA_PLATFORM_APPLE) || defined(EA_PLATFORM_LINUX) || (defined(EA_PLATFORM_SONY) && EA_SCEDBG_ENABLED)
 			char16_t path16[EA::StdC::kMaxPathLength];
-			char8_t  path8[EA::StdC::kMaxPathLength];
+			char  path8[EA::StdC::kMaxPathLength];
 			size_t   n;
 			size_t   processPathLen;
 
@@ -178,15 +178,15 @@ int TestProcess()
 	}
 
 	{
-		// size_t GetEnvironmentVar(const char8_t*  pName, char8_t*  pValue, size_t valueCapacity);
+		// size_t GetEnvironmentVar(const char*  pName, char*  pValue, size_t valueCapacity);
 		// size_t GetEnvironmentVar(const char16_t* pName, char16_t* pValue, size_t valueCapacity);
 		// size_t GetEnvironmentVar(const char32_t* pName, char32_t* pValue, size_t valueCapacity);
-		// bool   SetEnvironmentVar(const char8_t*  pName, const char8_t* pValue);
+		// bool   SetEnvironmentVar(const char*  pName, const char* pValue);
 		// bool   SetEnvironmentVar(const char16_t* pName, const char16_t* pValue);
 		// bool   SetEnvironmentVar(const char32_t* pName, const char32_t* pValue);
 
 		#if defined(EA_PLATFORM_WINDOWS) && EA_WINAPI_FAMILY_PARTITION(EA_WINAPI_PARTITION_DESKTOP) // To do: Enable this for other platforms when possible.
-			TestEnvironmentVar<char8_t>(nErrorCount);
+			TestEnvironmentVar<char>(nErrorCount);
 			TestEnvironmentVar<char16_t>(nErrorCount);
 		  //TestEnvironmentVar<char32_t>(nErrorCount); // Doesn't yet exist.
 		#endif
@@ -195,16 +195,16 @@ int TestProcess()
 	/*
 	{
 		// int Spawn(const char16_t* pPath, const char16_t* const* pArgumentArray, bool wait = false);
-		// int Spawn(const char8_t*  pPath, const char8_t*  const* pArgumentArray, bool wait = false);
+		// int Spawn(const char*  pPath, const char*  const* pArgumentArray, bool wait = false);
 
 		// int ExecuteShellCommand(const char16_t* pCommand);
-		// int ExecuteShellCommand(const char8_t*  pCommand);
+		// int ExecuteShellCommand(const char*  pCommand);
 
 		// bool SearchEnvironmentPath(const char16_t* pFileName, char16_t* pPath, const char16_t* pEnvironmentVar = NULL);
-		// bool SearchEnvironmentPath(const char8_t*  pFileName, char8_t*  pPath, const char8_t*  pEnvironmentVar = NULL);
+		// bool SearchEnvironmentPath(const char*  pFileName, char*  pPath, const char*  pEnvironmentVar = NULL);
 
 		// bool OpenFile(const char16_t* pPath); // e.g. http://www.bozo.com/somefile.html
-		// bool OpenFile(const char8_t*  pPath); // e.g. /system/settings/somefile.txt
+		// bool OpenFile(const char*  pPath); // e.g. /system/settings/somefile.txt
 	}
 	*/
 

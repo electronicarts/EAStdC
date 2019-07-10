@@ -5,11 +5,11 @@
 /////////////////////////////////////////////////////////////////////////////
 // Defines the following:
 //    uint32_t FNV1         (const void*     pData, size_t nLength, uint32_t nInitialValue = kFNV1InitialValue);
-//    uint32_t FNV1_String8 (const char8_t*  pData, uint32_t nInitialValue = kFNV1InitialValue, CharCase charCase = kCharCaseAny);
+//    uint32_t FNV1_String8 (const char*  pData, uint32_t nInitialValue = kFNV1InitialValue, CharCase charCase = kCharCaseAny);
 //    uint32_t FNV1_String16(const char16_t* pData, uint32_t nInitialValue = kFNV1InitialValue, CharCase charCase = kCharCaseAny);
 //    
 //    uint64_t FNV64         (const void*     pData, size_t nLength, uint64_t nInitialValue = kFNV1InitialValue);
-//    uint64_t FNV64_String8 (const char8_t*  pData, uint64_t nInitialValue = kFNV1InitialValue, CharCase charCase = kCharCaseAny);
+//    uint64_t FNV64_String8 (const char*  pData, uint64_t nInitialValue = kFNV1InitialValue, CharCase charCase = kCharCaseAny);
 //    uint64_t FNV64_String16(const char16_t* pData, uint64_t nInitialValue = kFNV1InitialValue, CharCase charCase = kCharCaseAny);
 //    
 //    template<> class CTStringHash;
@@ -78,7 +78,7 @@ namespace StdC
 	const uint32_t kFNV1InitialValue = 2166136261U;
 
 	EASTDC_API uint32_t FNV1         (const void*     pData, size_t nLength, uint32_t nInitialValue = kFNV1InitialValue);
-	EASTDC_API uint32_t FNV1_String8 (const char8_t*  pData, uint32_t nInitialValue = kFNV1InitialValue, CharCase charCase = kCharCaseAny);
+	EASTDC_API uint32_t FNV1_String8 (const char*  pData, uint32_t nInitialValue = kFNV1InitialValue, CharCase charCase = kCharCaseAny);
 	EASTDC_API uint32_t FNV1_String16(const char16_t* pData, uint32_t nInitialValue = kFNV1InitialValue, CharCase charCase = kCharCaseAny);
 	EASTDC_API uint32_t FNV1_String32(const char32_t* pData, uint32_t nInitialValue = kFNV1InitialValue, CharCase charCase = kCharCaseAny);
 
@@ -88,7 +88,7 @@ namespace StdC
 	const uint64_t kFNV64InitialValue = UINT64_C(14695981039346656037);
 
 	EASTDC_API uint64_t FNV64         (const void*     pData, size_t nLength, uint64_t nInitialValue = kFNV64InitialValue);
-	EASTDC_API uint64_t FNV64_String8 (const char8_t*  pData, uint64_t nInitialValue = kFNV64InitialValue, CharCase charCase = kCharCaseAny);
+	EASTDC_API uint64_t FNV64_String8 (const char*  pData, uint64_t nInitialValue = kFNV64InitialValue, CharCase charCase = kCharCaseAny);
 	EASTDC_API uint64_t FNV64_String16(const char16_t* pData, uint64_t nInitialValue = kFNV64InitialValue, CharCase charCase = kCharCaseAny);
 	EASTDC_API uint64_t FNV64_String32(const char32_t* pData, uint64_t nInitialValue = kFNV64InitialValue, CharCase charCase = kCharCaseAny);
 
@@ -98,7 +98,7 @@ namespace StdC
 	const uint32_t kDJB2InitialValue = 5381;
 
 	EASTDC_API uint32_t DJB2         (const void*     pData, size_t nLength, uint32_t nInitialValue = kDJB2InitialValue);
-	EASTDC_API uint32_t DJB2_String8 (const char8_t*  pData, uint32_t nInitialValue = kDJB2InitialValue, CharCase charCase = kCharCaseAny);
+	EASTDC_API uint32_t DJB2_String8 (const char*  pData, uint32_t nInitialValue = kDJB2InitialValue, CharCase charCase = kCharCaseAny);
 	EASTDC_API uint32_t DJB2_String16(const char16_t* pData, uint32_t nInitialValue = kDJB2InitialValue, CharCase charCase = kCharCaseAny);
 
 

@@ -86,7 +86,7 @@ namespace StdC
 	// write an optimized pathway for the case that pData is in fact 0-terminated,
 	// which will often be the case.
 	//
-	typedef int (*WriteFunction8)(const char8_t* EA_RESTRICT pData, size_t nCount, void* EA_RESTRICT pContext, WriteFunctionState wfs);
+	typedef int (*WriteFunction8)(const char* EA_RESTRICT pData, size_t nCount, void* EA_RESTRICT pContext, WriteFunctionState wfs);
 
 	/////////////////////////////////////////////////////////////////////////////
 	// WriteFunction16
@@ -171,13 +171,13 @@ namespace StdC
 	///     Vsnprintf: Print to a string, with capacity specified, same as the C vsnprintf function.
 	///     Vdprintf:  Print to a debug output destination (e.g. OutputDebugString on Microsoft platforms).
 	///
-	EASTDC_API int Vcprintf(WriteFunction8 pWriteFunction8, void* EA_RESTRICT pContext, const char8_t* EA_RESTRICT pFormat, va_list arguments);
-	EASTDC_API int Vfprintf(FILE* EA_RESTRICT pFile, const char8_t* EA_RESTRICT pFormat, va_list arguments);
-	EASTDC_API int Vprintf(const char8_t* EA_RESTRICT pFormat, va_list arguments);
-	EASTDC_API int Vsprintf(char8_t* EA_RESTRICT pDestination, const char8_t* EA_RESTRICT pFormat, va_list arguments);
-	EASTDC_API int Vsnprintf(char8_t* EA_RESTRICT pDestination, size_t n, const char8_t* EA_RESTRICT pFormat, va_list arguments);
-	EASTDC_API int Vscprintf(const char8_t* EA_RESTRICT pFormat, va_list arguments);
-	EASTDC_API int Vdprintf(const char8_t* EA_RESTRICT pFormat, va_list arguments);
+	EASTDC_API int Vcprintf(WriteFunction8 pWriteFunction8, void* EA_RESTRICT pContext, const char* EA_RESTRICT pFormat, va_list arguments);
+	EASTDC_API int Vfprintf(FILE* EA_RESTRICT pFile, const char* EA_RESTRICT pFormat, va_list arguments);
+	EASTDC_API int Vprintf(const char* EA_RESTRICT pFormat, va_list arguments);
+	EASTDC_API int Vsprintf(char* EA_RESTRICT pDestination, const char* EA_RESTRICT pFormat, va_list arguments);
+	EASTDC_API int Vsnprintf(char* EA_RESTRICT pDestination, size_t n, const char* EA_RESTRICT pFormat, va_list arguments);
+	EASTDC_API int Vscprintf(const char* EA_RESTRICT pFormat, va_list arguments);
+	EASTDC_API int Vdprintf(const char* EA_RESTRICT pFormat, va_list arguments);
 
 	EASTDC_API int Vcprintf(WriteFunction16 pWriteFunction16, void* EA_RESTRICT pContext, const char16_t* EA_RESTRICT pFormat, va_list arguments);
 	EASTDC_API int Vfprintf(FILE* EA_RESTRICT pFile, const char16_t* EA_RESTRICT pFormat, va_list arguments);
@@ -239,12 +239,12 @@ namespace StdC
 	///     Snprintf: Print to a string, with capacity specified, same as the C snprintf function.
 	///     Dprintf:  Print to a debug output destination (e.g. OutputDebugString on Microsoft platforms).
 	///
-	EASTDC_API int Cprintf(WriteFunction8 pWriteFunction, void* EA_RESTRICT pContext, const char8_t* EA_RESTRICT pFormat, ...);
-	EASTDC_API int Fprintf(FILE* EA_RESTRICT pFile, const char8_t* EA_RESTRICT pFormat, ...);
-	EASTDC_API int Printf(const char8_t* EA_RESTRICT pFormat, ...);
-	EASTDC_API int Sprintf(char8_t* EA_RESTRICT pDestination, const char8_t* EA_RESTRICT pFormat, ...);
-	EASTDC_API int Snprintf(char8_t* EA_RESTRICT pDestination, size_t n, const char8_t* EA_RESTRICT pFormat, ...);
-	EASTDC_API int Dprintf(const char8_t* EA_RESTRICT pFormat, ...);
+	EASTDC_API int Cprintf(WriteFunction8 pWriteFunction, void* EA_RESTRICT pContext, const char* EA_RESTRICT pFormat, ...);
+	EASTDC_API int Fprintf(FILE* EA_RESTRICT pFile, const char* EA_RESTRICT pFormat, ...);
+	EASTDC_API int Printf(const char* EA_RESTRICT pFormat, ...);
+	EASTDC_API int Sprintf(char* EA_RESTRICT pDestination, const char* EA_RESTRICT pFormat, ...);
+	EASTDC_API int Snprintf(char* EA_RESTRICT pDestination, size_t n, const char* EA_RESTRICT pFormat, ...);
+	EASTDC_API int Dprintf(const char* EA_RESTRICT pFormat, ...);
 
 	EASTDC_API int Cprintf(WriteFunction16 pWriteFunction, void* EA_RESTRICT pContext, const char16_t* EA_RESTRICT pFormat, ...);
 	EASTDC_API int Fprintf(FILE* EA_RESTRICT pFile, const char16_t* EA_RESTRICT pFormat, ...);
@@ -286,19 +286,8 @@ namespace StdC
 	// Deprecated functionality
 	///////////////////////////////////////////////////////////////////////////
 
-	// There was an update which caused the WriteFunction to have a new parameter (WriteFunctionState),
-	// but there may be old user code which uses the original WriteFunction which didn't take this
-	// parameter. So we implement support for the old WriteFunction type for the time being.
-	typedef int (*WriteFunction8Old) (const char8_t*  EA_RESTRICT pData, size_t nCount, void* EA_RESTRICT pContext8);
-	typedef int (*WriteFunction16Old)(const char16_t* EA_RESTRICT pData, size_t nCount, void* EA_RESTRICT pContext16);
-
-	EASTDC_API int Cprintf(WriteFunction8Old   pWriteFunction, void* EA_RESTRICT pContext, const char8_t* EA_RESTRICT pFormat, ...);
-	EASTDC_API int Cprintf(WriteFunction16Old  pWriteFunction, void* EA_RESTRICT pContext, const char16_t* EA_RESTRICT pFormat, ...);
-	EASTDC_API int Vcprintf(WriteFunction8Old  pWriteFunction8, void* EA_RESTRICT pContext, const char8_t* EA_RESTRICT pFormat, va_list arguments);
-	EASTDC_API int Vcprintf(WriteFunction16Old pWriteFunction16, void* EA_RESTRICT pContext, const char16_t* EA_RESTRICT pFormat, va_list arguments);
-
 	#if EASTDC_VSNPRINTF8_ENABLED
-		EASTDC_API int Vsnprintf8(char8_t* EA_RESTRICT pDestination, size_t n, const char8_t* EA_RESTRICT pFormat, va_list arguments);
+		EASTDC_API int Vsnprintf8(char* EA_RESTRICT pDestination, size_t n, const char* EA_RESTRICT pFormat, va_list arguments);
 		EASTDC_API int Vsnprintf16(char16_t* EA_RESTRICT pDestination, size_t n, const char16_t* EA_RESTRICT pFormat, va_list arguments);
 		EASTDC_API int Vsnprintf32(char32_t* EA_RESTRICT pDestination, size_t n, const char32_t* EA_RESTRICT pFormat, va_list arguments);
 		#if defined(EA_WCHAR_UNIQUE) && EA_WCHAR_UNIQUE

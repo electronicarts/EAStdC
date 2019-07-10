@@ -17,15 +17,15 @@
 // work on this kind of memory and you can instead use the regular functions
 // such as Memcpy for uncacheable memory.
 //
-//      char8_t*    Memcpy     (void* pDestination, const void* pSource, size_t n);
-//      char8_t*    MemcpyC    (void* pDestination, const void* pSource, size_t n);     // Faster version for cacheable memory (and not video memory).
-//      char8_t*    MemcpyS    (void* pDestination, const void* pSource, size_t n);     // Streaming memory copy, doesn't invalidate the cache.
-//      char8_t*    Memcpy128  (void* pDestination, const void* pSource, size_t n);
-//      char8_t*    Memcpy128C (void* pDestination, const void* pSource, size_t n);     // Faster version for cacheable memory (and not video memory).
-//      char8_t*    Memmove    (void* pDestination, const void* pSource, size_t n);
-//      char8_t*    MemmoveC   (void* pDestination, const void* pSource, size_t n);     // Faster version for cacheable memory (and not video memory).
+//      char*    Memcpy     (void* pDestination, const void* pSource, size_t n);
+//      char*    MemcpyC    (void* pDestination, const void* pSource, size_t n);     // Faster version for cacheable memory (and not video memory).
+//      char*    MemcpyS    (void* pDestination, const void* pSource, size_t n);     // Streaming memory copy, doesn't invalidate the cache.
+//      char*    Memcpy128  (void* pDestination, const void* pSource, size_t n);
+//      char*    Memcpy128C (void* pDestination, const void* pSource, size_t n);     // Faster version for cacheable memory (and not video memory).
+//      char*    Memmove    (void* pDestination, const void* pSource, size_t n);
+//      char*    MemmoveC   (void* pDestination, const void* pSource, size_t n);     // Faster version for cacheable memory (and not video memory).
 //
-//      const void* Memchr(const void* p, char8_t c, size_t n);
+//      const void* Memchr(const void* p, char c, size_t n);
 //      int         Memcmp(const void* p1, const void* p2, size_t n);
 //      void*       Memmem(const void* pMemory, size_t memorySize, const void* pFind, size_t findSize);
 //
@@ -347,14 +347,14 @@ namespace StdC
 	/// must be writable. 
 	/// Works with uncacheable memory, such as video memory. 
 	///
-	EASTDC_API char8_t* Memcpy(void* EA_RESTRICT pDestination, const void* EA_RESTRICT pSource, size_t nByteCount);
+	EASTDC_API char* Memcpy(void* EA_RESTRICT pDestination, const void* EA_RESTRICT pSource, size_t nByteCount);
 
 	// Cacheable memory copy
 	// Works only with cacheable memory (i.e. conventional system memory).
 	// The source and destination memory must not overlap.
 	// Cannot be relied on to work with uncachable memory, such as video memory.
 	// There are no alignment restrictions on either pDestination or pSource.
-	EASTDC_API char8_t* MemcpyC(void* EA_RESTRICT pDestination, const void* EA_RESTRICT pSource, size_t nByteCount);
+	EASTDC_API char* MemcpyC(void* EA_RESTRICT pDestination, const void* EA_RESTRICT pSource, size_t nByteCount);
 
 	// Streaming memcpy
 	// This function copies memory from source to destination without filling the cache with the memory.
@@ -363,7 +363,7 @@ namespace StdC
 	// Works on both cacheable and uncacheable memory.
 	// The source and destination memory must not overlap.
 	// There are no alignment restrictions on either pDestination or pSource.
-	EASTDC_API char8_t* MemcpyS(void* EA_RESTRICT pDestination, const void* EA_RESTRICT pSource, size_t nByteCount);
+	EASTDC_API char* MemcpyS(void* EA_RESTRICT pDestination, const void* EA_RESTRICT pSource, size_t nByteCount);
 
 
 	///////////////////////////////////////////////////////////////////////////
@@ -379,14 +379,14 @@ namespace StdC
 	/// that allocated with VirtualAlloc(..., PAGE_NOCACHE) or VirtualAlloc(..., PAGE_WRITECOMBINE).
 	/// In fact, on XBox 360 this function is the same as XMemCpy128.
 	///
-	EASTDC_API char8_t* Memcpy128(void* EA_RESTRICT pDestination, const void* EA_RESTRICT pSource, size_t nByteCount);
+	EASTDC_API char* Memcpy128(void* EA_RESTRICT pDestination, const void* EA_RESTRICT pSource, size_t nByteCount);
 
 	// cacheable 128 byte memcpy
 	// This function is useful for higher performance memory copies when the requirements can be met.
 	// The address pointed to by pDestination must be aligned on a 128-byte boundary, and uint8Count must be a multiple of 128.
 	// Works only with cacheable memory (i.e. conventional system memory).
 	// The source and destination memory must not overlap.
-	EASTDC_API char8_t* Memcpy128C(void* EA_RESTRICT pDestination, const void* EA_RESTRICT pSource, size_t nByteCount);
+	EASTDC_API char* Memcpy128C(void* EA_RESTRICT pDestination, const void* EA_RESTRICT pSource, size_t nByteCount);
 
 
 	///////////////////////////////////////////////////////////////////////////
@@ -400,13 +400,13 @@ namespace StdC
 	/// must be writable. 
 	/// Works with uncacheable memory, such as video memory.
 	///
-	EASTDC_API char8_t* Memmove(void* pDestination, const void* pSource, size_t nByteCount);
+	EASTDC_API char* Memmove(void* pDestination, const void* pSource, size_t nByteCount);
 
 	// Cacheable memory move
 	// Works only with cacheable memory (i.e. conventional system memory).
 	// The source and destination memory may overlap.
 	// Cannot be relied on to work with uncachable memory, such as video memory.
-	EASTDC_API char8_t* MemmoveC(void* pDestination, const void* pSource, size_t nByteCount);
+	EASTDC_API char* MemmoveC(void* pDestination, const void* pSource, size_t nByteCount);
 
 
 	///////////////////////////////////////////////////////////////////////////
@@ -419,7 +419,7 @@ namespace StdC
 	/// There are no restrictions about the type of memory p refers
 	/// to except that it be readable.
 	///
-	EASTDC_API const char8_t*  Memchr  (const char8_t*  p, char8_t c,  size_t n);
+	EASTDC_API const char*     Memchr  (const char*  p,    char c,     size_t n);
 	EASTDC_API const char16_t* Memchr16(const char16_t* p, char16_t c, size_t n);
 	EASTDC_API const char32_t* Memchr32(const char32_t* p, char32_t c, size_t n);
 	#if EA_WCHAR_UNIQUE
@@ -574,26 +574,6 @@ namespace StdC
 	EASTDC_API void MemFill16(void* pDestination, uint16_t c, unsigned int byteCount);
 	EASTDC_API void MemFill32(void* pDestination, unsigned int value, unsigned int byteCount);
 	EASTDC_API void MemFillSpecific(void* pDestination, const void* pSource, unsigned int destByteCount, unsigned int sourceByteCount);
-
-
-	///////////////////////////////////////////////////////////////////////////
-	/// rwstdc compatibility
-	///
-	/// Deprecated functions.
-	///
-	#if EASTDC_MEMCHR16_ENABLED
-		// This function is deprecated and replaced by Memchr16, as it collides with the Standard C memchr 
-		// function which takes a void* argument.
-		EA_PREFIX_DEPRECATED EASTDC_API const char16_t* Memchr(const char16_t* pString, char16_t c, size_t nCharCount);
-	#endif
-
-	#if EASTDC_MEMCPY16_ENABLED
-		// These function are deprecated. It was mistakenly created during a code migration.
-		// It is scheduled for removal in a future version of this package.
-		EA_PREFIX_DEPRECATED EASTDC_API char16_t* Memcpy(char16_t* pDestination, const char16_t* pSource, size_t nCharCount) EA_POSTFIX_DEPRECATED;
-		EA_PREFIX_DEPRECATED EASTDC_API char16_t* Memmove(char16_t* pDestination, const char16_t* pSource, size_t nCharCount) EA_POSTFIX_DEPRECATED;
-		EA_PREFIX_DEPRECATED EASTDC_API int       Memcmp(const char16_t* pString1, const char16_t* pString2, size_t nCharCount) EA_POSTFIX_DEPRECATED;
-	#endif
 
 
 	/// StaticMemory

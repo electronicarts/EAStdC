@@ -28,25 +28,32 @@ namespace StdC
 	///////////////////////////////////////////////////////////////////////////////
 	/// UTF8 utilities
 	/// 
-	EASTDC_API bool      UTF8Validate(const char8_t* p, size_t nLength);
-	EASTDC_API char8_t*  UTF8Increment(const char8_t* p, size_t n);
-	EASTDC_API char8_t*  UTF8Decrement(const char8_t* p, size_t n);
-	EASTDC_API size_t    UTF8Length(const char8_t* p);
+	EASTDC_API bool      UTF8Validate(const char* p, size_t nLength);
+	EASTDC_API char*     UTF8Increment(const char* p, size_t n);
+	EASTDC_API char*     UTF8Decrement(const char* p, size_t n);
+	EASTDC_API size_t    UTF8Length(const char* p);
 	EASTDC_API size_t    UTF8Length(const char16_t* p);
 	EASTDC_API size_t    UTF8Length(const char32_t* p);
-	EASTDC_API size_t    UTF8CharSize(const char8_t* p);
+	EASTDC_API size_t    UTF8CharSize(const char* p);
 	EASTDC_API size_t    UTF8CharSize(char16_t c);
 	EASTDC_API size_t    UTF8CharSize(char32_t c);
-	EASTDC_API char16_t  UTF8ReadChar(const char8_t* p, const char8_t** ppEnd = NULL);
-	EASTDC_API char8_t*  UTF8WriteChar(char8_t* p, char16_t c);
-	EASTDC_API char8_t*  UTF8WriteChar(char8_t* p, char32_t c);
-	EASTDC_API size_t    UTF8TrimPartialChar(char8_t* p, size_t nLength);
-	EASTDC_API char8_t*  UTF8ReplaceInvalidChar(const char8_t* pIn, size_t nLength, char8_t* pOut, char8_t replaceWith);
-	inline     bool      UTF8IsSoloByte(char8_t c)   { return ((uint8_t)c < 0x80); }
-	inline     bool      UTF8IsLeadByte(char8_t c)   { return (0xc0 <= (uint8_t)c) && ((uint8_t)c <= 0xef); } // This tests for lead bytes for 2 and 3 byte UTF8 sequences, which map to char16_t code points. If we were to support 4, 5, 6 byte code sequences (char32_t code points), we'd test for <= 0xfd.
-	inline     bool      UTF8IsFollowByte(char8_t c) { return (0x80 <= (uint8_t)c) && ((uint8_t)c <= 0xbf); } // This assumes that the char is part of a valid UTF8 sequence.
+	EASTDC_API char16_t  UTF8ReadChar(const char* p, const char** ppEnd = NULL);
+	EASTDC_API char*     UTF8WriteChar(char* p, char16_t c);
+	EASTDC_API char*     UTF8WriteChar(char* p, char32_t c);
+	EASTDC_API size_t    UTF8TrimPartialChar(char* p, size_t nLength);
+	EASTDC_API char*     UTF8ReplaceInvalidChar(const char* pIn, size_t nLength, char* pOut, char replaceWith);
+	inline     bool      UTF8IsSoloByte(char c)   { return ((uint8_t)c < 0x80); }
+	inline     bool      UTF8IsLeadByte(char c)   { return (0xc0 <= (uint8_t)c) && ((uint8_t)c <= 0xef); } // This tests for lead bytes for 2 and 3 byte UTF8 sequences, which map to char16_t code points. If we were to support 4, 5, 6 byte code sequences (char32_t code points), we'd test for <= 0xfd.
+	inline     bool      UTF8IsFollowByte(char c) { return (0x80 <= (uint8_t)c) && ((uint8_t)c <= 0xbf); } // This assumes that the char is part of a valid UTF8 sequence.
 
-
+ #if EA_CHAR8_UNIQUE 
+	// We simply forward the UTF8 overload to maintain backwards compatbility.
+	// Eventually, we should leverage the type system instead of UTF8 specific functions.
+	//
+	inline size_t UTF8Length(const char8_t* p) { return UTF8Length((const char*)p); }
+	inline char8_t* UTF8ReplaceInvalidChar(const char8_t* pIn, size_t nLength, char8_t* pOut, char8_t replaceWith) 
+		{ return (char8_t*)UTF8ReplaceInvalidChar((const char*)pIn, nLength, (char*)pOut, (char)replaceWith); }
+#endif
 
 	///////////////////////////////////////////////////////////////////////////////
 	/// WildcardMatch
@@ -71,7 +78,7 @@ namespace StdC
 	/// Multiple * and ? characters may be used. Two consecutive * characters are 
 	/// treated as if they were one.
 	///
-	EASTDC_API bool WildcardMatch(const char8_t*  pString, const char8_t*  pPattern, bool bCaseSensitive);
+	EASTDC_API bool WildcardMatch(const char*  pString, const char*  pPattern, bool bCaseSensitive);
 	EASTDC_API bool WildcardMatch(const char16_t* pString, const char16_t* pPattern, bool bCaseSensitive);
 	EASTDC_API bool WildcardMatch(const char32_t* pString, const char32_t* pPattern, bool bCaseSensitive);
 
@@ -108,8 +115,8 @@ namespace StdC
 	///
 	/// See the other version of ParseDelimitedText below for some additional documentation.
 	///
-	EASTDC_API bool ParseDelimitedText(const char8_t* pText, const char8_t* pTextEnd, char8_t cDelimiter, 
-									   const char8_t*& pToken, const char8_t*& pTokenEnd, const char8_t** ppNewText);
+	EASTDC_API bool ParseDelimitedText(const char* pText, const char* pTextEnd, char cDelimiter, 
+									   const char*& pToken, const char*& pTokenEnd, const char** ppNewText);
 
 	EASTDC_API bool ParseDelimitedText(const char16_t* pText, const char16_t* pTextEnd, char16_t cDelimiter, 
 									   const char16_t*& pToken, const char16_t*& pTokenEnd, const char16_t** ppNewText);
@@ -139,7 +146,7 @@ namespace StdC
 	/// Resulting output:
 	///    "12345678"
 	///
-	EASTDC_API void ConvertBinaryDataToASCIIArray(const void* pBinaryData, size_t nBinaryDataLength, char8_t*  pASCIIArray);
+	EASTDC_API void ConvertBinaryDataToASCIIArray(const void* pBinaryData, size_t nBinaryDataLength, char*  pASCIIArray);
 	EASTDC_API void ConvertBinaryDataToASCIIArray(const void* pBinaryData, size_t nBinaryDataLength, char16_t* pASCIIArray);
 	EASTDC_API void ConvertBinaryDataToASCIIArray(const void* pBinaryData, size_t nBinaryDataLength, char32_t* pASCIIArray);
 
@@ -161,7 +168,7 @@ namespace StdC
 	/// Resulting output:
 	///    { 0x12, 0x34, 0x56, 0x78 }
 	///
-	EASTDC_API bool ConvertASCIIArrayToBinaryData(const char8_t*  pASCIIArray, size_t nASCIIArrayLength, void* pBinaryData);
+	EASTDC_API bool ConvertASCIIArrayToBinaryData(const char*  pASCIIArray, size_t nASCIIArrayLength, void* pBinaryData);
 	EASTDC_API bool ConvertASCIIArrayToBinaryData(const char16_t* pASCIIArray, size_t nASCIIArrayLength, void* pBinaryData);
 	EASTDC_API bool ConvertASCIIArrayToBinaryData(const char32_t* pASCIIArray, size_t nASCIIArrayLength, void* pBinaryData);
 
@@ -195,7 +202,7 @@ namespace StdC
 	///         // Use pLine - pLineEnd
 	///     }while(pLineNext != (buffer + 256));
 	///
-	EASTDC_API const char8_t*  GetTextLine(const char8_t* pText, const char8_t* pTextEnd, const char8_t** ppNewText);
+	EASTDC_API const char*  GetTextLine(const char* pText, const char* pTextEnd, const char** ppNewText);
 	EASTDC_API const char16_t* GetTextLine(const char16_t* pText, const char16_t* pTextEnd, const char16_t** ppNewText);
 	EASTDC_API const char32_t* GetTextLine(const char32_t* pText, const char32_t* pTextEnd, const char32_t** ppNewText);
 
@@ -268,7 +275,7 @@ namespace StdC
 	///    while(SplitTokenDelimited(pString, kLengthNull, ',', pToken, 16, &pString))
 	///         printf("%s\n", pToken);
 	///    
-	EASTDC_API bool SplitTokenDelimited(const char8_t*  pSource, size_t nSourceLength, char8_t  cDelimiter, char8_t*  pToken, size_t nTokenLength, const char8_t**  ppNewSource = NULL);
+	EASTDC_API bool SplitTokenDelimited(const char*  pSource, size_t nSourceLength, char  cDelimiter, char*  pToken, size_t nTokenLength, const char**  ppNewSource = NULL);
 	EASTDC_API bool SplitTokenDelimited(const char16_t* pSource, size_t nSourceLength, char16_t cDelimiter, char16_t* pToken, size_t nTokenLength, const char16_t** ppNewSource = NULL);
 	EASTDC_API bool SplitTokenDelimited(const char32_t* pSource, size_t nSourceLength, char32_t cDelimiter, char32_t* pToken, size_t nTokenLength, const char32_t** ppNewSource = NULL);
 
@@ -301,7 +308,7 @@ namespace StdC
 	///    " "       ""       ""           false
 	///    NULL      ""       NULL         false
 	///
-	EASTDC_API bool SplitTokenSeparated(const char8_t*  pSource, size_t nSourceLength, char8_t  cDelimiter, char8_t*  pToken, size_t nTokenLength, const char8_t**  ppNewSource = NULL);
+	EASTDC_API bool SplitTokenSeparated(const char*  pSource, size_t nSourceLength, char  cDelimiter, char*  pToken, size_t nTokenLength, const char**  ppNewSource = NULL);
 	EASTDC_API bool SplitTokenSeparated(const char16_t* pSource, size_t nSourceLength, char16_t cDelimiter, char16_t* pToken, size_t nTokenLength, const char16_t** ppNewSource = NULL);
 	EASTDC_API bool SplitTokenSeparated(const char32_t* pSource, size_t nSourceLength, char32_t cDelimiter, char32_t* pToken, size_t nTokenLength, const char32_t** ppNewSource = NULL);
 

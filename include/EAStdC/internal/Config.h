@@ -32,8 +32,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef EASTDC_VERSION
-	#define EASTDC_VERSION   "1.26.02"
-	#define EASTDC_VERSION_N  12602
+	#define EASTDC_VERSION   "1.26.03"
+	#define EASTDC_VERSION_N  12603
 #endif
 
 
@@ -197,29 +197,6 @@
 //
 #ifndef EASTDC_VSNPRINTF8_ENABLED
 	#define EASTDC_VSNPRINTF8_ENABLED 0
-#endif
-
-
-///////////////////////////////////////////////////////////////////////////////
-// EASTDC_MEMCPY16_ENABLED
-//
-// Defined as 0 or 1. Default is 1.
-// The Memcpy(char16_t*, const char16_t*, size_t) function and Memmove 
-// equivalent have been deprecated. For the time being we have an option 
-// to control their existence. 
-//
-#ifndef EASTDC_MEMCPY16_ENABLED
-	#define EASTDC_MEMCPY16_ENABLED 0
-#endif
-
-
-///////////////////////////////////////////////////////////////////////////////
-// EASTDC_MEMCPY16_ENABLED
-//
-// Defined as 0 or 1. Default is 0.
-//
-#ifndef EASTDC_MEMCHR16_ENABLED
-	#define EASTDC_MEMCHR16_ENABLED 0
 #endif
 
 

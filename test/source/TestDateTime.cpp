@@ -598,7 +598,7 @@ int TestDateTime()
 		char*        pBuffer = new char[kBufferSize];
 		tm           tmValue1, tmValue2;
 		size_t       n;
-		char8_t*     p;
+		char*     p;
 
 		{
 			DateTime dt(1999, 12, 31, 23, 59, 58);
@@ -636,8 +636,8 @@ int TestDateTime()
 
 				memcpy(&tmValue2, &tmValue1, sizeof(tmValue2));
 
-				const char8_t* kFormat = "%t %t%%%n%n%%";
-				const char8_t* kResult = "\t \t%\n\n%";
+				const char* kFormat = "%t %t%%%n%n%%";
+				const char* kResult = "\t \t%\n\n%";
 				n = Strftime(pBuffer, kBufferSize, kFormat, &tmValue1, NULL);
 				EATEST_VERIFY((n == Strlen(kResult)) && (Strcmp(pBuffer, kResult) == 0));
 				EATEST_VERIFY(memcmp(&tmValue1, &tmValue2, sizeof(tmValue2)) == 0);   // Verify that tmValue1 was not written to.
@@ -650,7 +650,7 @@ int TestDateTime()
 				// %a   Replaced by the locale's abbreviated weekday name. [ tm_wday]
 				// %A   Replaced by the locale's full weekday name. [ tm_wday]
 
-				const char8_t* kExpectedResults[7] = 
+				const char* kExpectedResults[7] = 
 				{
 					"Sun | Sun | Sunday | Sunday",
 					"Mon | Mon | Monday | Monday",
@@ -684,7 +684,7 @@ int TestDateTime()
 				// %h   Equivalent to %b. [ tm_mon]
 				// %m   Replaced by the month as a decimal number [01,12]. [ tm_mon]
 
-				const char8_t* kExpectedResults[12] = 
+				const char* kExpectedResults[12] = 
 				{
 					"Jan | Jan | January | January | Jan | Jan | 01 | 1",
 					"Feb | Feb | February | February | Feb | Feb | 02 | 2",
@@ -925,7 +925,7 @@ int TestDateTime()
 					2100,
 				};
 
-				const char8_t* kExpectedResults[5] = 
+				const char* kExpectedResults[5] = 
 				{
 					"19 | 19",
 					"20 | 20",
@@ -973,7 +973,7 @@ int TestDateTime()
 
 			{
 				// %D   Equivalent to %m/%d/%y. [ tm_mon, tm_mday, tm_year]
-				const char8_t* kExpectedResults[12] = 
+				const char* kExpectedResults[12] = 
 				{
 					"01/01/66",
 					"02/02/67",
@@ -1026,7 +1026,7 @@ int TestDateTime()
 
 			{
 				// %F   Equivalent to %Y - %m - %d (the ISO 8601:2000 standard date format). [ tm_year, tm_mon, tm_mday]
-				const char8_t* kExpectedResults[12] = 
+				const char* kExpectedResults[12] = 
 				{
 					"2001-01-01",
 					"2002-02-02",
@@ -1119,7 +1119,7 @@ int TestDateTime()
 
 			{
 				// %j   Replaced by the day of the year as a decimal number [001,366]. [ tm_yday]
-				const char8_t* kExpectedResults[4] = 
+				const char* kExpectedResults[4] = 
 				{
 					"366 | 366",
 					"365 | 365",
@@ -1169,7 +1169,7 @@ int TestDateTime()
 				// %r   Replaced by the time in a.m. and p.m. notation; [CX] [Option Start]  in the POSIX locale this shall be equivalent to %I : %M : %S %p. [Option End] [ tm_hour, tm_min, tm_sec]
 				// %R   Replaced by the time in 24-hour notation ( %H : %M ). [ tm_hour, tm_min]
 				// %T   Replaced by the time ( %H : %M : %S ). [ tm_hour, tm_min, tm_sec]
-				const char8_t* kExpectedResults[8] = 
+				const char* kExpectedResults[8] = 
 				{
 					"AM", "10:11:12 AM", "10:11", "10:11:12",
 					"PM", "01:02:03 PM", "13:02", "13:02:03",
@@ -1474,7 +1474,7 @@ int TestDateTime()
 					1969,
 				};
 
-				const char8_t* kExpectedResults[5] = 
+				const char* kExpectedResults[5] = 
 				{
 					"00 | 0 | 2000",
 					"01 | 1 | 2001",

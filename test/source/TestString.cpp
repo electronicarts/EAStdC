@@ -51,10 +51,10 @@ struct CharTraits
 {};
 
 template <>
-struct CharTraits<char8_t>
+struct CharTraits<char>
 {
-	static char8_t fill_value() { return 0x33; }
-	static void assign(char8_t* buffer, size_t size, char8_t value) { EA::StdC::Memset8(buffer, value, size); }
+	static char fill_value() { return 0x33; }
+	static void assign(char* buffer, size_t size, char value) { EA::StdC::Memset8(buffer, value, size); }
 	typedef char16_t char1_t;
 	typedef char32_t char2_t;
 };
@@ -64,7 +64,7 @@ struct CharTraits<char16_t>
 {
 	static char16_t fill_value() { return 0x3344; }
 	static void assign(char16_t* buffer, size_t size, char16_t value) { EA::StdC::Memset16(buffer, value, size); }
-	typedef char8_t char1_t;
+	typedef char char1_t;
 	typedef char32_t char2_t;
 };
 
@@ -73,7 +73,7 @@ struct CharTraits<char32_t>
 {
 	static char32_t fill_value() { return 0x33445566; }
 	static void assign(char32_t* buffer, size_t size, char32_t value) { EA::StdC::Memset32(buffer, value, size); }
-	typedef char8_t char1_t;
+	typedef char char1_t;
 	typedef char16_t char2_t;
 };
 
@@ -368,19 +368,19 @@ static int TestStringCore()
 	size_t sizeResult;
 
 	//{ // Trigger crash intentionally.
-	//    EA::StdC::AtofEnglish((char8_t*)NULL); 
+	//    EA::StdC::AtofEnglish((char*)NULL); 
 	//}
 
 	{ // Test user report of inconsistency between FtoaEnglish and Snprintf.
-		const char8_t* stringValue = "1.2345";
+		const char* stringValue = "1.2345";
 		float floatValue = (float)EA::StdC::AtofEnglish(stringValue); 
 		// floatValue = 1.2345000505447387 in FPU register.
 
-		char8_t tmp1[64];
+		char tmp1[64];
 		FtoaEnglish(floatValue, tmp1, sizeof(tmp1), 16, false);
 		// tmp1 = "1.23450005"
 
-		char8_t tmp2[64];
+		char tmp2[64];
 		Snprintf(tmp2, sizeof(tmp2), "%.16f", floatValue);
 		// tmp1 = "1.2345000505447388"
 
@@ -388,12 +388,12 @@ static int TestStringCore()
 	}
 
 
-	// char8_t*  Strcat(char8_t*  pDestination, const char8_t*  pSource);
+	// char*  Strcat(char*  pDestination, const char*  pSource);
 	// char16_t* Strcat(char16_t* pDestination, const char16_t* pSource);
 	// char32_t* Strcat(char32_t* pDestination, const char32_t* pSource);
 	{
-		char8_t s_to[] = "hello\x0           ";
-		const char8_t* s_from = " world";
+		char s_to[] = "hello\x0           ";
+		const char* s_from = " world";
 
 		EATEST_VERIFY(Strcat(s_to, s_from) == s_to);
 		EATEST_VERIFY(Strcmp(s_to, "hello world") == 0);
@@ -414,16 +414,16 @@ static int TestStringCore()
 	}
 
 
-	// char8_t*  Strncat(char8_t*  pDestination, const char8_t*  pSource, size_t n);
+	// char*  Strncat(char*  pDestination, const char*  pSource, size_t n);
 	// char16_t* Strncat(char16_t* pDestination, const char16_t* pSource, size_t n);
 	// char32_t* Strncat(char32_t* pDestination, const char32_t* pSource, size_t n);
 	{
-		char8_t s_to[] = "0123\x0......";
-		const char8_t* s_from = "456789";
+		char s_to[] = "0123\x0......";
+		const char* s_from = "456789";
 
 		EATEST_VERIFY(Strncat(s_to, s_from, 5) == s_to);
 		EATEST_VERIFY(Strcmp(s_to, "012345678") == 0);
-		EATEST_VERIFY(s_to[9] == char8_t(0));
+		EATEST_VERIFY(s_to[9] == char(0));
 	}
 	{
 		char16_t s_to[24]; Strlcpy(s_to, EA_CHAR16("0123\x0......"), EAArrayCount(s_to)); // Can't do char16_t variable[64] = EA_CHAR16(...) because some compilers don't support 16 bit string literals.
@@ -443,7 +443,7 @@ static int TestStringCore()
 	}
 
 
-	// char8_t*  StringnCat(char8_t*  pDestination, const char8_t*  pSource, size_t n);
+	// char*  StringnCat(char*  pDestination, const char*  pSource, size_t n);
 	// char16_t* StringnCat(char16_t* pDestination, const char16_t* pSource, size_t n);
 	// char32_t* StringnCat(char32_t* pDestination, const char32_t* pSource, size_t n);
 	//
@@ -452,13 +452,13 @@ static int TestStringCore()
 	// we verify that their behaviour is the same as the existing rwstdc package, 
 	// including any broken behaviour.
 	{
-		char8_t s_to[] = "0123\x0......";
-		const char8_t* s_from = "456789";
+		char s_to[] = "0123\x0......";
+		const char* s_from = "456789";
 
 		EATEST_VERIFY(StringnCat(s_to, s_from, 5) == s_to);
 		//EATEST_VERIFY(Strcmp(s_to, "012345678..") == 0); Disabled while we try to clarify what the expected behaviour is.
 
-		Memset8(s_to, (char8_t)'.', Strlen(s_to));
+		Memset8(s_to, (char)'.', Strlen(s_to));
 		EATEST_VERIFY(StringnCat(s_to, s_from, 0) == s_to);
 		EATEST_VERIFY(s_to[0] == '.');
 	}
@@ -486,12 +486,12 @@ static int TestStringCore()
 	}
 
 
-	// size_t Strlcat(char8_t*  pDestination, const char8_t*  pSource, size_t nDestCapacity);
+	// size_t Strlcat(char*  pDestination, const char*  pSource, size_t nDestCapacity);
 	// size_t Strlcat(char16_t* pDestination, const char16_t* pSource, size_t nDestCapacity);
 	// size_t Strlcat(char32_t* pDestination, const char32_t* pSource, size_t nDestCapacity);
 	{
-		char8_t s_to[8] = "0123\x0..";
-		const char8_t* s_from = "456789";
+		char s_to[8] = "0123\x0..";
+		const char* s_from = "456789";
 
 		sizeResult = Strlcat(s_to, s_from, EAArrayCount(s_to));
 		EATEST_VERIFY(sizeResult == Strlen("0123") + Strlen("456789"));
@@ -516,8 +516,8 @@ static int TestStringCore()
 
 
 	{
-		char8_t s_to[] = "01\x0........";
-		const char8_t* s_from = "23456";
+		char s_to[] = "01\x0........";
+		const char* s_from = "23456";
 
 		sizeResult = Strlcat(s_to, s_from, EAArrayCount(s_to));
 		EATEST_VERIFY(sizeResult == Strlen("0123456"));
@@ -559,12 +559,12 @@ static int TestStringCore()
 	}
 
 
-	/// char8_t*  Strcpy(char8_t*  pDestination, const char8_t*  pSource);
+	/// char*  Strcpy(char*  pDestination, const char*  pSource);
 	/// char16_t* Strcpy(char16_t* pDestination, const char16_t* pSource);
 	/// char32_t* Strcpy(char32_t* pDestination, const char32_t* pSource);
 	{
-		char8_t s_to[] = "0123456789";
-		const char8_t* s_from = "1234567890";
+		char s_to[] = "0123456789";
+		const char* s_from = "1234567890";
 
 		EATEST_VERIFY(Strcpy(s_to, s_from) == s_to);
 		EATEST_VERIFY(Strcmp(s_to, "1234567890") == 0);
@@ -585,21 +585,21 @@ static int TestStringCore()
 	}
 
 
-	// char8_t*  Strncpy(char8_t*  pDestination, const char8_t*  pSource, size_t n);
+	// char*  Strncpy(char*  pDestination, const char*  pSource, size_t n);
 	// char16_t* Strncpy(char16_t* pDestination, const char16_t* pSource, size_t n);
 	// char32_t* Strncpy(char32_t* pDestination, const char32_t* pSource, size_t n);
 	{
-		char8_t  s_to[] = "...........................";
-		const char8_t* s_from = "l;kajjsdf;q4w3rrpoiu113<>)(";
+		char  s_to[] = "...........................";
+		const char* s_from = "l;kajjsdf;q4w3rrpoiu113<>)(";
 
 		EATEST_VERIFY(Strcpy(s_to, s_from) == s_to);
-		EATEST_VERIFY(Memcmp(s_to, s_from, Strlen(s_from) * sizeof(char8_t)) == 0);
+		EATEST_VERIFY(Memcmp(s_to, s_from, Strlen(s_from) * sizeof(char)) == 0);
 
-		Memset8(s_to, (char8_t)'.', Strlen(s_to));
+		Memset8(s_to, (char)'.', Strlen(s_to));
 
 		EATEST_VERIFY(Strncpy(s_to, s_from+14, 5) == s_to);
-		EATEST_VERIFY(Memcmp(s_to, s_from+14, 5 * sizeof(char8_t)) == 0);
-		EATEST_VERIFY(s_to[5] == (char8_t)'.' );
+		EATEST_VERIFY(Memcmp(s_to, s_from+14, 5 * sizeof(char)) == 0);
+		EATEST_VERIFY(s_to[5] == (char)'.' );
 	}
 	{
 		char16_t s_to[32]; Strlcpy(s_to, EA_CHAR16("..........................."), EAArrayCount(s_to)); // Can't do char16_t variable[64] = EA_CHAR16(...) because some compilers don't support 16 bit string literals.
@@ -629,19 +629,19 @@ static int TestStringCore()
 	}
 
 
-	// char8_t*  StringnCopy(char8_t*  pDestination, const char8_t*  pSource, size_t n);
+	// char*  StringnCopy(char*  pDestination, const char*  pSource, size_t n);
 	// char16_t* StringnCopy(char16_t* pDestination, const char16_t* pSource, size_t n);
 	// char32_t* StringnCopy(char32_t* pDestination, const char32_t* pSource, size_t n);
 	{
-		char8_t  s_to[] = "...........................";
-		const char8_t* s_from = "l;kajjsdf;q4w3rrpoiu113<>)(";
+		char  s_to[] = "...........................";
+		const char* s_from = "l;kajjsdf;q4w3rrpoiu113<>)(";
 
 		EATEST_VERIFY(StringnCopy(s_to, s_from+14, 5) == s_to);
-		EATEST_VERIFY(Memcmp(s_to, s_from+14, 5 * sizeof(char8_t)) == 0);
-		EATEST_VERIFY(s_to[5] == (char8_t)'.' );
+		EATEST_VERIFY(Memcmp(s_to, s_from+14, 5 * sizeof(char)) == 0);
+		EATEST_VERIFY(s_to[5] == (char)'.' );
 
 		// Test copying nothing.
-		Memset8(s_to, (char8_t)'.', Strlen(s_to));
+		Memset8(s_to, (char)'.', Strlen(s_to));
 		EATEST_VERIFY(StringnCopy(s_to, s_from+14, 0) == s_to);
 		EATEST_VERIFY(s_to[0] == '.');
 	}
@@ -651,7 +651,7 @@ static int TestStringCore()
 
 		EATEST_VERIFY(StringnCopy(s_to, s_from+14, 5) == s_to);
 		EATEST_VERIFY(Memcmp(s_to, s_from+14, 5 * sizeof(char16_t)) == 0);
-		EATEST_VERIFY(s_to[5] == (char8_t)'.' );
+		EATEST_VERIFY(s_to[5] == (char)'.' );
 
 		// Test copying nothing.
 		Memset16(s_to, (char16_t)'.', Strlen(s_to));
@@ -664,7 +664,7 @@ static int TestStringCore()
 
 		EATEST_VERIFY(StringnCopy(s_to, s_from+14, 5) == s_to);
 		EATEST_VERIFY(Memcmp(s_to, s_from+14, 5 * sizeof(char32_t)) == 0);
-		EATEST_VERIFY(s_to[5] == (char8_t)'.' );
+		EATEST_VERIFY(s_to[5] == (char)'.' );
 
 		// Test copying nothing.
 		Memset32(s_to, (char32_t)'.', Strlen(s_to));
@@ -672,13 +672,13 @@ static int TestStringCore()
 		EATEST_VERIFY(s_to[0] == '.');
 	}
 
-	// size_t Strlcpy(char8_t*  pDestination, const char8_t*  pSource, size_t nDestCapacity);
+	// size_t Strlcpy(char*  pDestination, const char*  pSource, size_t nDestCapacity);
 	// size_t Strlcpy(char16_t* pDestination, const char16_t* pSource, size_t nDestCapacity);
 	// size_t Strlcpy(char32_t* pDestination, const char32_t* pSource, size_t nDestCapacity);
-	// int Strlcpy(char8_t*  pDestination, const char16_t* pSource, size_t nDestCapacity, size_t nSourceLength = (size_t)~0);
-	// int Strlcpy(char16_t* pDestination, const char8_t*  pSource, size_t nDestCapacity, size_t nSourceLength = (size_t)~0);
-	// int Strlcpy(char8_t*  pDestination, const char32_t* pSource, size_t nDestCapacity, size_t nSourceLength = (size_t)~0);
-	// int Strlcpy(char32_t* pDestination, const char8_t*  pSource, size_t nDestCapacity, size_t nSourceLength = (size_t)~0);
+	// int Strlcpy(char*  pDestination, const char16_t* pSource, size_t nDestCapacity, size_t nSourceLength = (size_t)~0);
+	// int Strlcpy(char16_t* pDestination, const char*  pSource, size_t nDestCapacity, size_t nSourceLength = (size_t)~0);
+	// int Strlcpy(char*  pDestination, const char32_t* pSource, size_t nDestCapacity, size_t nSourceLength = (size_t)~0);
+	// int Strlcpy(char32_t* pDestination, const char*  pSource, size_t nDestCapacity, size_t nSourceLength = (size_t)~0);
 	// int Strlcpy(char16_t* pDestination, const char32_t* pSource, size_t nDestCapacity, size_t nSourceLength = (size_t)~0);
 	// int Strlcpy(char32_t* pDestination, const char16_t* pSource, size_t nDestCapacity, size_t nSourceLength = (size_t)~0);
 	{
@@ -688,7 +688,7 @@ static int TestStringCore()
 		nErrorCount += StrlcpyTest("");
 		nErrorCount += StrlcpyTest("\x43\x3A\x5C\x45\x6C\x65\x63\x74\x72\x6F\x6E\x69\x63\x20\x41\x72\x74\x73\x5C\xE3\x82\xB6\xEF\xBD\xA5\xE3\x82\xB7\xE3\x83\xA0\xE3\x82\xBA\xEF\xBC\x93", 25);
 
-		const char8_t* kInvalidUTF8StringArray[] = {
+		const char* kInvalidUTF8StringArray[] = {
 			"\xc2",       // 1 byte of a 2 byte sequence
 			"\xc2\x20",   // 1 byte of a 2 byte sequence
 			"\xe0",       // 1 byte of a 3 byte sequence
@@ -709,7 +709,7 @@ static int TestStringCore()
 		}
 	}
 
-	/// size_t Strlen(const char8_t*  pString);
+	/// size_t Strlen(const char*  pString);
 	/// size_t Strlen(const char16_t* pString);
 	/// size_t Strlen(const char32_t* pString);
 	{
@@ -729,7 +729,7 @@ static int TestStringCore()
 		stopwatch.Start();
 		for(size_t j = 0; j < kBufferSize; ++j)
 		{
-			size_t n = Strlen((char8_t*)buffer + j);
+			size_t n = Strlen((char*)buffer + j);
 
 			EATEST_VERIFY(n == ((kBufferSize - 1) - j));
 			//if(n != ((kBufferSize - 1) - j))
@@ -793,7 +793,7 @@ static int TestStringCore()
 
 
 
-	/// size_t StrlenUTF8Decoded(const char8_t* pString);
+	/// size_t StrlenUTF8Decoded(const char* pString);
 	/// size_t StrlenUTF8Encoded(const char16_t* pString);
 	/// size_t StrlenUTF8Encoded(const char32_t* pString);
 	{
@@ -837,11 +837,11 @@ static int TestStringCore()
 	}
 
 
-	/// char8_t*  Strend(const char8_t*  pString);
+	/// char*  Strend(const char*  pString);
 	/// char16_t* Strend(const char16_t* pString);
 	/// char32_t* Strend(const char32_t* pString);
 	{
-		const char8_t* pString = "0123456789";
+		const char* pString = "0123456789";
 		EATEST_VERIFY(Strend(pString) == (pString + Strlen(pString)));
 	}
 	{
@@ -854,13 +854,13 @@ static int TestStringCore()
 	}
 
 
-	// size_t Strxfrm(char8_t*  pDest, const char8_t*  pSource, size_t n);
+	// size_t Strxfrm(char*  pDest, const char*  pSource, size_t n);
 	// size_t Strxfrm(char16_t* pDest, const char16_t* pSource, size_t n);
 	// size_t Strxfrm(char32_t* pDest, const char32_t* pSource, size_t n);
 	{
 		// To do: Make a better test.
-		char8_t  s_to[] = "...........................";
-		const char8_t* s_from = "l;kajjsdf;q4w3rrpoiu113<>)(";
+		char  s_to[] = "...........................";
+		const char* s_from = "l;kajjsdf;q4w3rrpoiu113<>)(";
 
 		const size_t n = Strxfrm(s_to, s_from, Strlen(s_from) + 1);
 		EATEST_VERIFY(Strcmp(s_to, s_from) == 0);
@@ -886,14 +886,14 @@ static int TestStringCore()
 	}
 
 
-	// char8_t*  Strdup(const char8_t*  pString);
+	// char*  Strdup(const char*  pString);
 	// char16_t* Strdup(const char16_t* pString);
 	// char32_t* Strdup(const char32_t* pString);
-	// void      Strdel(char8_t*  pString);
+	// void      Strdel(char*  pString);
 	// void      Strdel(char16_t* pString);
 	// void      Strdel(char32_t* pString);
 	{
-		typedef char8_t test_type;
+		typedef char test_type;
 		test_type  s_from[]  = "...........................";
 		test_type* s_new = NULL;
 
@@ -924,11 +924,11 @@ static int TestStringCore()
 	}
 
 
-	// char8_t*  Strupr(char8_t*  pString);
+	// char*  Strupr(char*  pString);
 	// char16_t* Strupr(char16_t* pString);
 	// char32_t* Strupr(char32_t* pString);
 	{
-		char8_t s8[] = "hello world";
+		char s8[] = "hello world";
 
 		EATEST_VERIFY(Strupr(s8) == s8);
 		EATEST_VERIFY(Memcmp(s8, "HELLO WORLD", EAArrayCount(s8)) == 0);
@@ -947,11 +947,11 @@ static int TestStringCore()
 	}
 
 
-	// char8_t*  Strlwr(char8_t*  pString);
+	// char*  Strlwr(char*  pString);
 	// char16_t* Strlwr(char16_t* pString);
 	// char32_t* Strlwr(char32_t* pString);
 	{
-		char8_t s8[] = "HELLO WORLD";
+		char s8[] = "HELLO WORLD";
 
 		EATEST_VERIFY(Strlwr(s8) == s8);
 		EATEST_VERIFY(Memcmp(s8, "hello world", EAArrayCount(s8)) == 0);
@@ -970,11 +970,11 @@ static int TestStringCore()
 	}
 
 
-	// char8_t*  Strchr(const char8_t*  pString, int c);
+	// char*  Strchr(const char*  pString, int c);
 	// char16_t* Strchr(const char16_t* pString, char16_t c);
 	// char32_t* Strchr(const char32_t* pString, char32_t c);
 	{
-		char8_t s8[] = "012a456789abc2ef";
+		char s8[] = "012a456789abc2ef";
 
 		EATEST_VERIFY(Strrchr(s8, 'a')   == &s8[0xa]);
 		EATEST_VERIFY(Strrchr(s8, '2')   == &s8[0xd]);
@@ -999,11 +999,11 @@ static int TestStringCore()
 	}
 
 
-	// size_t Strcspn(const char8_t*  pString1, const char8_t*  pString2);
+	// size_t Strcspn(const char*  pString1, const char*  pString2);
 	// size_t Strcspn(const char16_t* pString1, const char16_t* pString2);
 	// size_t Strcspn(const char32_t* pString1, const char32_t* pString2);
 	{
-		char8_t s8[] = "0123456789abcdef";
+		char s8[] = "0123456789abcdef";
 
 		EATEST_VERIFY(Strcspn(s8, "@fa")    == 0xa);
 		EATEST_VERIFY(Strcspn(s8, "5.a,f")  == 0x5);
@@ -1028,11 +1028,11 @@ static int TestStringCore()
 	}
 
 
-	// char8_t*  Strpbrk(const char8_t*  pString1, const char8_t*  pString2);
+	// char*  Strpbrk(const char*  pString1, const char*  pString2);
 	// char16_t* Strpbrk(const char16_t* pString1, const char16_t* pString2);
 	// char32_t* Strpbrk(const char32_t* pString1, const char32_t* pString2);
 	{
-		char8_t s8[] = "0123456789abcdef";
+		char s8[] = "0123456789abcdef";
 
 		EATEST_VERIFY(Strpbrk(s8, "@fa")    == &s8[0xa]);
 		EATEST_VERIFY(Strpbrk(s8, "5.a,f")  == &s8[0x5]);
@@ -1057,11 +1057,11 @@ static int TestStringCore()
 	}
 
 
-	// char8_t*  Strrchr(const char8_t*  pString, int      c);
+	// char*  Strrchr(const char*  pString, int      c);
 	// char16_t* Strrchr(const char16_t* pString, char16_t c);
 	// char32_t* Strrchr(const char32_t* pString, char32_t c);
 	{
-		char8_t s8[] = "0123456789abcdef";
+		char s8[] = "0123456789abcdef";
 
 		EATEST_VERIFY(Strchr(s8, 'z')   == NULL);
 		EATEST_VERIFY(Strchr(s8, 'a')   == &s8[0xa]);
@@ -1086,7 +1086,7 @@ static int TestStringCore()
 	}
 
 		{
-		char8_t s8[] = "0123456789abcdef";
+		char s8[] = "0123456789abcdef";
 
 		EATEST_VERIFY(Strnchr(s8, 'z', EAArrayCount(s8))   == NULL);
 		EATEST_VERIFY(Strnchr(s8, 'a', EAArrayCount(s8))   == &s8[0xa]);
@@ -1179,11 +1179,11 @@ static int TestStringCore()
 		EATEST_VERIFY(Strnchr(s32, '\0', EA::StdC::Strlen(s32)+1) == &s32[0x10]); //This is the null terminator
 	}
 
-	// size_t Strspn(const char8_t*  pString, const char8_t*  pSubString);
+	// size_t Strspn(const char*  pString, const char*  pSubString);
 	// size_t Strspn(const char16_t* pString, const char16_t* pSubString);
 	// size_t Strspn(const char32_t* pString, const char32_t* pSubString);
 	{
-		char8_t s8[] = "0123456789abcdef";
+		char s8[] = "0123456789abcdef";
 
 		EATEST_VERIFY(Strspn(s8,    "2103") == 4);
 		EATEST_VERIFY(Strspn(s8+10, "badc") == 4);
@@ -1205,11 +1205,11 @@ static int TestStringCore()
 	}
 
 
-	// char8_t*  Strstr(const char8_t*  pString, const char8_t*  pSubString);
+	// char*  Strstr(const char*  pString, const char*  pSubString);
 	// char16_t* Strstr(const char16_t* pString, const char16_t* pSubString);
 	// char32_t* Strstr(const char32_t* pString, const char32_t* pSubString);
 	{
-		char8_t s8[] = "012abcdf89abcdef";
+		char s8[] = "012abcdf89abcdef";
 
 		EATEST_VERIFY(Strstr(s8, "")      == &s8[0]);
 		EATEST_VERIFY(Strstr(s8, "012")   == &s8[0]);
@@ -1237,11 +1237,11 @@ static int TestStringCore()
 	}
 
 
-	// char8_t*  Stristr(const char8_t*  pString, const char8_t*  pSubString);
+	// char*  Stristr(const char*  pString, const char*  pSubString);
 	// char16_t* Stristr(const char16_t* pString, const char16_t* pSubString);
 	// char32_t* Stristr(const char32_t* pString, const char32_t* pSubString);
 	{
-		char8_t s8[] = "012aBcdf89aBcDEf";
+		char s8[] = "012aBcdf89aBcDEf";
 
 		EATEST_VERIFY(Stristr(s8, "012")   == &s8[0]);
 		EATEST_VERIFY(Stristr(s8, "abcde") == &s8[10]);
@@ -1269,7 +1269,7 @@ static int TestStringCore()
 	}
 
 
-	// char8_t*  Strrstr(const char8_t*  pString, const char8_t*  pSubString);
+	// char*  Strrstr(const char*  pString, const char*  pSubString);
 	// char16_t* Strrstr(const char16_t* pString, const char16_t* pSubString);
 	// char32_t* Strrstr(const char32_t* pString, const char32_t* pSubString);
 	{
@@ -1280,7 +1280,7 @@ static int TestStringCore()
 	}
 
 
-	// char8_t*  Strirstr(const char8_t*  pString, const char8_t*  pSubString);
+	// char*  Strirstr(const char*  pString, const char*  pSubString);
 	// char16_t* Strirstr(const char16_t* pString, const char16_t* pSubString);
 	// char32_t* Strirstr(const char32_t* pString, const char32_t* pSubString);
 	{
@@ -1291,17 +1291,17 @@ static int TestStringCore()
 	}
 
 
-	// char8_t*  Strtok(char8_t*  pString, const char8_t*  pDelimiters, char8_t**  pContext);
+	// char*  Strtok(char*  pString, const char*  pDelimiters, char**  pContext);
 	// char16_t* Strtok(char16_t* pString, const char16_t* pDelimiters, char16_t** pContext);
 	// char32_t* Strtok(char32_t* pString, const char32_t* pDelimiters, char32_t** pContext);
 	{
-		char8_t  s8[] = ",.:1:2.3,4";
-		char8_t* s8ctx = s8;
+		char  s8[] = ",.:1:2.3,4";
+		char* s8ctx = s8;
 		EATEST_VERIFY(Strtok(s8, ",.:", &s8ctx) == &s8[3]);
 
-		char8_t   p[] = "-abc-=-def";
-		char8_t*  p1;
-		char8_t*  r;
+		char   p[] = "-abc-=-def";
+		char*  p1;
+		char*  r;
 
 		r = Strtok(p,    "-",  &p1);    // r = "abc", p1 = "=-def", p = "abc\0=-def"
 		EATEST_VERIFY(r != NULL);
@@ -1325,28 +1325,28 @@ static int TestStringCore()
 
 	{
 		// Test bug report by user.
-		char8_t  pStr[]   = { 'a', '=', 'b', ';',  0 };
-		char8_t* pContext = NULL;
-		char8_t* pToken;
+		char  pStr[]   = { 'a', '=', 'b', ';',  0 };
+		char* pContext = NULL;
+		char* pToken;
 
 		   while((pToken = Strtok(pContext ? NULL : pStr, ";", &pContext)) != NULL)
 			{ EATEST_VERIFY(pToken != NULL); }  // This was looping infinitely.
 	}
 
 
-	// const char8_t*  Strtok2(const char8_t*  pString, const char8_t*  pDelimiters, size_t* pResultLength, bool bFirst);
+	// const char*  Strtok2(const char*  pString, const char*  pDelimiters, size_t* pResultLength, bool bFirst);
 	// const char16_t* Strtok2(const char16_t* pString, const char16_t* pDelimiters, size_t* pResultLength, bool bFirst);
 	// const char32_t* Strtok2(const char32_t* pString, const char32_t* pDelimiters, size_t* pResultLength, bool bFirst);
 	{
-		const char8_t* teststr  = "  Hello /// This/is++a test";
-		const char8_t* teststr2 = "  ///  ";
-		const char8_t* teststr3 = "  /// Hello ";
-		const char8_t* delim    = "/ %";
-		const char8_t* token1   = "Hello";
-		const char8_t* token2   = "This";
-		const char8_t* token3   = "is++a";
-		const char8_t* token4   = "test";
-		const char8_t* pCurrent;
+		const char* teststr  = "  Hello /// This/is++a test";
+		const char* teststr2 = "  ///  ";
+		const char* teststr3 = "  /// Hello ";
+		const char* delim    = "/ %";
+		const char* token1   = "Hello";
+		const char* token2   = "This";
+		const char* token3   = "is++a";
+		const char* token4   = "test";
+		const char* pCurrent;
 		size_t         n;
 
 		// Test the first string
@@ -1471,11 +1471,11 @@ static int TestStringCore()
 	}
 
 
-	// char8_t*  Strset(char8_t*  pString, int      c);
+	// char*  Strset(char*  pString, int      c);
 	// char16_t* Strset(char16_t* pString, char16_t c);
 	// char32_t* Strset(char32_t* pString, char32_t c);
 	{
-		char8_t s8[] = ",.:1:2.3,4";
+		char s8[] = ",.:1:2.3,4";
 
 		EATEST_VERIFY(Strset(s8, '^') == s8);
 		EATEST_VERIFY(Memcmp(s8, "^^^^^^^^^^", Strlen(s8)) == 0);
@@ -1494,12 +1494,12 @@ static int TestStringCore()
 	}
 
 
-	// char8_t*  Strnset(char8_t*  pString, int      c, size_t n);
+	// char*  Strnset(char*  pString, int      c, size_t n);
 	// char16_t* Strnset(char16_t* pString, char16_t c, size_t n);
 	// char32_t* Strnset(char32_t* pString, char32_t c, size_t n);
 	{
 		// To do: Make a real test. For now we merely verify that we can call the function.
-		char8_t buffer8[32] = {};
+		char buffer8[32] = {};
 		Strnset(buffer8, 'a', 4);
 
 		char16_t buffer16[32] = {};
@@ -1510,12 +1510,12 @@ static int TestStringCore()
 	}
 
 
-	// char8_t*  Strrev(char8_t*  pString);
+	// char*  Strrev(char*  pString);
 	// char16_t* Strrev(char16_t* pString);
 	// char32_t* Strrev(char32_t* pString);
 	{
-		char8_t s8[32];
-		char8_t sEmpty[1] = { 0 };
+		char s8[32];
+		char sEmpty[1] = { 0 };
 
 		EATEST_VERIFY(Strlen(Strrev(sEmpty)) == 0);
 
@@ -1569,13 +1569,13 @@ static int TestStringCore()
 	}
 
 
-	// int Strcmp(const char8_t*  pString1, const char8_t*  pString2);
+	// int Strcmp(const char*  pString1, const char*  pString2);
 	// int Strcmp(const char16_t* pString1, const char16_t* pString2);
 	// int Strcmp(const char32_t* pString1, const char32_t* pString2);
 	{
-		char8_t buffer1[] = "01234567a"; 
-		char8_t buffer2[] = "01234567b"; 
-		char8_t buffer3[] = "01234567c";
+		char buffer1[] = "01234567a"; 
+		char buffer2[] = "01234567b"; 
+		char buffer3[] = "01234567c";
 
 		EATEST_VERIFY(Strcmp(buffer1, buffer1) == 0);
 		EATEST_VERIFY(Strcmp(buffer2, buffer1) >  0);
@@ -1607,10 +1607,10 @@ static int TestStringCore()
 	}
 
 	{
-		// Extended Strcmp char8_t testing for our optimized version.
+		// Extended Strcmp char testing for our optimized version.
 		// To do: Use a page-protected heap to test that Strcmp isn't reading beyond a page's boundaries.
-		eastl::string8     s1;
-		eastl::string8     s2;
+		eastl::string     s1;
+		eastl::string     s2;
 		EA::UnitTest::Rand rand(1234);
 
 		for(int i = 0; i < 20; i++)
@@ -1628,7 +1628,7 @@ static int TestStringCore()
 
 			for(eastl_size_t j = 0; j < s1Length; j++)
 			{
-				s1[j] = (char8_t)rand.RandRange(CHAR_MIN, CHAR_MAX + 1);
+				s1[j] = (char)rand.RandRange(CHAR_MIN, CHAR_MAX + 1);
 
 				if(s1[j] == 0) // We can't have a 0 char, as that's the C string terminator char.
 					s1[j] = 'x';
@@ -1701,13 +1701,13 @@ static int TestStringCore()
 	}
 
 
-	// int Strncmp(const char8_t*  pString1, const char8_t*  pString2, size_t n);
+	// int Strncmp(const char*  pString1, const char*  pString2, size_t n);
 	// int Strncmp(const char16_t* pString1, const char16_t* pString2, size_t n);
 	// int Strncmp(const char32_t* pString1, const char32_t* pString2, size_t n);
 	{
-		char8_t buffer1[] = "01234567abc"; 
-		char8_t buffer2[] = "01234567bbc"; 
-		char8_t buffer3[] = "01234567cbc"; 
+		char buffer1[] = "01234567abc"; 
+		char buffer2[] = "01234567bbc"; 
+		char buffer3[] = "01234567cbc"; 
 
 		EATEST_VERIFY(Strncmp(buffer1, buffer1, 12) == 0);
 		EATEST_VERIFY(Strncmp(buffer2, buffer1, 12) >  0);
@@ -1739,13 +1739,13 @@ static int TestStringCore()
 	}
 
 
-	// int Stricmp(const char8_t*  pString1, const char8_t*  pString2);
+	// int Stricmp(const char*  pString1, const char*  pString2);
 	// int Stricmp(const char16_t* pString1, const char16_t* pString2);
 	// int Stricmp(const char32_t* pString1, const char32_t* pString2);
 	{
-		char8_t buffer1[] = "01asdf67A";
-		char8_t buffer2[] = "01aSDf67b";
-		char8_t buffer3[] = "01AsdF67C";
+		char buffer1[] = "01asdf67A";
+		char buffer2[] = "01aSDf67b";
+		char buffer3[] = "01AsdF67C";
 
 		EATEST_VERIFY(Stricmp(buffer1, buffer1) == 0);
 		EATEST_VERIFY(Stricmp(buffer2, buffer1) >  0);
@@ -1777,13 +1777,13 @@ static int TestStringCore()
 	}
 
 
-	// int Strnicmp(const char8_t*  pString1, const char8_t*  pString2, size_t n);
+	// int Strnicmp(const char*  pString1, const char*  pString2, size_t n);
 	// int Strnicmp(const char16_t* pString1, const char16_t* pString2, size_t n);
 	// int Strnicmp(const char32_t* pString1, const char32_t* pString2, size_t n);
 	{
-		char8_t buffer1[] = "01asdf67AAsWE";
-		char8_t buffer2[] = "01aSDf67basWe";
-		char8_t buffer3[] = "01AsdF67CaSwe";
+		char buffer1[] = "01asdf67AAsWE";
+		char buffer2[] = "01aSDf67basWe";
+		char buffer3[] = "01AsdF67CaSwe";
 
 		EATEST_VERIFY(Strnicmp(buffer1, buffer1, 13) == 0);
 		EATEST_VERIFY(Strnicmp(buffer2, buffer1, 13) >  0);
@@ -1815,7 +1815,7 @@ static int TestStringCore()
 	}
 
 
-	// int StrcmpAlnum(const char8_t*  pString1, const char8_t*  pString2);
+	// int StrcmpAlnum(const char*  pString1, const char*  pString2);
 	// int StrcmpAlnum(const char16_t* pString1, const char16_t* pString2);
 	// No 32 bit version because this function is deprecated.
 	{
@@ -1856,7 +1856,7 @@ static int TestStringCore()
 	}
 
 
-	// int StricmpAlnum(const char8_t*  pString1, const char8_t*  pString2);
+	// int StricmpAlnum(const char*  pString1, const char*  pString2);
 	// int StricmpAlnum(const char16_t* pString1, const char16_t* pString2);
 	// No 32 bit version because this function is deprecated.
 	{
@@ -1897,7 +1897,7 @@ static int TestStringCore()
 	}
 
 
-	// int Strcoll(const char8_t*  pString1, const char8_t*  pString2);
+	// int Strcoll(const char*  pString1, const char*  pString2);
 	// int Strcoll(const char16_t* pString1, const char16_t* pString2);
 	// int Strcoll(const char32_t* pString1, const char32_t* pString2);
 	{
@@ -1908,7 +1908,7 @@ static int TestStringCore()
 	}
 
 
-	// int Strncoll(const char8_t*  pString1, const char8_t*  pString2, size_t n);
+	// int Strncoll(const char*  pString1, const char*  pString2, size_t n);
 	// int Strncoll(const char16_t* pString1, const char16_t* pString2, size_t n);
 	// int Strncoll(const char32_t* pString1, const char32_t* pString2, size_t n);
 	{
@@ -1919,7 +1919,7 @@ static int TestStringCore()
 	}
 
 
-	// int Stricoll(const char8_t*  pString1, const char8_t*  pString2);
+	// int Stricoll(const char*  pString1, const char*  pString2);
 	// int Stricoll(const char16_t* pString1, const char16_t* pString2);
 	// int Stricoll(const char32_t* pString1, const char32_t* pString2);
 	{
@@ -1930,7 +1930,7 @@ static int TestStringCore()
 	}
 
 
-	// int Strnicoll(const char8_t*  pString1, const char8_t*  pString1, size_t n);
+	// int Strnicoll(const char*  pString1, const char*  pString1, size_t n);
 	// int Strnicoll(const char16_t* pString1, const char16_t* pString1, size_t n);
 	// int Strnicoll(const char32_t* pString1, const char32_t* pString1, size_t n);
 	{
@@ -1953,11 +1953,11 @@ static int TestEcvt()
 
 	// These tests all require a buffer of at least 350 in size to be used
 
-	// char8_t*  EcvtBuf(double dValue, int nDigitCount, int* decimalPos, int* sign, char8_t* buffer);
+	// char*  EcvtBuf(double dValue, int nDigitCount, int* decimalPos, int* sign, char* buffer);
 	// char16_t* EcvtBuf(double dValue, int nDigitCount, int* decimalPos, int* sign, char16_t* buffer);
 	// char32_t* EcvtBuf(double dValue, int nDigitCount, int* decimalPos, int* sign, char32_t* buffer);
 	{
-		char8_t buffer[kEcvtBufMaxSize];
+		char buffer[kEcvtBufMaxSize];
 		int decimalPos, sign;
 
 		EcvtBuf(1.0, 10, &decimalPos, &sign, buffer);
@@ -1979,11 +1979,11 @@ static int TestEcvt()
 	}
 
 
-	// char8_t*  FcvtBuf(double dValue, int nDigitCountAfterDecimal, int* decimalPos, int* sign, char8_t*  buffer);
+	// char*  FcvtBuf(double dValue, int nDigitCountAfterDecimal, int* decimalPos, int* sign, char*  buffer);
 	// char16_t* FcvtBuf(double dValue, int nDigitCountAfterDecimal, int* decimalPos, int* sign, char16_t* buffer);
 	// char32_t* FcvtBuf(double dValue, int nDigitCountAfterDecimal, int* decimalPos, int* sign, char32_t* buffer);
 	{
-		char8_t buffer[kFcvtBufMaxSize];
+		char buffer[kFcvtBufMaxSize];
 		int decimalPos, sign;
 
 		FcvtBuf(1.0, 10, &decimalPos, &sign, buffer);
@@ -2014,11 +2014,11 @@ static int TestItoa()
 
 	int nErrorCount = 0;
 
-	// char8_t*  I32toa(int32_t nValue, char8_t*  pResult, int nBase);
+	// char*  I32toa(int32_t nValue, char*  pResult, int nBase);
 	// char16_t* I32toa(int32_t nValue, char16_t* pResult, int nBase);
 	// char32_t* I32toa(int32_t nValue, char32_t* pResult, int nBase);
 	{
-		char8_t sn8[32];
+		char sn8[32];
 
 		EATEST_VERIFY(I32toa(INT32_MIN, sn8, 10) != NULL); // Can't express INT32_MIN as a numeric constant.
 		EATEST_VERIFY_F(Strcmp(sn8, "-2147483648") == 0, "I32toa(INT32_MIN, sn8, 10) failed; produced %s instead of -2147483648", sn8);
@@ -2085,11 +2085,11 @@ static int TestItoa()
 	}
 
 
-	// char8_t*  U32toa(uint32_t nValue, char8_t*  pResult, int nBase);
+	// char*  U32toa(uint32_t nValue, char*  pResult, int nBase);
 	// char16_t* U32toa(uint32_t nValue, char16_t* pResult, int nBase);
 	// char32_t* U32toa(uint32_t nValue, char32_t* pResult, int nBase);
 	{
-		char8_t sn8[32];
+		char sn8[32];
 
 		EATEST_VERIFY(U32toa(0, sn8, 10) != NULL);
 		EATEST_VERIFY(Strcmp(sn8, "0") == 0);
@@ -2150,11 +2150,11 @@ static int TestItoa()
 	}
 
 
-	// char8_t*  I64toa(int64_t nValue, char8_t*  pBuffer, int nBase);
+	// char*  I64toa(int64_t nValue, char*  pBuffer, int nBase);
 	// char16_t* I64toa(int64_t nValue, char16_t* pBuffer, int nBase);
 	// char32_t* I64toa(int64_t nValue, char32_t* pBuffer, int nBase);
 	{
-		char8_t sn8[128];
+		char sn8[128];
 
 		EATEST_VERIFY(I64toa(INT64_MIN, sn8, 10) != NULL); // Can't express INT64_MIN as a numeric constant.
 		EATEST_VERIFY(Strcmp(sn8, "-9223372036854775808") == 0);
@@ -2215,11 +2215,11 @@ static int TestItoa()
 	}
 
 
-	// char8_t*  U64toa(uint64_t nValue, char8_t*  pBuffer, int nBase);
+	// char*  U64toa(uint64_t nValue, char*  pBuffer, int nBase);
 	// char16_t* U64toa(uint64_t nValue, char16_t* pBuffer, int nBase);
 	// char32_t* U64toa(uint64_t nValue, char32_t* pBuffer, int nBase);
 	{
-		char8_t sn8[128];
+		char sn8[128];
 
 		EATEST_VERIFY(U64toa(0, sn8, 10) != NULL);
 		EATEST_VERIFY(Strcmp(sn8, "0") == 0);
@@ -2289,12 +2289,12 @@ static int TestStrtod()
 
 	int nErrorCount = 0;
 
-	// double StrtodEnglish(const char8_t*  pString, char8_t**  ppStringEnd);
+	// double StrtodEnglish(const char*  pString, char**  ppStringEnd);
 	// double StrtodEnglish(const char16_t* pString, char16_t** ppStringEnd);
 	// double StrtodEnglish(const char32_t* pString, char32_t** ppStringEnd);
 	{
-		const char8_t* p;
-		char8_t* pEnd = NULL;
+		const char* p;
+		char* pEnd = NULL;
 
 		p = "";
 		EATEST_VERIFY(0 == StrtodEnglish(p, &pEnd));
@@ -2462,18 +2462,18 @@ static int TestStrtod()
 	}
 
 
-	// double Strtod(const char8_t*  pString, char8_t**  ppStringEnd);
+	// double Strtod(const char*  pString, char**  ppStringEnd);
 	// double Strtod(const char16_t* pString, char16_t** ppStringEnd);
 	// double Strtod(const char32_t* pString, char32_t** ppStringEnd);
 	{
-		char8_t  sn18[] = "-111.111";
-		char8_t* pEnd = NULL;
+		char  sn18[] = "-111.111";
+		char* pEnd = NULL;
 		EATEST_VERIFY(DoubleEqual(-111.111, Strtod(sn18, &pEnd)));
 
-		char8_t sn28[] = "111e111";
+		char sn28[] = "111e111";
 		EATEST_VERIFY(DoubleEqual(111e111, Strtod(sn28, &pEnd)));
 
-		char8_t sn38[] = "-111e-111";
+		char sn38[] = "-111e-111";
 		EATEST_VERIFY(DoubleEqual(-111e-111, Strtod(sn38, &pEnd)));
 	}
 	{
@@ -2509,23 +2509,23 @@ static int TestStrtoi()
 
 	int nErrorCount = 0;
 
-	// int64_t StrtoI64(const char8_t*  pString, char8_t**  ppStringEnd, int nBase);
+	// int64_t StrtoI64(const char*  pString, char**  ppStringEnd, int nBase);
 	// int64_t StrtoI64(const char16_t* pString, char16_t** ppStringEnd, int nBase);
 	// int64_t StrtoI64(const char32_t* pString, char32_t** ppStringEnd, int nBase);
 	{
 		int64_t result;
 
-		char8_t  sn18[] = "-1011101110111011101";
-		char8_t* pEnd = NULL;
+		char  sn18[] = "-1011101110111011101";
+		char* pEnd = NULL;
 		EATEST_VERIFY(INT64_C(-1011101110111011101) == StrtoI64(sn18, &pEnd, 10));
 
-		char8_t sn28[] = "7fffabcdffffabcd";
+		char sn28[] = "7fffabcdffffabcd";
 		EATEST_VERIFY(UINT64_C(0x7fffabcdffffabcd) == StrtoI64(sn28, &pEnd, 16));
 
-		char8_t sn38[] = "101110011011101110111001010000111111100001100101";
+		char sn38[] = "101110011011101110111001010000111111100001100101";
 		EATEST_VERIFY(UINT64_C(0xB9BBB943F865) == StrtoI64(sn38, &pEnd, 2));
 
-		char8_t sn1[] = "1";
+		char sn1[] = "1";
 		for(int base = 2; base <= 36; base++)
 		{
 			result = StrtoI64(sn1, &pEnd, base);
@@ -2534,10 +2534,10 @@ static int TestStrtoi()
 
 		{
 			// Exercize the ability to read extreme values for various bases.
-			char8_t pINT64_MIN_10_[] = "-9223372036854775809"; // One less than valid.
-			char8_t pINT64_MIN_10[]  = "-9223372036854775808";
-			char8_t pINT64_MAX_10[]  = "+9223372036854775807";
-			char8_t pINT64_MAX_10_[] = "+9223372036854775808"; // One more than valid.
+			char pINT64_MIN_10_[] = "-9223372036854775809"; // One less than valid.
+			char pINT64_MIN_10[]  = "-9223372036854775808";
+			char pINT64_MAX_10[]  = "+9223372036854775807";
+			char pINT64_MAX_10_[] = "+9223372036854775808"; // One more than valid.
 
 			errno = 0;
 			result =  StrtoI64(pINT64_MIN_10_, &pEnd, 10);
@@ -2556,10 +2556,10 @@ static int TestStrtoi()
 			EATEST_VERIFY((result == INT64_MAX) && (errno == ERANGE));
 
 
-			char8_t pINT64_MIN_16_[] = "-8000000000000001";    // One less than valid.
-			char8_t pINT64_MIN_16[]  = "-8000000000000000";
-			char8_t pINT64_MAX_16[]  = "+7fffffffffffffff";
-			char8_t pINT64_MAX_16_[] = "+8000000000000000";    // One more than valid.
+			char pINT64_MIN_16_[] = "-8000000000000001";    // One less than valid.
+			char pINT64_MIN_16[]  = "-8000000000000000";
+			char pINT64_MAX_16[]  = "+7fffffffffffffff";
+			char pINT64_MAX_16_[] = "+8000000000000000";    // One more than valid.
 
 			errno = 0;
 			result =  StrtoI64(pINT64_MIN_16_, &pEnd, 16);
@@ -2712,28 +2712,28 @@ static int TestStrtoi()
 	}
 
 
-	// uint64_t StrtoU64(const char8_t*  pString, char8_t**  ppStringEnd, int nBase);
+	// uint64_t StrtoU64(const char*  pString, char**  ppStringEnd, int nBase);
 	// uint64_t StrtoU64(const char16_t* pString, char16_t** ppStringEnd, int nBase);
 	// uint64_t StrtoU64(const char32_t* pString, char32_t** ppStringEnd, int nBase);
 	{
 		uint64_t result;
 
-		char8_t  sn28[] = "7fffabcdffffabcd";
-		char8_t* pEnd = NULL;
+		char  sn28[] = "7fffabcdffffabcd";
+		char* pEnd = NULL;
 		EATEST_VERIFY(UINT64_C(0x7fffabcdffffabcd) == StrtoU64(sn28, &pEnd, 16));
 
-		char8_t sn38[] = "101110011011101110111001010000111111100001100101";
+		char sn38[] = "101110011011101110111001010000111111100001100101";
 		EATEST_VERIFY(UINT64_C(0xB9BBB943F865) == StrtoU64(sn38, &pEnd, 2));
 
-		char8_t sn48[] = "eb59a646c232da81";
+		char sn48[] = "eb59a646c232da81";
 		EATEST_VERIFY(UINT64_C(0xeb59a646c232da81) == StrtoU64(sn48, &pEnd, 16));
 
 		{
 			// Exercize the ability to read extreme values for various bases.
-		  //char8_t pUINT64_MIN_10_[] =                   "-1";
-			char8_t pUINT64_MIN_10[]  =                    "0";
-			char8_t pUINT64_MAX_10[]  = "18446744073709551615";
-			char8_t pUINT64_MAX_10_[] = "18446744073709551616";
+		  //char pUINT64_MIN_10_[] =                   "-1";
+			char pUINT64_MIN_10[]  =                    "0";
+			char pUINT64_MAX_10[]  = "18446744073709551615";
+			char pUINT64_MAX_10_[] = "18446744073709551616";
 
 		  // -1 converting to 18446744073709551615 seems to be what conforming Standard C libraries do. So we allow it too.
 		  //errno = 0;
@@ -2754,10 +2754,10 @@ static int TestStrtoi()
 
 
 
-		  //char8_t pUINT64_MIN_16_[] =                "-1";
-			char8_t pUINT64_MIN_16[]  =                 "0";
-			char8_t pUINT64_MAX_16[]  =  "ffffffffffffffff";
-			char8_t pUINT64_MAX_16_[] = "10000000000000000";
+		  //char pUINT64_MIN_16_[] =                "-1";
+			char pUINT64_MIN_16[]  =                 "0";
+			char pUINT64_MAX_16[]  =  "ffffffffffffffff";
+			char pUINT64_MAX_16_[] = "10000000000000000";
 
 		  // -1 converting to 18446744073709551615 seems to be what conforming Standard C libraries do. So we allow it too.
 		  //errno = 0;
@@ -2801,34 +2801,34 @@ static int TestStrtoi()
 	}
 
 
-	// int32_t StrtoI32(const char8_t*  pString, char8_t**  ppStringEnd, int nBase);
+	// int32_t StrtoI32(const char*  pString, char**  ppStringEnd, int nBase);
 	// int32_t StrtoI32(const char16_t* pString, char16_t** ppStringEnd, int nBase);
 	// int32_t StrtoI32(const char32_t* pString, char32_t** ppStringEnd, int nBase);
 	{
 		int32_t result;
 
-		char8_t  sn18[] = "-1011101110";
-		char8_t* pEnd = NULL;
+		char  sn18[] = "-1011101110";
+		char* pEnd = NULL;
 		EATEST_VERIFY(-1011101110 == StrtoI32(sn18, &pEnd, 10));
 
-		char8_t sn28[] = "7fffabcd";
+		char sn28[] = "7fffabcd";
 		EATEST_VERIFY(0x7fffabcd == StrtoI32(sn28, &pEnd, 16));
 
-		char8_t sn38[] = "00111001010000111111100001100101";
+		char sn38[] = "00111001010000111111100001100101";
 		EATEST_VERIFY(0x3943F865LL == StrtoI32(sn38, &pEnd, 2));
 
-		char8_t sn48[] = "BEEFEEC0DE"; //number greater than INT32_MAX
+		char sn48[] = "BEEFEEC0DE"; //number greater than INT32_MAX
 		EATEST_VERIFY(INT32_MAX == StrtoI32(sn48, &pEnd, 16));
 
-		char8_t sn58[] = "-BAEBEEC0DE"; //number less than INT32_MIN
+		char sn58[] = "-BAEBEEC0DE"; //number less than INT32_MIN
 		EATEST_VERIFY(INT32_MIN == StrtoI32(sn58, &pEnd, 16));
 
 		{
 			// Exercize the ability to read extreme values for various bases.
-			char8_t pINT32_MIN_10_[] = "-2147483649";
-			char8_t pINT32_MIN_10[]  = "-2147483648";
-			char8_t pINT32_MAX_10[]  = "+2147483647";
-			char8_t pINT32_MAX_10_[] = "+2147483648";
+			char pINT32_MIN_10_[] = "-2147483649";
+			char pINT32_MIN_10[]  = "-2147483648";
+			char pINT32_MAX_10[]  = "+2147483647";
+			char pINT32_MAX_10_[] = "+2147483648";
 
 			errno = 0;
 			result =  StrtoI32(pINT32_MIN_10_, &pEnd, 10);
@@ -2848,10 +2848,10 @@ static int TestStrtoi()
 
 
 
-			char8_t pINT32_MIN_16_[] = "-80000001";
-			char8_t pINT32_MIN_16[]  = "-80000000";
-			char8_t pINT32_MAX_16[]  = "+7fffffff";
-			char8_t pINT32_MAX_16_[] = "+80000000";
+			char pINT32_MIN_16_[] = "-80000001";
+			char pINT32_MIN_16[]  = "-80000000";
+			char pINT32_MAX_16[]  = "+7fffffff";
+			char pINT32_MAX_16_[] = "+80000000";
 
 			errno = 0;
 			result =  StrtoI32(pINT32_MIN_16_, &pEnd, 16);
@@ -2906,29 +2906,29 @@ static int TestStrtoi()
 	}
 
 
-	// uint32_t StrtoU32(const char8_t* pString, char8_t**  ppStringEnd, int nBase);
-	// uint32_t StrtoU32(const char8_t* pString, char16_t** ppStringEnd, int nBase);
-	// uint32_t StrtoU32(const char8_t* pString, char32_t** ppStringEnd, int nBase);
+	// uint32_t StrtoU32(const char* pString, char**  ppStringEnd, int nBase);
+	// uint32_t StrtoU32(const char* pString, char16_t** ppStringEnd, int nBase);
+	// uint32_t StrtoU32(const char* pString, char32_t** ppStringEnd, int nBase);
 	{
 		uint32_t result;
 
-		char8_t  sn28[] = "7fffabcd";
-		char8_t* pEnd = NULL;
+		char  sn28[] = "7fffabcd";
+		char* pEnd = NULL;
 
 		EATEST_VERIFY(0x7fffabcd == StrtoU32(sn28, &pEnd, 16));
 
-		char8_t sn38[] = "10111001010000111111100001100101";
+		char sn38[] = "10111001010000111111100001100101";
 		EATEST_VERIFY(0xB943F865LL == StrtoU32(sn38, &pEnd, 2));
 
-		char8_t sn48[] = "BEEFEEC0DE"; //number greater than UINT32_MAX
+		char sn48[] = "BEEFEEC0DE"; //number greater than UINT32_MAX
 		EATEST_VERIFY(UINT32_MAX == StrtoU32(sn48, &pEnd, 16));
 
 		{
 			// Exercize the ability to read extreme values for various bases.
-		  //char8_t pUINT32_MIN_10_[] =         "-1";
-			char8_t pUINT32_MIN_10[]  =          "0";
-			char8_t pUINT32_MAX_10[]  = "4294967295";
-			char8_t pUINT32_MAX_10_[] = "4294967296";
+		  //char pUINT32_MIN_10_[] =         "-1";
+			char pUINT32_MIN_10[]  =          "0";
+			char pUINT32_MAX_10[]  = "4294967295";
+			char pUINT32_MAX_10_[] = "4294967296";
 
 		  // -1 converting to 18446744073709551615 seems to be what conforming Standard C libraries do. So we allow it too.
 		  //errno = 0;
@@ -2948,10 +2948,10 @@ static int TestStrtoi()
 			EATEST_VERIFY((result == UINT32_MAX) && (errno == ERANGE));
 
 
-		  //char8_t pUINT32_MIN_16_[] =        "-1";
-			char8_t pUINT32_MIN_16[]  =         "0";
-			char8_t pUINT32_MAX_16[]  =  "ffffffff";
-			char8_t pUINT32_MAX_16_[] = "100000000";
+		  //char pUINT32_MIN_16_[] =        "-1";
+			char pUINT32_MIN_16[]  =         "0";
+			char pUINT32_MAX_16[]  =  "ffffffff";
+			char pUINT32_MAX_16_[] = "100000000";
 
 		  // -1 converting to 18446744073709551615 seems to be what conforming Standard C libraries do. So we allow it too.
 		  //errno = 0;
@@ -2995,17 +2995,17 @@ static int TestStrtoi()
 	}
 
 
-	// int32_t AtoI32(const char8_t*  pString);
+	// int32_t AtoI32(const char*  pString);
 	// int32_t AtoI32(const char16_t* pString);
 	// int32_t AtoI32(const char32_t* pString);
 	{
-		char8_t sn18[] = "-1011101110";
+		char sn18[] = "-1011101110";
 		EATEST_VERIFY(-1011101110 == AtoI32(sn18));
 
-		char8_t sn28[] = "2147483647";
+		char sn28[] = "2147483647";
 		EATEST_VERIFY(INT32_MAX == AtoI32(sn28));
 
-		char8_t sn38[] = "-2147483648";
+		char sn38[] = "-2147483648";
 		EATEST_VERIFY(INT32_MIN == AtoI32(sn38));
 	}
 	{
@@ -3030,11 +3030,11 @@ static int TestStrtoi()
 	}
 
 
-	// uint32_t AtoU32(const char8_t*  pString);
+	// uint32_t AtoU32(const char*  pString);
 	// uint32_t AtoU32(const char16_t* pString);
 	// uint32_t AtoU32(const char32_t* pString);
 	{
-		char8_t sn28[] = "4294967295";
+		char sn28[] = "4294967295";
 		EATEST_VERIFY(UINT32_MAX == AtoU32(sn28));
 	}
 	{
@@ -3047,17 +3047,17 @@ static int TestStrtoi()
 	}
 
 
-	// int64_t AtoI64(const char8_t*  pString);
+	// int64_t AtoI64(const char*  pString);
 	// int64_t AtoI64(const char16_t* pString);
 	// int64_t AtoI64(const char32_t* pString);
 	{
-		char8_t sn18[] = "-1011101110111011101";
+		char sn18[] = "-1011101110111011101";
 		EATEST_VERIFY(-1011101110111011101LL == AtoI64(sn18));
 
-		char8_t sn28[] = "9223372036854775807";
+		char sn28[] = "9223372036854775807";
 		EATEST_VERIFY(INT64_MAX == AtoI64(sn28));
 
-		char8_t sn38[] = "-9223372036854775808";
+		char sn38[] = "-9223372036854775808";
 		EATEST_VERIFY(INT64_MIN == AtoI64(sn38));
 	}
 	{
@@ -3082,11 +3082,11 @@ static int TestStrtoi()
 	}
 
 
-	// uint64_t AtoU64(const char8_t*  pString);
+	// uint64_t AtoU64(const char*  pString);
 	// uint64_t AtoU64(const char16_t* pString);
 	// uint64_t AtoU64(const char32_t* pString);
 	{
-		char8_t sn28[] = "18446744073709551615";
+		char sn28[] = "18446744073709551615";
 		EATEST_VERIFY(UINT64_MAX == AtoU64(sn28));
 	}
 	{
@@ -3108,14 +3108,14 @@ static int TestAtof()
 
 	int nErrorCount = 0;
 
-	// double Atof(const char8_t*  pString);
+	// double Atof(const char*  pString);
 	// double Atof(const char16_t* pString);
 	// double Atof(const char32_t* pString);
 	{
-		const char8_t* kStrMin = "2.2250738585072014e-307"; // DBL_MIN is usually 2.2250738585072014e-308, but some Standard Libraries have trouble converting 
+		const char* kStrMin = "2.2250738585072014e-307"; // DBL_MIN is usually 2.2250738585072014e-308, but some Standard Libraries have trouble converting 
 		const double   kValMin =  2.2250738585072014e-307;  // to and from strings of that value. So we use -307 instead, which is pretty reliably supported.
 
-		const char8_t* kStrMax = "1.7976931348623158e+307"; // DBL_MAX is usually 1.7976931348623158e+308.
+		const char* kStrMax = "1.7976931348623158e+307"; // DBL_MAX is usually 1.7976931348623158e+308.
 		const double   kValMax =  1.7976931348623158e+307;
 
 		{
@@ -3145,17 +3145,17 @@ static int TestAtof()
 		}
 	}
 
-	// double AtofEnglish(const char8_t*  pString);
+	// double AtofEnglish(const char*  pString);
 	// double AtofEnglish(const char16_t* pString);
 	// double AtofEnglish(const char32_t* pString);
 	//
 	// AtofEnglish - this function fails on boundary values for double_t 
 	// as it performs some math inside that drives the values to infinity.
 	{
-		const char8_t* kStrMin = "2.2250738585071e-307"; // DBL_MIN is usually 2.2250738585072014e-308, but some Standard Libraries have trouble converting 
+		const char* kStrMin = "2.2250738585071e-307"; // DBL_MIN is usually 2.2250738585072014e-308, but some Standard Libraries have trouble converting 
 		const double   kValMin =  2.2250738585071e-307;  // to and from strings of that value. So we use -307 instead, which is pretty reliably supported.
 
-		const char8_t* kStrMax = "1.7976931348622e+307"; // DBL_MAX is usually 1.7976931348623158e+308.
+		const char* kStrMax = "1.7976931348622e+307"; // DBL_MAX is usually 1.7976931348623158e+308.
 		const double   kValMax =  1.7976931348622e+307;
 
 		{
@@ -3189,11 +3189,11 @@ static int TestFtoa()
 
 	int nErrorCount = 0;
 
-	// char8_t*  Ftoa(double dValue, char_t* pResult, int nInputLength, int nPrecision, bool bExponentEnabled);
+	// char*  Ftoa(double dValue, char_t* pResult, int nInputLength, int nPrecision, bool bExponentEnabled);
 	// char16_t* Ftoa(double dValue, char_t* pResult, int nInputLength, int nPrecision, bool bExponentEnabled);
 	// char32_t* Ftoa(double dValue, char_t* pResult, int nInputLength, int nPrecision, bool bExponentEnabled);
 	{
-		char8_t sn18[128];
+		char sn18[128];
 
 		Ftoa(-1.7976931, sn18, 128, 7, false);
 		if(Strcmp("-1.7976931", sn18) != 0)
@@ -3287,12 +3287,12 @@ static int TestFtoa()
 	}
 
 
-	// char8_t*  FtoaEnglish(double dValue, char8_t*  pResult, int nInputLength, int nPrecision, bool bExponentEnabled);
+	// char*  FtoaEnglish(double dValue, char*  pResult, int nInputLength, int nPrecision, bool bExponentEnabled);
 	// char16_t* FtoaEnglish(double dValue, char16_t* pResult, int nInputLength, int nPrecision, bool bExponentEnabled);
 	// char32_t* FtoaEnglish(double dValue, char32_t* pResult, int nInputLength, int nPrecision, bool bExponentEnabled);
 	{
-		char8_t  sn18[128];
-		char8_t* pResult;
+		char  sn18[128];
+		char* pResult;
 
 		pResult = FtoaEnglish(-1.7976931, sn18, 128, 7, false);
 		EATEST_VERIFY(pResult && (Strcmp("-1.7976931", sn18) == 0));
@@ -3466,11 +3466,11 @@ static int TestReduceFloatString()
 
 	int nErrorCount = 0;
 
-	// size_t ReduceFloatString(char8_t*  pString, size_t nLength = (size_t)~0);
+	// size_t ReduceFloatString(char*  pString, size_t nLength = (size_t)~0);
 	// size_t ReduceFloatString(char16_t* pString, size_t nLength = (size_t)~0);
 	// size_t ReduceFloatString(char32_t* pString, size_t nLength = (size_t)~0);
 	{
-		char8_t pBuffer[64];
+		char pBuffer[64];
 		size_t  n;
 
 		Strcpy(pBuffer, "2.3400");
@@ -3625,7 +3625,7 @@ static int TestConvertString()
 {
 	int nErrorCount = 0;
 
-	eastl::string8  s8("hello world");
+	eastl::string8  s8 = EA_CHAR8("hello world");
 	eastl::string16 s16;
 	eastl::string32 s32;
 
@@ -3639,13 +3639,13 @@ static int TestConvertString()
 
 		// 16 -> 8
 		EA::StdC::Strlcpy(s8, s16);
-		EATEST_VERIFY(s8 == "hello world");
+		EATEST_VERIFY(s8 == EA_CHAR8("hello world"));
 		s16.clear();
 
 
 		// 8 -> 16
 		// Note that using this non-const string causes this specialization to be called instead of the specialization that takes const Source*.
-		char8_t pNonConstString8[] = "hello world";
+		char pNonConstString8[] = "hello world";
 		EA::StdC::Strlcpy(s16, pNonConstString8);
 		EATEST_VERIFY(s16 == EA_CHAR16("hello world"));
 		s8.clear();
@@ -3654,7 +3654,7 @@ static int TestConvertString()
 		// Note that using this non-const string causes this specialization to be called instead of the specialization that takes const Source*.
 		char16_t pNonConstString16[] = EA_CHAR16("hello world");
 		EA::StdC::Strlcpy(s8, pNonConstString16);
-		EATEST_VERIFY(s8 == "hello world");
+		EATEST_VERIFY(s8 == EA_CHAR8("hello world"));
 		s16.clear();
 	}
 	{
@@ -3665,13 +3665,13 @@ static int TestConvertString()
 
 		// 32 -> 8
 		EA::StdC::Strlcpy(s8, s32);
-		EATEST_VERIFY(s8 == "hello world");
+		EATEST_VERIFY(s8 == EA_CHAR8("hello world"));
 		s32.clear();
 	}
 	{
 		// 8 -> 8
-		EA::StdC::Strlcpy<eastl::string8, eastl::string8>(s8, eastl::string8("hello world"));
-		EATEST_VERIFY(s8 == "hello world");
+		EA::StdC::Strlcpy<eastl::string8, eastl::string8>(s8, eastl::string8(EA_CHAR8("hello world")));
+		EATEST_VERIFY(s8 == EA_CHAR8("hello world"));
 		s8.clear();
 
 		// 16 -> 16
@@ -3690,14 +3690,14 @@ static int TestConvertString()
 	// inline bool Strlcpy(Dest& d, const Source* pSource, size_t sourceLength = (size_t)~0);
 	{
 		// 8 -> 16
-		s8 = "hello world";
+		s8 = EA_CHAR8("hello world");
 		EA::StdC::Strlcpy(s16, s8.c_str(), s8.length());
 		EATEST_VERIFY(s16 == EA_CHAR16("hello world"));
 		s8.clear();
 
 		// 16 -> 8
 		EA::StdC::Strlcpy(s8, s16.c_str(), s16.length());
-		EATEST_VERIFY(s8 == "hello world");
+		EATEST_VERIFY(s8 == EA_CHAR8("hello world"));
 		s16.clear();
 	}
 	{
@@ -3708,13 +3708,13 @@ static int TestConvertString()
 
 		// 32 -> 8
 		EA::StdC::Strlcpy(s8, s32.c_str(), s32.length());
-		EATEST_VERIFY(s8 == "hello world");
+		EATEST_VERIFY(s8 == EA_CHAR8("hello world"));
 		s32.clear();
 	}
 	{
 		// 8 -> 8
 		EA::StdC::Strlcpy(s8, "hello world", 11);
-		EATEST_VERIFY(s8 == "hello world");
+		EATEST_VERIFY(s8 == EA_CHAR8("hello world"));
 		s8.clear();
 
 		// 16 -> 16
@@ -3733,14 +3733,14 @@ static int TestConvertString()
 	// inline Dest Strlcpy(const Source& s);
 	{
 		// 8 -> 16
-		s8 = "hello world";
+		s8 = EA_CHAR8("hello world");
 		s16 = EA::StdC::Strlcpy<eastl::string16,  eastl::string8>(s8);
 		EATEST_VERIFY(s16 == EA_CHAR16("hello world"));
 		s8.clear();
 
 		// 16 -> 8
 		s8 = EA::StdC::Strlcpy<eastl::string8, eastl::string16>(s16);
-		EATEST_VERIFY(s8 == "hello world");
+		EATEST_VERIFY(s8 == EA_CHAR8("hello world"));
 		s16.clear();
 	}
 	{
@@ -3751,13 +3751,13 @@ static int TestConvertString()
 
 		// 32 -> 8
 		s8 = EA::StdC::Strlcpy<eastl::string8, eastl::string32>(s32);
-		EATEST_VERIFY(s8 == "hello world");
+		EATEST_VERIFY(s8 == EA_CHAR8("hello world"));
 		s32.clear();
 	}
 	{
 		// 8 -> 8
-		s8 = EA::StdC::Strlcpy<eastl::string8, eastl::string8>(eastl::string8("hello world"));
-		EATEST_VERIFY(s8 == "hello world");
+		s8 = EA::StdC::Strlcpy<eastl::string8, eastl::string8>(eastl::string8(EA_CHAR8("hello world")));
+		EATEST_VERIFY(s8 == EA_CHAR8("hello world"));
 		s8.clear();
 
 		// 16 -> 16
@@ -3775,30 +3775,30 @@ static int TestConvertString()
 	// inline Dest Strlcpy(Dest& d, const Source* pSource, size_t sourceLength = (size_t)~0);
 	{
 		// 8 -> 16
-		s16 = EA::StdC::Strlcpy<eastl::string16, char8_t>("hello world", 11);
+		s16 = EA::StdC::Strlcpy<eastl::string16, char>("hello world", 11);
 		EATEST_VERIFY(s16 == EA_CHAR16("hello world"));
 		s8.clear();
 
 		// 16 -> 8
 		s8 = EA::StdC::Strlcpy<eastl::string8, char16_t>(EA_CHAR16("hello world"), 11);
-		EATEST_VERIFY(s8 == "hello world");
+		EATEST_VERIFY(s8 == EA_CHAR8("hello world"));
 		s16.clear();
 	}
 	{
 		// 8 -> 32
-		s32 = EA::StdC::Strlcpy<eastl::string32, char8_t>("hello world", 11);
+		s32 = EA::StdC::Strlcpy<eastl::string32, char>("hello world", 11);
 		EATEST_VERIFY(s32 == EA_CHAR32("hello world"));
 		s8.clear();
 
 		// 32 -> 8
 		s8 = EA::StdC::Strlcpy<eastl::string8, char32_t>(EA_CHAR32("hello world"), 11);
-		EATEST_VERIFY(s8 == "hello world");
+		EATEST_VERIFY(s8 == EA_CHAR8("hello world"));
 		s32.clear();
 	}
 	{
 		// 8 -> 8
-		s8 = EA::StdC::Strlcpy<eastl::string8, char8_t>("hello world", 11);
-		EATEST_VERIFY(s8 == "hello world");
+		s8 = EA::StdC::Strlcpy<eastl::string8, char>("hello world", 11);
+		EATEST_VERIFY(s8 == EA_CHAR8("hello world"));
 		s8.clear();
 
 		// 16 -> 16
@@ -3818,30 +3818,30 @@ static int TestConvertString()
 	{
 		// 8 -> 16
 		s16 = EA_CHAR16("abc ");
-		EA::StdC::Strlcat(s16, eastl::string8("hello world"));
+		EA::StdC::Strlcat(s16, eastl::string8(EA_CHAR8("hello world")));
 		EATEST_VERIFY(s16 == EA_CHAR16("abc hello world"));
 
 		// 16 -> 8
-		s8 = "abc ";
+		s8 = EA_CHAR8("abc ");
 		EA::StdC::Strlcat(s8, eastl::string16(EA_CHAR16("hello world")));
-		EATEST_VERIFY(s8 == "abc hello world");
+		EATEST_VERIFY(s8 == EA_CHAR8("abc hello world"));
 	}
 	{
 		// 8 -> 32
 		s32 = EA_CHAR32("abc ");
-		EA::StdC::Strlcat(s32, eastl::string8("hello world"));
+		EA::StdC::Strlcat(s32, eastl::string8(EA_CHAR8("hello world")));
 		EATEST_VERIFY(s32 == EA_CHAR32("abc hello world"));
 
 		// 32 -> 8
-		s8 = "abc ";
+		s8 = EA_CHAR8("abc ");
 		EA::StdC::Strlcat(s8, eastl::string32(EA_CHAR32("hello world")));
-		EATEST_VERIFY(s8 == "abc hello world");
+		EATEST_VERIFY(s8 == EA_CHAR8("abc hello world"));
 	}
 	{
 		// 8 -> 8
-		s8 = "abc ";
-		EA::StdC::Strlcat(s8, eastl::string8("hello world"));
-		EATEST_VERIFY(s8 == "abc hello world");
+		s8 = EA_CHAR8("abc ");
+		EA::StdC::Strlcat(s8, eastl::string8(EA_CHAR8("hello world")));
+		EATEST_VERIFY(s8 == EA_CHAR8("abc hello world"));
 		s8.clear();
 
 		// 16 -> 16
@@ -3867,9 +3867,9 @@ static int TestConvertString()
 		EATEST_VERIFY(s16 == EA_CHAR16("abc hello world"));
 
 		// 16 -> 8
-		s8 = "abc ";
+		s8 = EA_CHAR8("abc ");
 		EA::StdC::Strlcat(s8, EA_CHAR16("hello world"), 11);
-		EATEST_VERIFY(s8 == "abc hello world");
+		EATEST_VERIFY(s8 == EA_CHAR8("abc hello world"));
 	}
 	{
 		// 8 -> 32
@@ -3878,15 +3878,15 @@ static int TestConvertString()
 		EATEST_VERIFY(s32 == EA_CHAR32("abc hello world"));
 
 		// 32 -> 8
-		s8 = "abc ";
+		s8 = EA_CHAR8("abc ");
 		EA::StdC::Strlcat(s8, EA_CHAR32("hello world"), 11);
-		EATEST_VERIFY(s8 == "abc hello world");
+		EATEST_VERIFY(s8 == EA_CHAR8("abc hello world"));
 	}
 	{
 		// 8 -> 8
-		s8 = "abc ";
+		s8 = EA_CHAR8("abc ");
 		EA::StdC::Strlcat(s8, "hello world", 11);
-		EATEST_VERIFY(s8 == "abc hello world");
+		EATEST_VERIFY(s8 == EA_CHAR8("abc hello world"));
 		s8.clear();
 
 		// 16 -> 16
@@ -3908,14 +3908,14 @@ static int TestConvertString()
 		// inline bool ConvertString(const Source& s, Dest& d);
 		{
 			// 8 -> 16
-			s8 = "hello world";
+			s8 = EA_CHAR8("hello world");
 			EA::StdC::ConvertString(s8, s16);
 			EATEST_VERIFY(s16 == EA_CHAR16("hello world"));
 			s8.clear();
 
 			// 16 -> 8
 			EA::StdC::ConvertString(s16, s8);
-			EATEST_VERIFY(s8 == "hello world");
+			EATEST_VERIFY(s8 == EA_CHAR8("hello world"));
 			s16.clear();
 		}
 		{
@@ -3926,7 +3926,7 @@ static int TestConvertString()
 
 			// 32 -> 8
 			EA::StdC::ConvertString(s32, s8);
-			EATEST_VERIFY(s8 == "hello world");
+			EATEST_VERIFY(s8 == EA_CHAR8("hello world"));
 			s32.clear();
 		}
 
@@ -3941,7 +3941,7 @@ static int TestConvertString()
 
 			// 16 -> 8
 			s8 = EA::StdC::ConvertString<eastl::string16, eastl::string8>(s16);
-			EATEST_VERIFY(s8 == "hello world");
+			EATEST_VERIFY(s8 == EA_CHAR8("hello world"));
 			s16.clear();
 		}
 		{
@@ -3952,14 +3952,14 @@ static int TestConvertString()
 
 			// 32 -> 8
 			s8 = EA::StdC::ConvertString<eastl::string32, eastl::string8>(s32);
-			EATEST_VERIFY(s8 == "hello world");
+			EATEST_VERIFY(s8 == EA_CHAR8("hello world"));
 			s32.clear();
 		}
 
 		{
 			// 8 -> 8
-			s8 = EA::StdC::ConvertString<eastl::string8, eastl::string8>(eastl::string8("hello world"));
-			EATEST_VERIFY(s8 == "hello world");
+			s8 = EA::StdC::ConvertString<eastl::string8, eastl::string8>(eastl::string8(EA_CHAR8("hello world")));
+			EATEST_VERIFY(s8 == EA_CHAR8("hello world"));
 			s8.clear();
 
 			// 16 -> 16
@@ -3974,7 +3974,7 @@ static int TestConvertString()
 		}
 
 		{   //Regression for user-reported problem.
-			const char8_t* pPath8 = "/abc/def/ghi/jkl";
+			const auto* pPath8 = EA_CHAR8("/abc/def/ghi/jkl");
 			eastl::string16 path16 = EA::StdC::ConvertString<eastl::string8, eastl::string16>(pPath8);
 			EATEST_VERIFY((path16.length() == EA::StdC::Strlen(pPath8)));
 		}
@@ -4125,7 +4125,7 @@ static int TestStrstart()
 
 	int nErrorCount = 0;
 
-	// char8_t
+	// char
 	EATEST_VERIFY( Strstart("",       ""));
 	EATEST_VERIFY( Strstart("a",      ""));
 	EATEST_VERIFY(!Strstart("",       "a"));
@@ -4193,7 +4193,7 @@ static int TestStrend()
 
 	int nErrorCount = 0;
 
-	// char8_t
+	// char
 	EATEST_VERIFY( Strend("",       ""));
 	EATEST_VERIFY( Strend("f",      ""));
 	EATEST_VERIFY(!Strend("",       "f"));

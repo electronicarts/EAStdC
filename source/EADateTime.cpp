@@ -1067,7 +1067,7 @@ namespace StdC
 	///////////////////////////////////////////////////////////////////////
 	// GetTimeZoneName
 	//
-	EASTDC_API bool GetTimeZoneName(char8_t* pName, bool bDaylightSavingsName)
+	EASTDC_API bool GetTimeZoneName(char* pName, bool bDaylightSavingsName)
 	{
 		#if defined(EA_PLATFORM_MICROSOFT) && defined(_MSC_VER) && (_MSC_VER >= 1400)
 			EA_COMPILETIME_ASSERT(EASTDC_UTC_TIME_AVAILABLE == 1);

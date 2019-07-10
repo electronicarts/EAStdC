@@ -16,7 +16,7 @@
 #include <stdarg.h>
 
 
-static void TestCRTVsnprintf(char8_t* pDestination, size_t n, const char8_t* pFormat, ...)
+static void TestCRTVsnprintf(char* pDestination, size_t n, const char* pFormat, ...)
 {
 	va_list vList;
 	va_start(vList, pFormat);
@@ -42,7 +42,7 @@ static void TestCRTVsnprintf(char32_t* pDestination, size_t n, const char32_t* p
 
 
 #if EASTDC_VSNPRINTF8_ENABLED
-	static void TestCRTVsnprintf8(char8_t* pDestination, size_t n, const char8_t* pFormat, ...)
+	static void TestCRTVsnprintf8(char* pDestination, size_t n, const char* pFormat, ...)
 	{
 		va_list vList;
 		va_start(vList, pFormat);
@@ -90,7 +90,7 @@ static int TestSprintf8(int unused = 0, ...)
 
 	// int Snprintf(char_t* pDestination, size_t n, const char_t* pFormat, ...);
 	{
-		char8_t sn18[128];
+		char sn18[128];
 		Snprintf(sn18, 128, "%5s%-4d%03i", "abc", -12, 3);
 		EATEST_VERIFY(!Strcmp("  abc-12 003", sn18));
 		Snprintf(sn18, 128, "%.2f", 3.1415);
@@ -99,7 +99,7 @@ static int TestSprintf8(int unused = 0, ...)
 
 	// int Vsnprintf(char_t* pDestination, size_t n, const char_t* pFormat, ...);
 	{
-		char8_t sn18[128];
+		char sn18[128];
 		TestCRTVsnprintf(sn18, 128, "%5s%-5d%04i", "abc", -12, 3);
 		EATEST_VERIFY(!Strcmp("  abc-12  0003", sn18));
 		TestCRTVsnprintf(sn18, 128, "%.2f", 3.1415);
@@ -108,7 +108,7 @@ static int TestSprintf8(int unused = 0, ...)
 
 	#if EASTDC_VSNPRINTF8_ENABLED
 		{
-			char8_t sn18[128];
+			char sn18[128];
 			TestCRTVsnprintf8(sn18, 128, "%5s%-5d%04i", "abc", -12, 3);
 			EATEST_VERIFY(!Strcmp("  abc-12  0003", sn18));
 			TestCRTVsnprintf8(sn18, 128, "%.2f", 3.1415);
@@ -130,12 +130,12 @@ static int TestSprintf8(int unused = 0, ...)
 
 
 	// template <typename String>
-	// int StringVcprintf(String& s, const char8_t* EA_RESTRICT pFormat, va_list arguments)
+	// int StringVcprintf(String& s, const char* EA_RESTRICT pFormat, va_list arguments)
 	{
 		va_list arguments;
 		va_start(arguments, unused);
 
-		eastl::string8 s8;
+		eastl::string s8;
 		int result = StringVcprintf(s8, "hello", arguments);
 		EATEST_VERIFY((result == 5) && (s8 == "hello"));
 
@@ -146,7 +146,7 @@ static int TestSprintf8(int unused = 0, ...)
 	// template <typename String> 
 	// int StringPrintf(String& s, const typename String::value_type* EA_RESTRICT pFormat, ...)
 	{
-		eastl::string8 s8;
+		eastl::string s8;
 		int result = StringPrintf(s8, "%s", "hello");
 		EATEST_VERIFY((result == 5) && (s8 == "hello"));
 	}
@@ -159,14 +159,14 @@ static int TestSprintf8(int unused = 0, ...)
 
 	{
 		// Test for parsing of PRI constants in format strings
-		char8_t buffer[128];
+		char buffer[128];
 		Sprintf(buffer, "%" PRIxPTR, (intptr_t) 0xDEADBEEF);
 		EATEST_VERIFY(Strcmp(buffer, "deadbeef") == 0);
 	}
 
 	// Sprintf
 	{
-		char8_t buffer[128];
+		char buffer[128];
 		const int kHexValue = 0x12;
 
 		Sprintf(buffer, "%.4x", kHexValue);
@@ -202,7 +202,7 @@ static int TestSprintf8(int unused = 0, ...)
 
 
 	{
-		char8_t buffer[128];
+		char buffer[128];
 
 		Sprintf(buffer, "decimal negative: \"%d\"\n", -2345);
 		EATEST_VERIFY(Strcmp(buffer, "decimal negative: \"-2345\"\n") == 0);
@@ -249,9 +249,9 @@ static int TestSprintf8(int unused = 0, ...)
 
 
 	{
-		char8_t buffer[1024];
-		char8_t str1[] = "abc de";
-		char8_t str2[] = "abd def ghi jkl mno pqr stu vwz yz.";
+		char buffer[1024];
+		char str1[] = "abc de";
+		char str2[] = "abd def ghi jkl mno pqr stu vwz yz.";
 
 		// The C99 standard specifies that leading zeros only put zeroes in front of numerical types. Spaces for others.
 		Sprintf(buffer, "zero-padded string: \"%010s\"\n", str1);
@@ -269,13 +269,13 @@ static int TestSprintf8(int unused = 0, ...)
 		Sprintf(buffer, "limited string: \"%.22s\"\n", str2);
 		EATEST_VERIFY(Strcmp(buffer, "limited string: \"abd def ghi jkl mno pq\"\n") == 0);
 
-		Sprintf(buffer, "null string: \"%s\"\n", (char8_t*)NULL);
+		Sprintf(buffer, "null string: \"%s\"\n", (char*)NULL);
 		EATEST_VERIFY(Strcmp(buffer, "null string: \"(null)\"\n") == 0);
 
-		Sprintf(buffer, "%10s\n", (char8_t*)NULL);
+		Sprintf(buffer, "%10s\n", (char*)NULL);
 		EATEST_VERIFY(Strcmp(buffer, "    (null)\n") == 0);
 
-		Sprintf(buffer, "%-10s\n", (char8_t*)NULL);
+		Sprintf(buffer, "%-10s\n", (char*)NULL);
 		EATEST_VERIFY(Strcmp(buffer, "(null)    \n") == 0);
 
 		Sprintf(buffer, "%*s%*s%*s", -1, "one", -20, "two", -30, "three");
@@ -298,20 +298,20 @@ static int TestSprintf8(int unused = 0, ...)
 
 
 	{   // String tests
-		// We accept %hc, %c, %lc, %I8c, %I16c, %I32c (regular, regular, wide, char8_t, char16_t, char32_t)
-		// We accept %hC, %C, %lC, %I8C, %I16C, %I32C (regular, wide,    wide, char8_t, char16_t, char32_t)
-		// We accept %hs, %s, %ls, %I8s, %I16s, %I32s (regular, regular, wide, char8_t, char16_t, char32_t)
-		// We accept %hS, %S, %lS, %I8s, %I16s, %I32s (regular, wide,    wide, char8_t, char16_t, char32_t)
+		// We accept %hc, %c, %lc, %I8c, %I16c, %I32c (regular, regular, wide, char, char16_t, char32_t)
+		// We accept %hC, %C, %lC, %I8C, %I16C, %I32C (regular, wide,    wide, char, char16_t, char32_t)
+		// We accept %hs, %s, %ls, %I8s, %I16s, %I32s (regular, regular, wide, char, char16_t, char32_t)
+		// We accept %hS, %S, %lS, %I8s, %I16s, %I32s (regular, wide,    wide, char, char16_t, char32_t)
 
-		char8_t  buffer[32];
-		char8_t  dStr8[2]  = { 'd', 0 };
+		char  buffer[32];
+		char  dStr8[2]  = { 'd', 0 };
 		char16_t eStr16[2] = { 'e', 0 };
 		char32_t fStr32[2] = { 'f', 0 };
 
-		Sprintf(buffer, "%hc %c %lc %I8c %I16c %I32c", 'a', 'b',           EA_WCHAR('c'), (char8_t)'d', (char16_t)'e', (char32_t)'f');
+		Sprintf(buffer, "%hc %c %lc %I8c %I16c %I32c", 'a', 'b',           EA_WCHAR('c'), (char)'d', (char16_t)'e', (char32_t)'f');
 		EATEST_VERIFY(Strcmp(buffer, "a b c d e f") == 0);
 
-		Sprintf(buffer, "%hC %C %lC %I8C %I16C %I32C", 'a', EA_WCHAR('b'), EA_WCHAR('c'), (char8_t)'d', (char16_t)'e', (char32_t)'f');
+		Sprintf(buffer, "%hC %C %lC %I8C %I16C %I32C", 'a', EA_WCHAR('b'), EA_WCHAR('c'), (char)'d', (char16_t)'e', (char32_t)'f');
 		EATEST_VERIFY(Strcmp(buffer, "a b c d e f") == 0);
 
 		Sprintf(buffer, "%hs %s %ls %I8s %I16s %I32s", "a", "b",           EA_WCHAR("c"), dStr8,        eStr16,         fStr32);
@@ -323,7 +323,7 @@ static int TestSprintf8(int unused = 0, ...)
 
 
 	{ // NaN/Inf functionality tests
-		char8_t buffer[256];
+		char buffer[256];
 
 		const float     kFloat32PositiveInfinity     = FloatFromBitRepr(UINT32_C(0x7f800000));
 		const float     kFloat32NegativeInfinity     = FloatFromBitRepr(UINT32_C(0xff800000));
@@ -367,7 +367,7 @@ static int TestSprintf8(int unused = 0, ...)
 		Sprintf(buffer, "%e %f %g", kFloat64NegativeNaN, kFloat64NegativeNaN, kFloat64NegativeNaN);
 		EATEST_VERIFY(Strcmp(buffer, "-nan -nan -nan") == 0);
 
-		#if !defined(EA_PLATFORM_CAPILANO)
+		#if !defined(EA_PLATFORM_XBOXONE)
 			// This test should theoretically work on Capilano.  But currently it must be disabled or it
 			// will cause the runtime to assert.  A bug has been logged with MS so hopefully the issue
 			// will be resolved in the future.  We should try to enable the test later if it is resolved.
@@ -382,7 +382,7 @@ static int TestSprintf8(int unused = 0, ...)
 
 	{ // Extended functionality tests
 
-		char8_t buffer[256];
+		char buffer[256];
 
 		Sprintf(buffer, "%08x %032b", 0xaaaaaaaa, 0xaaaaaaaa);
 		EATEST_VERIFY(Strcmp(buffer, "aaaaaaaa 10101010101010101010101010101010") == 0);
@@ -396,7 +396,7 @@ static int TestSprintf8(int unused = 0, ...)
 
 
 	{
-		char8_t buffer[1024];
+		char buffer[1024];
 		int i;
 
 		Sprintf(buffer, "e-style >= 1: \"%e\"\n", 12.34);
@@ -502,8 +502,8 @@ static int TestSprintf8(int unused = 0, ...)
 
 
 	{
-		char8_t        buffer[256];
-		const char8_t* pExpected;
+		char        buffer[256];
+		const char* pExpected;
 
 		// VC++ sprintf would fail these tests, as the Standard says to print no more 
 		// than 2 unless necessary, yet VC++ sprintf prints 3 digits exponents.
@@ -542,28 +542,28 @@ static int TestSprintf8(int unused = 0, ...)
 
 
 	{
-		char8_t buffer[256];
+		char buffer[256];
 
 		// Verify that snprintf follows the C99 convention of returning the number of characters
 		// required. This is as opposed to the non-standard way that some libraries just return 
 		// -1 if the buffer isn't big enough.
 
 		const int kBuf1Capacity = 20;
-		char8_t   buf1[kBuf1Capacity];
+		char   buf1[kBuf1Capacity];
 		int       n1 = Snprintf(buf1, kBuf1Capacity, "%30s", "foo");
 		Sprintf(buffer, "snprintf(\"%%30s\", \"foo\") == %d, \"%.*s\"\n", n1, kBuf1Capacity, buf1);
 		EATEST_VERIFY(Strcmp(buffer, "snprintf(\"%30s\", \"foo\") == 30, \"                   \"\n") == 0); // VC++ fails this, as it's version of snprintf doesn't use C99 standard snprintf return value conventions.
 
 		const int kBuf2Capacity = 512;
-		char8_t   buf2[kBuf2Capacity];
+		char   buf2[kBuf2Capacity];
 		int       n2 = Snprintf(buf2, kBuf2Capacity, "%.1000u", 10);
 		Sprintf(buffer, "snprintf(\"%%.1000u\", 10) == %d\n", n2);
 		EATEST_VERIFY(Strcmp(buffer, "snprintf(\"%.1000u\", 10) == 1000\n") == 0); // VC++ fails this, as it's version of snprintf doesn't use C99 standard snprintf return value conventions.
 
 		const int kBuf3Capacity = 512;
-		char8_t   buf3[kBuf3Capacity];
-		char8_t*  pString = new char8_t[100000];
-		memset(pString, '_', 100000 * sizeof(char8_t));
+		char   buf3[kBuf3Capacity];
+		char*  pString = new char[100000];
+		memset(pString, '_', 100000 * sizeof(char));
 		pString[100000 - 1] = 0;
 		int n3 = Snprintf(buf3, kBuf2Capacity, "%s", pString);
 		Sprintf(buffer, "snprintf(\"%%s\", pString) == %d\n", n3);
@@ -581,7 +581,7 @@ static int TestSprintf8(int unused = 0, ...)
 
 
 	{
-		char8_t buffer[16][256];
+		char buffer[16][256];
 
 		int n = 0, i, j, k, m;
 
@@ -593,8 +593,8 @@ static int TestSprintf8(int unused = 0, ...)
 				{
 					for(m = 0; m < 2; m++)
 					{
-						char8_t prefix[7];
-						char8_t format[128];
+						char prefix[7];
+						char format[128];
 
 						Strcpy(prefix, "%");
 						if(i == 0)
@@ -639,8 +639,8 @@ static int TestSprintf8(int unused = 0, ...)
 
 
 	{
-		char8_t        buffer[256];
-		const char8_t* pExpected;
+		char        buffer[256];
+		const char* pExpected;
 
 		Sprintf(buffer, "%e", 1234567.8); // VC++ sprintf would fail this, as it uses 3 exponent digits, but the Standard says to print no more than 2 unless necessary.
 		pExpected = "1.234568e+06";
@@ -703,8 +703,8 @@ static int TestSprintf8(int unused = 0, ...)
 
 
 	{   // Test the ' extension, which cases numbers to be printed with a thousands separator.
-		char8_t        buffer[64];
-		const char8_t* pExpected;
+		char        buffer[64];
+		const char* pExpected;
 
 		Sprintf(buffer, "%'u", 123456789);
 		EATEST_VERIFY(Strcmp(buffer, "123,456,789") == 0);
@@ -762,7 +762,7 @@ static int TestSprintf8(int unused = 0, ...)
 
 
 	{
-		char8_t buffer[256];
+		char buffer[256];
 
 		Sprintf(buffer, "%hhu", UCHAR_MAX + 2);
 		EATEST_VERIFY(Strcmp(buffer, "1") == 0); // VC++ fails this, as it doesn't implement the C99 standard %hh modifier.
@@ -773,7 +773,7 @@ static int TestSprintf8(int unused = 0, ...)
 
 
 	{
-		char8_t buffer[128];
+		char buffer[128];
 
 		Sprintf(buffer, "%5.s", "xyz");
 		EATEST_VERIFY(Strcmp(buffer, "     ") == 0);
@@ -796,7 +796,7 @@ static int TestSprintf8(int unused = 0, ...)
 
 
 	{
-		char8_t buffer[128];
+		char buffer[128];
 		int     precision;
 		//for %g, precision 0 is not valid, if specified 0, it is taken as 1
 		precision = 0;
@@ -831,7 +831,7 @@ static int TestSprintf8(int unused = 0, ...)
 
 	{   // EAC tests
 
-		char8_t dest1[1024], dest3[1024];
+		char dest1[1024], dest3[1024];
 
 		// Test #1
 		Sprintf(dest1, "Hello.  Test.");
@@ -850,8 +850,8 @@ static int TestSprintf8(int unused = 0, ...)
 		EATEST_VERIFY(Strcmp(dest1, "Float.  -0.010000 10.000000 0.000000\n") == 0);
 
 		// Test #5
-		Sprintf(dest1, "Str/char8_t: %s %c %c", "test", 'b', 0341);
-		EATEST_VERIFY(Strcmp(dest1, "Str/char8_t: test b \341") == 0);
+		Sprintf(dest1, "Str/char: %s %c %c", "test", 'b', 0341);
+		EATEST_VERIFY(Strcmp(dest1, "Str/char: test b \341") == 0);
 
 		// Test #6
 		Sprintf(dest1,"Hex: %x %X",3829,-392);
@@ -942,38 +942,38 @@ static int TestSprintf8(int unused = 0, ...)
 
 		const float list1f[]={0.832f,0.00832f,8.32f,0.0f,-0.15f};
 
-		const char8_t* list1[]={"0.832000","0.008320","8.320000","0.000000","-0.150000"};
+		const char* list1[]={"0.832000","0.008320","8.320000","0.000000","-0.150000"};
 
 		const float list2f[]={0.0000000000123f,0.000000000123f,0.00000000123f,0.0000000123f
 								,0.000000123f,0.00000123f,0.0000123f,0.000123f,0.00123f,0.0123f,0.123f,1.23f
 								,12.3f,123.0f,1230.0f,12300.0f,123000.0f,1230000.0f,12300000.0f,123000000.0f,12300000000.0f};
 
-		const char8_t* list2[]={"0.000000","0.000000","0.000000","0.000000"
+		const char* list2[]={"0.000000","0.000000","0.000000","0.000000"
 								,"0.000000","0.000001","0.000012","0.000123","0.001230","0.012300","0.123000","1.230000"
 								,"12.300000","123.000000","1230.000000","12300.000000","123000.000000","1230000.000000",
 								"12300000.000000","123000000.000000","12300000000.000000"};
 
-		const char8_t* list22D[]={"0.00","0.00","0.00","0.00"
+		const char* list22D[]={"0.00","0.00","0.00","0.00"
 								,"0.00","0.00","0.00","0.00","0.00","0.01","0.12","1.23"
 								,"12.30","123.00","1230.00","12300.00","123000.00","1230000.00","12300000.00",
 								"123000000.00","12300000000.00"};
 
-		const char8_t* list23DSL[]={"1.230e-11","1.230e-10","1.230e-09","1.230e-08"
+		const char* list23DSL[]={"1.230e-11","1.230e-10","1.230e-09","1.230e-08"
 								,"1.230e-07","1.230e-06","1.230e-05","1.230e-04","1.230e-03","1.230e-02","1.230e-01","1.230e+00"
 								,"1.230e+01","1.230e+02","1.230e+03","1.230e+04","1.230e+05","1.230e+06","1.230e+07","1.230e+08"
 								,"1.230e+10"};
 
-		const char8_t* list24DSL[]={"1.230E-11","1.230E-10","1.230E-09","1.230E-08"
+		const char* list24DSL[]={"1.230E-11","1.230E-10","1.230E-09","1.230E-08"
 								,"1.230E-07","1.230E-06","1.230E-05","1.230E-04","1.230E-03","1.230E-02","1.230E-01","1.230E+00"
 								,"1.230E+01","1.230E+02","1.230E+03","1.230E+04","1.230E+05","1.230E+06","1.230E+07","1.230E+08"
 								,"1.230E+10"};
 
-		const char8_t* list31DSL[]={"1.23e-11","1.23e-10","1.23e-09","1.23e-08"
+		const char* list31DSL[]={"1.23e-11","1.23e-10","1.23e-09","1.23e-08"
 								,"1.23e-07","1.23e-06","1.23e-05","0","0.001","0.012","0.123","1.23"
 								,"12.3","123","1.23e+03","1.23e+04","1.23e+05","1.23e+06","1.23e+07","1.23e+08"
 								,"1.23e+10"};
 
-		const char8_t* list32DSL[]={"1.23E-11","1.23E-10","1.23E-09","1.23E-08"
+		const char* list32DSL[]={"1.23E-11","1.23E-10","1.23E-09","1.23E-08"
 								,"1.23E-07","1.23E-06","1.23E-05","0","0.001","0.012","0.123","1.23"
 								,"12.3","123","1.23E+03","1.23E+04","1.23E+05","1.23E+06","1.23E+07","1.23E+08"
 								,"1.23E+10"};
@@ -981,7 +981,7 @@ static int TestSprintf8(int unused = 0, ...)
 		int32_t list1size = sizeof(list1f)/sizeof(list1f[0]);
 		int32_t list2size = sizeof(list2f)/sizeof(list2f[0]);
 		int32_t i, error;
-		char8_t str[256];
+		char str[256];
 
 		error = 0;
 		for(i = 0; i < list1size; i++)
@@ -1076,13 +1076,13 @@ static int TestSprintf8(int unused = 0, ...)
 		EA::StdC::Snprintf(format, sizeof(format), "%%.%us%%c123", kBufferSize - 1);
 		EATEST_VERIFY(Strcmp(format, "%.2047s%c123") == 0);
 
-		auto unique_buffer = eastl::make_unique<char8_t[]>(kBufferSize);
-		auto unique_expect = eastl::make_unique<char8_t[]>(kBufferSize + 16);
-		auto unique_actual = eastl::make_unique<char8_t[]>(kBufferSize + 16);
+		auto unique_buffer = eastl::make_unique<char[]>(kBufferSize);
+		auto unique_expect = eastl::make_unique<char[]>(kBufferSize + 16);
+		auto unique_actual = eastl::make_unique<char[]>(kBufferSize + 16);
 
-		char8_t* buffer = unique_buffer.get();
-		char8_t* expectedOutput = unique_expect.get();
-		char8_t* actualOutput = unique_actual.get();
+		char* buffer = unique_buffer.get();
+		char* expectedOutput = unique_expect.get();
+		char* actualOutput = unique_actual.get();
 
 		memset(buffer, '?', kBufferSize);
 		buffer[kBufferSize - 1] = 0;
@@ -1099,8 +1099,8 @@ static int TestSprintf8(int unused = 0, ...)
 		static const int kSourceSize = 1024 * 5;
 		static const int kOutputSize = kSourceSize + 100;
 		char16_t value[kSourceSize];
-		char8_t destination[kOutputSize];
-		char8_t comparison[kOutputSize];
+		char destination[kOutputSize];
+		char comparison[kOutputSize];
 
 		for(int i = 0; i < kSourceSize - 1; ++i)
 		{
@@ -1120,9 +1120,9 @@ static int TestSprintf8(int unused = 0, ...)
 	/* Copied from rwstdc but not completed.
 	// Compare with Sprintf
 	{
-		char8_t  buffer1[128];
-		char8_t  buffer2[128];
-		char8_t* test = "test %d %5.2f   %s \n \t\t\\\\  %X";
+		char  buffer1[128];
+		char  buffer2[128];
+		char* test = "test %d %5.2f   %s \n \t\t\\\\  %X";
 
 		Sprintf(buffer1, test, -3923, 0.38293, "test", 4568);
 		Snprintf(buffer2, 128, test, -3923, 0.38293, "test", 4568);
@@ -1132,8 +1132,8 @@ static int TestSprintf8(int unused = 0, ...)
 
 	// Compare with standard sprintf
 	{
-		char8_t buffer1[128];
-		char8_t buffer2[128];
+		char buffer1[128];
+		char buffer2[128];
 		char*   test = "test %d %5.2f   %s \n \t\t\\\\  %X";
 
 		sprintf(buffer1, test, -3923, 0.38293, "test", 4568);
@@ -1228,7 +1228,7 @@ static int TestSprintf16(int unused = 0, ...)
 	}
 
 	// template <typename String>
-	// int StringVcprintf(String& s, const char8_t* EA_RESTRICT pFormat, va_list arguments)
+	// int StringVcprintf(String& s, const char* EA_RESTRICT pFormat, va_list arguments)
 	{
 		va_list arguments;
 		va_start(arguments, unused);
@@ -1381,21 +1381,21 @@ static int TestSprintf16(int unused = 0, ...)
 
 
 	{   // String tests
-		// We accept %hc, %c, %lc, %I8c, %I16c, %I32c (regular, regular, wide, char8_t, char16_t, char32_t)
-		// We accept %hC, %C, %lC, %I8C, %I16C, %I32C (regular, wide,    wide, char8_t, char16_t, char32_t)
-		// We accept %hs, %s, %ls, %I8s, %I16s, %I32s (regular, regular, wide, char8_t, char16_t, char32_t)
-		// We accept %hS, %S, %lS, %I8s, %I16s, %I32s (regular, wide,    wide, char8_t, char16_t, char32_t)
+		// We accept %hc, %c, %lc, %I8c, %I16c, %I32c (regular, regular, wide, char, char16_t, char32_t)
+		// We accept %hC, %C, %lC, %I8C, %I16C, %I32C (regular, wide,    wide, char, char16_t, char32_t)
+		// We accept %hs, %s, %ls, %I8s, %I16s, %I32s (regular, regular, wide, char, char16_t, char32_t)
+		// We accept %hS, %S, %lS, %I8s, %I16s, %I32s (regular, wide,    wide, char, char16_t, char32_t)
 
 		char16_t buffer[32];
-		char8_t  dStr8[2]  = { 'd', 0 };
+		char  dStr8[2]  = { 'd', 0 };
 		char16_t eStr16[2] = { 'e', 0 };
 		char32_t fStr32[2] = { 'f', 0 };
 
-		#if EASPRINTF_MS_STYLE_S_FORMAT // Microsoft style means that the meanings of S and s are reversed for non-char8_t Sprintf.
-			Sprintf(buffer, EA_CHAR16("%hc %c %lc %I8c %I16c %I32c"), 'a', EA_WCHAR('b'), EA_WCHAR('c'), (char8_t)'d', (char16_t)'e', (char32_t)'f');
+		#if EASPRINTF_MS_STYLE_S_FORMAT // Microsoft style means that the meanings of S and s are reversed for non-char Sprintf.
+			Sprintf(buffer, EA_CHAR16("%hc %c %lc %I8c %I16c %I32c"), 'a', EA_WCHAR('b'), EA_WCHAR('c'), (char)'d', (char16_t)'e', (char32_t)'f');
 			EATEST_VERIFY(Strcmp(buffer, EA_CHAR16("a b c d e f")) == 0);
 
-			Sprintf(buffer, EA_CHAR16("%hC %C %lC %I8C %I16C %I32C"), 'a', 'b',           EA_WCHAR('c'), (char8_t)'d', (char16_t)'e', (char32_t)'f');
+			Sprintf(buffer, EA_CHAR16("%hC %C %lC %I8C %I16C %I32C"), 'a', 'b',           EA_WCHAR('c'), (char)'d', (char16_t)'e', (char32_t)'f');
 			EATEST_VERIFY(Strcmp(buffer, EA_CHAR16("a b c d e f")) == 0);
 
 			Sprintf(buffer, EA_CHAR16("%hs %s %ls %I8s %I16s %I32s"), "a", EA_WCHAR("b"), EA_WCHAR("c"), dStr8,        eStr16,         fStr32);
@@ -1404,10 +1404,10 @@ static int TestSprintf16(int unused = 0, ...)
 			Sprintf(buffer, EA_CHAR16("%hS %S %lS %I8S %I16S %I32S"), "a", "b",           EA_WCHAR("c"), dStr8,        eStr16,         fStr32);
 			EATEST_VERIFY(Strcmp(buffer, EA_CHAR16("a b c d e f")) == 0);
 		#else
-			Sprintf(buffer, EA_CHAR16("%hc %c %lc %I8c %I16c %I32c"), 'a', 'b',           EA_WCHAR('c'), (char8_t)'d', (char16_t)'e', (char32_t)'f');
+			Sprintf(buffer, EA_CHAR16("%hc %c %lc %I8c %I16c %I32c"), 'a', 'b',           EA_WCHAR('c'), (char)'d', (char16_t)'e', (char32_t)'f');
 			EATEST_VERIFY(Strcmp(buffer, EA_CHAR16("a b c d e f")) == 0);
 
-			Sprintf(buffer, EA_CHAR16("%hC %C %lC %I8C %I16C %I32C"), 'a', EA_WCHAR('b'), EA_WCHAR('c'), (char8_t)'d', (char16_t)'e', (char32_t)'f');
+			Sprintf(buffer, EA_CHAR16("%hC %C %lC %I8C %I16C %I32C"), 'a', EA_WCHAR('b'), EA_WCHAR('c'), (char)'d', (char16_t)'e', (char32_t)'f');
 			EATEST_VERIFY(Strcmp(buffer, EA_CHAR16("a b c d e f)") == 0);
 
 			Sprintf(buffer, EA_CHAR16("%hs %s %ls %I8s %I16s %I32s"), "a", "b",           EA_WCHAR("c"), dStr8,        eStr16,         fStr32);
@@ -1803,7 +1803,7 @@ static int TestSprintf16(int unused = 0, ...)
 	{
 		static const int kSourceSize = 1024 * 5;
 		static const int kOutputSize = kSourceSize + 100;
-		char8_t value[kSourceSize];
+		char value[kSourceSize];
 		char16_t destination[kOutputSize];
 		char16_t comparison[kOutputSize];
 
@@ -1872,7 +1872,7 @@ static int TestSprintf32(int unused = 0, ...)
 	}
 
 	// template <typename String>
-	// int StringVcprintf(String& s, const char8_t* EA_RESTRICT pFormat, va_list arguments)
+	// int StringVcprintf(String& s, const char* EA_RESTRICT pFormat, va_list arguments)
 	{
 		va_list arguments;
 		va_start(arguments, unused);
@@ -2025,21 +2025,21 @@ static int TestSprintf32(int unused = 0, ...)
 
 
 	{   // String tests
-		// We accept %hc, %c, %lc, %I8c, %I16c, %I32c (regular, regular, wide, char8_t, char16_t, char32_t)
-		// We accept %hC, %C, %lC, %I8C, %I16C, %I32C (regular, wide,    wide, char8_t, char16_t, char32_t)
-		// We accept %hs, %s, %ls, %I8s, %I16s, %I32s (regular, regular, wide, char8_t, char16_t, char32_t)
-		// We accept %hS, %S, %lS, %I8s, %I16s, %I32s (regular, wide,    wide, char8_t, char16_t, char32_t)
+		// We accept %hc, %c, %lc, %I8c, %I16c, %I32c (regular, regular, wide, char, char16_t, char32_t)
+		// We accept %hC, %C, %lC, %I8C, %I16C, %I32C (regular, wide,    wide, char, char16_t, char32_t)
+		// We accept %hs, %s, %ls, %I8s, %I16s, %I32s (regular, regular, wide, char, char16_t, char32_t)
+		// We accept %hS, %S, %lS, %I8s, %I16s, %I32s (regular, wide,    wide, char, char16_t, char32_t)
 
 		char32_t buffer[32];
-		char8_t  dStr8[2]  = { 'd', 0 };
+		char  dStr8[2]  = { 'd', 0 };
 		char16_t eStr16[2] = { 'e', 0 };
 		char32_t fStr32[2] = { 'f', 0 };
 
-		#if EASPRINTF_MS_STYLE_S_FORMAT // Microsoft style means that the meanings of S and s are reversed for non-char8_t Sprintf.
-			Sprintf(buffer, EA_CHAR32("%hc %c %lc %I8c %I16c %I32c"), 'a', EA_WCHAR('b'), EA_WCHAR('c'), (char8_t)'d', (char16_t)'e', (char32_t)'f');
+		#if EASPRINTF_MS_STYLE_S_FORMAT // Microsoft style means that the meanings of S and s are reversed for non-char Sprintf.
+			Sprintf(buffer, EA_CHAR32("%hc %c %lc %I8c %I16c %I32c"), 'a', EA_WCHAR('b'), EA_WCHAR('c'), (char)'d', (char16_t)'e', (char32_t)'f');
 			EATEST_VERIFY(Strcmp(buffer, EA_CHAR32("a b c d e f")) == 0);
 
-			Sprintf(buffer, EA_CHAR32("%hC %C %lC %I8C %I16C %I32C"), 'a', 'b',           EA_WCHAR('c'), (char8_t)'d', (char16_t)'e', (char32_t)'f');
+			Sprintf(buffer, EA_CHAR32("%hC %C %lC %I8C %I16C %I32C"), 'a', 'b',           EA_WCHAR('c'), (char)'d', (char16_t)'e', (char32_t)'f');
 			EATEST_VERIFY(Strcmp(buffer, EA_CHAR32("a b c d e f")) == 0);
 
 			Sprintf(buffer, EA_CHAR32("%hs %s %ls %I8s %I16s %I32s"), "a", EA_WCHAR("b"), EA_WCHAR("c"), dStr8,        eStr16,         fStr32);
@@ -2048,10 +2048,10 @@ static int TestSprintf32(int unused = 0, ...)
 			Sprintf(buffer, EA_CHAR32("%hS %S %lS %I8S %I16S %I32S"), "a", "b",           EA_WCHAR("c"), dStr8,        eStr16,         fStr32);
 			EATEST_VERIFY(Strcmp(buffer, EA_CHAR32("a b c d e f")) == 0);
 		#else
-			Sprintf(buffer, EA_CHAR32("%hc %c %lc %I8c %I16c %I32c"), 'a', 'b',           EA_WCHAR('c'), (char8_t)'d', (char16_t)'e', (char32_t)'f');
+			Sprintf(buffer, EA_CHAR32("%hc %c %lc %I8c %I16c %I32c"), 'a', 'b',           EA_WCHAR('c'), (char)'d', (char16_t)'e', (char32_t)'f');
 			EATEST_VERIFY(Strcmp(buffer, EA_CHAR32("a b c d e f")) == 0);
 
-			Sprintf(buffer, EA_CHAR32("%hC %C %lC %I8C %I16C %I32C"), 'a', EA_WCHAR('b'), EA_WCHAR('c'), (char8_t)'d', (char16_t)'e', (char32_t)'f');
+			Sprintf(buffer, EA_CHAR32("%hC %C %lC %I8C %I16C %I32C"), 'a', EA_WCHAR('b'), EA_WCHAR('c'), (char)'d', (char16_t)'e', (char32_t)'f');
 			EATEST_VERIFY(Strcmp(buffer, EA_CHAR32("a b c d e f)") == 0);
 
 			Sprintf(buffer, EA_CHAR32("%hs %s %ls %I8s %I16s %I32s"), "a", "b",           EA_WCHAR("c"), dStr8,        eStr16,         fStr32);
@@ -2446,7 +2446,7 @@ static int TestSprintf32(int unused = 0, ...)
 	{
 		static const int kSourceSize = 1024 * 5;
 		static const int kOutputSize = kSourceSize + 100;
-		char8_t value[kSourceSize];
+		char value[kSourceSize];
 		char32_t destination[kOutputSize];
 		char32_t comparison[kOutputSize];
 
@@ -2480,11 +2480,11 @@ static int TestDrintf8()
 
 		Dprintf("Begin Dprintf (debug output printf) testing...\n");
 
-		// EASTDC_API int Vdprintf(const char8_t* EA_RESTRICT pFormat, va_list arguments);
-		// EASTDC_API int Dprintf(const char8_t* EA_RESTRICT pFormat, ...);
+		// EASTDC_API int Vdprintf(const char* EA_RESTRICT pFormat, va_list arguments);
+		// EASTDC_API int Dprintf(const char* EA_RESTRICT pFormat, ...);
 		eastl::string8 sBuffer;
 		for(eastl_size_t i = 0; i < 1024; i++) // This size should be > than the size of the buffer(s) used in PlatformLogWriter8, though those buffer sizes aren't publicly exposed.
-			sBuffer.push_back('a' + (char8_t)(i % 26));
+			sBuffer.push_back('a' + (char)(i % 26));
 
 		EA::UnitTest::Rand rand((uint32_t)EA::StdC::GetTime());
 
@@ -2497,10 +2497,10 @@ static int TestDrintf8()
 		}
 
 		#if EASTDC_PRINTF_DEBUG_ENABLED
-			// EASTDC_API int Fprintf(FILE* EA_RESTRICT pFile, const char8_t* EA_RESTRICT pFormat, ...);
-			// EASTDC_API int Printf(const char8_t* EA_RESTRICT pFormat, ...);
-			// EASTDC_API int Vfprintf(FILE* EA_RESTRICT pFile, const char8_t* EA_RESTRICT pFormat, va_list arguments);
-			// EASTDC_API int Vprintf(const char8_t* EA_RESTRICT pFormat, va_list arguments);
+			// EASTDC_API int Fprintf(FILE* EA_RESTRICT pFile, const char* EA_RESTRICT pFormat, ...);
+			// EASTDC_API int Printf(const char* EA_RESTRICT pFormat, ...);
+			// EASTDC_API int Vfprintf(FILE* EA_RESTRICT pFile, const char* EA_RESTRICT pFormat, va_list arguments);
+			// EASTDC_API int Vprintf(const char* EA_RESTRICT pFormat, va_list arguments);
 			result = Printf("%s", "Printf test (EASTDC_PRINTF_DEBUG_ENABLED).\n");
 			EATEST_VERIFY(result > 0);
 
@@ -2522,7 +2522,7 @@ static int TestOsprintf8()
 	int nErrorCount = 0;
 
 	{
-		char8_t buffer[32];
+		char buffer[32];
 		int     result;
 
 		memset(buffer, 0, sizeof(buffer));
@@ -2710,47 +2710,6 @@ static int TestOsprintf32()
 }
 
 
-///////////////////////////////////////////////////////////////////////////////
-// TestDeprecated
-///////////////////////////////////////////////////////////////////////////////
-
-static int StringWriterOld8(const char8_t* EA_RESTRICT pData, size_t nCount, void* EA_RESTRICT pContext8)
-{
-	eastl::string8* pString8 = static_cast<eastl::string8*>(pContext8);
-	pString8->append(pData, (eastl_size_t)nCount);
-	return (int)nCount;
-}
-
-static int StringWriterOld16(const char16_t* EA_RESTRICT pData, size_t nCount, void* EA_RESTRICT pContext16)
-{
-	eastl::string16* pString16 = static_cast<eastl::string16*>(pContext16);
-	pString16->append(pData, (eastl_size_t)nCount);
-	return (int)nCount;
-}
-
-static int TestDeprecated()
-{
-	using namespace EA::StdC;
-
-	int nErrorCount = 0;
-
-	{
-		eastl::string8  s8;
-		eastl::string16 s16;
-		int             result;
-
-		result = Cprintf(StringWriterOld8,  &s8, "Hello world");
-		EATEST_VERIFY(result == (int)Strlen("Hello world"));
-		EATEST_VERIFY(s8 == "Hello world");
-
-		result = Cprintf(StringWriterOld16, &s16, EA_CHAR16("Hello world"));
-		EATEST_VERIFY(result == (int)Strlen(EA_CHAR16("Hello world")));
-		EATEST_VERIFY(s16 == EA_CHAR16("Hello world"));
-	}
-
-	return nErrorCount;
-}
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // TestSprintf
@@ -2774,9 +2733,6 @@ int TestSprintf()
 	nErrorCount += TestOsprintf8();
 	nErrorCount += TestOsprintf16();
 	nErrorCount += TestOsprintf32();
-
-	// Test deprecated functionality
-	nErrorCount += TestDeprecated();
 
 	return nErrorCount;
 }

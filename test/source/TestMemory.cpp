@@ -335,8 +335,8 @@ static int TestMemset()
 	{
 		// To do: We need a more extensive test.
 
-		char8_t        buffer[2000];
-		const char8_t* pattern = "012345678";
+		char        buffer[2000];
+		const char* pattern = "012345678";
 		size_t         sl = Strlen(pattern);
 
 		EATEST_VERIFY(buffer == MemsetN(buffer, pattern, sl, 2000));
@@ -603,24 +603,13 @@ static int TestMemchr()
 	int nErrorCount = 0;
 
 	{   // Memchr8
-		const char8_t* const s = "qwertyuiopASDFGHJKL:!@#$%^&*,=/";
+		const char* const s = "qwertyuiopASDFGHJKL:!@#$%^&*,=/";
 
-		EATEST_VERIFY((char8_t*)Memchr(s, (char8_t)'q', Strlen(s)) - s ==  0);
-		EATEST_VERIFY((char8_t*)Memchr(s, (char8_t)'F', Strlen(s)) - s == 13);
-		EATEST_VERIFY((char8_t*)Memchr(s, (char8_t)':', Strlen(s)) - s == 19);
-		EATEST_VERIFY((char8_t*)Memchr(s, (char8_t)'&', Strlen(s)) - s == 26);
+		EATEST_VERIFY((char*)Memchr(s, (char)'q', Strlen(s)) - s ==  0);
+		EATEST_VERIFY((char*)Memchr(s, (char)'F', Strlen(s)) - s == 13);
+		EATEST_VERIFY((char*)Memchr(s, (char)':', Strlen(s)) - s == 19);
+		EATEST_VERIFY((char*)Memchr(s, (char)'&', Strlen(s)) - s == 26);
 	}
-
-	#if EASTDC_MEMCHR16_ENABLED && defined(EA_CHAR16)
-		{   // Memchr16
-			const char16_t* const s = EA_CHAR16("qwertyuiopASDFGHJKL:!@#$%^&*,=/");
-
-			EATEST_VERIFY((char16_t*)Memchr(s, (char16_t)'q', Strlen(s)) - s ==  0);
-			EATEST_VERIFY((char16_t*)Memchr(s, (char16_t)'F', Strlen(s)) - s == 13);
-			EATEST_VERIFY((char16_t*)Memchr(s, (char16_t)':', Strlen(s)) - s == 19);
-			EATEST_VERIFY((char16_t*)Memchr(s, (char16_t)'&', Strlen(s)) - s == 26);
-		}
-	#endif
 
 	return nErrorCount;
 }
@@ -633,9 +622,9 @@ static int TestMemcmp()
 	int nErrorCount = 0;
 
 	{   // Memcmp8
-		char8_t buffer1[] = "01234567a";
-		char8_t buffer2[] = "01234567b";
-		char8_t buffer3[] = "01234567c";
+		char buffer1[] = "01234567a";
+		char buffer2[] = "01234567b";
+		char buffer3[] = "01234567c";
 
 		EATEST_VERIFY(Memcmp(buffer1, buffer1, 9) == 0);
 		EATEST_VERIFY(Memcmp(buffer2, buffer1, 9) >  0);
@@ -669,7 +658,7 @@ static int TestMemmem()
 	int nErrorCount = 0;
 
 	const size_t  kSize = 37;
-	const char8_t buffer1[kSize] = "abcdefghijklmnopqrstuvwxyz0123456789";
+	const char buffer1[kSize] = "abcdefghijklmnopqrstuvwxyz0123456789";
 
 	EATEST_VERIFY(Memmem(buffer1,     0, "",            0) == NULL);            // An empty haystack always results in NULL, regardless of the needle.
 	EATEST_VERIFY(Memmem(buffer1, kSize, "",            0) == buffer1);         // Otherwise, an empty needle results in success.
@@ -698,8 +687,8 @@ static int TestMemcpy()
 	int nErrorCount = 0;
 
 	{   // MemcpyC
-		char8_t buffer1[] = "         ";
-		char8_t buffer2[] = "01234567b";
+		char buffer1[] = "         ";
+		char buffer2[] = "01234567b";
 
 		EATEST_VERIFY(buffer1 == MemcpyC(buffer1, buffer2, 9));
 		EATEST_VERIFY(Memcmp(buffer2, buffer1, 9) ==  0);
@@ -716,7 +705,7 @@ static int TestMemcpy()
 	#endif
 
 
-	{ // char8_t* MemcpyC(void* pDestination, const void* pSource, size_t nByteCount);
+	{ // char* MemcpyC(void* pDestination, const void* pSource, size_t nByteCount);
 
 		EA::StdC::Random r;
 		const void* pCheck;
@@ -754,7 +743,7 @@ static int TestMemcpy()
 	}
 
 
-	{   // char8_t* Memcpy128(void* pDestination, const void* pSource, size_t nByteCount);
+	{   // char* Memcpy128(void* pDestination, const void* pSource, size_t nByteCount);
 
 		EA::StdC::Stopwatch stopwatch1(EA::StdC::Stopwatch::kUnitsCPUCycles);
 		EA::StdC::Stopwatch stopwatch2(EA::StdC::Stopwatch::kUnitsCPUCycles);
@@ -816,7 +805,7 @@ static int TestMemcpy()
 		}
 	}
 
-	{   // char8_t* Memcpy128C(void* pDestination, const void* pSource, size_t nByteCount);
+	{   // char* Memcpy128C(void* pDestination, const void* pSource, size_t nByteCount);
 		for(size_t i = 0; i < 50; i++)
 		{
 			const size_t copySize = i * 128;
@@ -855,13 +844,13 @@ static int TestMemmove()
 	int nErrorCount = 0;
 
 	{    // Memmove8
-		char8_t buffer1[] = "..........."; 
-		char8_t buffer2[] = ".......0123"; 
-		char8_t buffer3[] = "0123......."; 
+		char buffer1[] = "..........."; 
+		char buffer2[] = ".......0123"; 
+		char buffer3[] = "0123......."; 
 
 		EATEST_VERIFY(buffer1 == MemmoveC(buffer1, buffer2, Strlen(buffer2)));
 		EATEST_VERIFY(memcmp(buffer1, buffer2, Strlen(buffer2)) ==  0);
-		EATEST_VERIFY(memset(buffer1, (char8_t )0, Strlen(buffer1)) != NULL);
+		EATEST_VERIFY(memset(buffer1, (char )0, Strlen(buffer1)) != NULL);
 
 		EATEST_VERIFY(buffer1 == MemmoveC(buffer1, buffer2+7, Strlen(buffer2) - 7));
 		EATEST_VERIFY(memcmp(buffer1, buffer2+7, Strlen(buffer2) - 7) ==  0);
@@ -914,10 +903,10 @@ static int TestTimingSafe()
 		// bool TimingSafeMemIsClear(const void* p, size_t n);
 
 		{   // Basic accuracy tests.
-			char8_t buffer1[] = "01234567a";
-			char8_t buffer2[] = "01234567b";
-			char8_t buffer3[] = "01234567c";
-			char8_t buffer4[] = "\0\0\0\0\0\0\0\0\0";
+			char buffer1[] = "01234567a";
+			char buffer2[] = "01234567b";
+			char buffer3[] = "01234567c";
+			char buffer4[] = "\0\0\0\0\0\0\0\0\0";
 
 			EATEST_VERIFY(TimingSafeMemcmp(buffer1, buffer1, 0) == Memcmp(buffer1, buffer1, 0));
 			EATEST_VERIFY(TimingSafeMemcmp(buffer2, buffer1, 9) == Memcmp(buffer2, buffer1, 9));

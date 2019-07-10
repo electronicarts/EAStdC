@@ -14,10 +14,10 @@ namespace StdC
 {
 
 ///////////////////////////////////////////////////////////////////////////////
-// char8_t functions
+// char functions
 ///////////////////////////////////////////////////////////////////////////////
 
-EASTDC_API int Cscanf(ReadFunction8 pReadFunction8, void* pContext, const char8_t* pFormat, ...)
+EASTDC_API int Cscanf(ReadFunction8 pReadFunction8, void* pContext, const char* pFormat, ...)
 {
 	va_list arguments;
 	va_start(arguments, pFormat);
@@ -25,7 +25,7 @@ EASTDC_API int Cscanf(ReadFunction8 pReadFunction8, void* pContext, const char8_
 	return ScanfLocal::VscanfCore(pReadFunction8, pContext, pFormat, arguments); 
 }
 
-EASTDC_API int Fscanf(FILE* pFile, const char8_t* pFormat, ...)
+EASTDC_API int Fscanf(FILE* pFile, const char* pFormat, ...)
 {
 	va_list arguments;
 	va_start(arguments, pFormat);
@@ -33,7 +33,7 @@ EASTDC_API int Fscanf(FILE* pFile, const char8_t* pFormat, ...)
 	return ScanfLocal::VscanfCore(ScanfLocal::FILEReader8, pFile, pFormat, arguments); 
 }
 
-EASTDC_API int Scanf(const char8_t* pFormat, ...)
+EASTDC_API int Scanf(const char* pFormat, ...)
 {
 	va_list arguments;
 	va_start(arguments, pFormat);
@@ -41,7 +41,7 @@ EASTDC_API int Scanf(const char8_t* pFormat, ...)
 	return ScanfLocal::VscanfCore(ScanfLocal::FILEReader8, stdin, pFormat, arguments); 
 }
 
-EASTDC_API int Sscanf(const char8_t* pDestination, const char8_t* pFormat, ...)
+EASTDC_API int Sscanf(const char* pDestination, const char* pFormat, ...)
 {
 	ScanfLocal::SscanfContext8 sc(pDestination);
 
@@ -52,22 +52,22 @@ EASTDC_API int Sscanf(const char8_t* pDestination, const char8_t* pFormat, ...)
 }
 
 
-EASTDC_API int Vcscanf(ReadFunction8 pReadFunction8, void* pContext, const char8_t* pFormat, va_list arguments)
+EASTDC_API int Vcscanf(ReadFunction8 pReadFunction8, void* pContext, const char* pFormat, va_list arguments)
 {
 	return ScanfLocal::VscanfCore(pReadFunction8, pContext, pFormat, arguments); 
 }
 
-EASTDC_API int Vfscanf(FILE* pFile, const char8_t* pFormat, va_list arguments)
+EASTDC_API int Vfscanf(FILE* pFile, const char* pFormat, va_list arguments)
 {
 	return ScanfLocal::VscanfCore(ScanfLocal::FILEReader8, pFile, pFormat, arguments); 
 }
 
-EASTDC_API int Vscanf(const char8_t* pFormat, va_list arguments)
+EASTDC_API int Vscanf(const char* pFormat, va_list arguments)
 {
 	return ScanfLocal::VscanfCore(ScanfLocal::FILEReader8, stdin, pFormat, arguments); 
 }
 
-EASTDC_API int Vsscanf(const char8_t* pDestination, const char8_t* pFormat, va_list arguments)
+EASTDC_API int Vsscanf(const char* pDestination, const char* pFormat, va_list arguments)
 {
 	ScanfLocal::SscanfContext8 sc(pDestination);
 

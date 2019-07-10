@@ -67,10 +67,10 @@ struct Values
 	uint64_t            uint64_[8];
   //EA::StdC::int128_t  int128_[8];     // int128_t has constructors and so is not a POD and cannot be part of the Values union.
   //EA::StdC::uint128_t uint128_[8];
-	char8_t             char8_[8];
+	char             char8_[8];
 	char16_t            char16_[8];
 	char32_t            char32_[8];
-	char8_t             str8_[8][64];
+	char             str8_[8][64];
 	char16_t            str16_[8][64];
 	char32_t            str32_[8][64];
 	wchar_t             strw_[8][64];
@@ -95,7 +95,7 @@ struct Values
 
 uint32_t Values::assertCount_ = 0;
 
-static int TestCRTVsscanf(const char8_t* pBuffer, const char8_t* pFormat, ...)
+static int TestCRTVsscanf(const char* pBuffer, const char* pFormat, ...)
 {
 	va_list vList;
 	va_start(vList, pFormat);
@@ -460,12 +460,12 @@ static int TestScanfMisc()
 		}
 
 		{   // String tests
-			// We accept %hc, %c, %lc, %I8c, %I16c, %I32c (regular, regular, wide, char8_t, char16_t, char32_t)
-			// We accept %hC, %C, %lC, %I8C, %I16C, %I32C (regular, wide,    wide, char8_t, char16_t, char32_t)
-			// We accept %hs, %s, %ls, %I8s, %I16s, %I32s (regular, regular, wide, char8_t, char16_t, char32_t)
-			// We accept %hS, %S, %lS, %I8s, %I16s, %I32s (regular, wide,    wide, char8_t, char16_t, char32_t)
+			// We accept %hc, %c, %lc, %I8c, %I16c, %I32c (regular, regular, wide, char, char16_t, char32_t)
+			// We accept %hC, %C, %lC, %I8C, %I16C, %I32C (regular, wide,    wide, char, char16_t, char32_t)
+			// We accept %hs, %s, %ls, %I8s, %I16s, %I32s (regular, regular, wide, char, char16_t, char32_t)
+			// We accept %hS, %S, %lS, %I8s, %I16s, %I32s (regular, wide,    wide, char, char16_t, char32_t)
 
-			{   // char8_t
+			{   // char
 				v.Clear();
 				n = Sscanf("a b c d e f", "%hc %c %lc %I8c %I16c %I32c", &v.char_[0], &v.char_[1], &v.wchar_[0], &v.char8_[0], &v.char16_[0], &v.char32_[0]);
 				EATEST_VERIFY(n == 6);
@@ -499,7 +499,7 @@ static int TestScanfMisc()
 
 			{   // char16_t
 				v.Clear();
-				#if EASCANF_MS_STYLE_S_FORMAT // Microsoft style means that the meanings of S/C and s/c are reversed for non-char8_t Sprintf.
+				#if EASCANF_MS_STYLE_S_FORMAT // Microsoft style means that the meanings of S/C and s/c are reversed for non-char Sprintf.
 					n = Sscanf(EA_CHAR16("a b c d e f"), EA_CHAR16("%hc %c %lc %I8c %I16c %I32c"), &v.char_[0], &v.wchar_[0], &v.wchar_[1], &v.char8_[0], &v.char16_[0], &v.char32_[0]);
 					EATEST_VERIFY(n == 6);
 					EATEST_VERIFY((v.char_[0] == 'a') && (v.wchar_[0] == 'b') && (v.wchar_[1] == 'c') && (v.char8_[0] == 'd') && (v.char16_[0] == 'e') && (v.char32_[0] == 'f'));
@@ -565,7 +565,7 @@ static int TestScanfMisc()
 
 			{   // char32_t
 				v.Clear();
-				#if EASCANF_MS_STYLE_S_FORMAT // Microsoft style means that the meanings of S/C and s/c are reversed for non-char8_t Sprintf.
+				#if EASCANF_MS_STYLE_S_FORMAT // Microsoft style means that the meanings of S/C and s/c are reversed for non-char Sprintf.
 					n = Sscanf(EA_CHAR32("a b c d e f"), EA_CHAR32("%hc %c %lc %I8c %I16c %I32c"), &v.char_[0], &v.wchar_[0], &v.wchar_[1], &v.char8_[0], &v.char16_[0], &v.char32_[0]);
 					EATEST_VERIFY(n == 6);
 					EATEST_VERIFY((v.char_[0] == 'a') && (v.wchar_[0] == 'b') && (v.wchar_[1] == 'c') && (v.char8_[0] == 'd') && (v.char16_[0] == 'e') && (v.char32_[0] == 'f'));
@@ -2118,12 +2118,12 @@ static int TestScanfMisc()
 
 		{
 			v.Clear();
-			v.char8_[0] = (char8_t)(uint8_t)0xdd;
+			v.char8_[0] = (char)(uint8_t)0xdd;
 			n = Sscanf("10:11", "%d:%d%c", &v.int_[0], &v.int_[1], &v.char8_[0]);
 			EATEST_VERIFY(n == 2);
 			EATEST_VERIFY(v.int_[0] == 10);
 			EATEST_VERIFY(v.int_[1] == 11);
-			EATEST_VERIFY(v.char8_[0] == (char8_t)(uint8_t)0xdd);
+			EATEST_VERIFY(v.char8_[0] == (char)(uint8_t)0xdd);
 
 			v.Clear();
 			#if EASCANF_MS_STYLE_S_FORMAT
@@ -2131,9 +2131,9 @@ static int TestScanfMisc()
 				n = Sscanf(EA_CHAR16("10:11"), EA_CHAR16("%d:%d%c"), &v.int_[0], &v.int_[1], &v.wchar_[0]);
 				EATEST_VERIFY(v.wchar_[0] == 0xdd);
 			#else
-				v.char8_[0] = (char8_t)(uint8_t)0xdd;
+				v.char8_[0] = (char)(uint8_t)0xdd;
 				n = Sscanf(EA_CHAR16("10:11"), EA_CHAR16("%d:%d%c"), &v.int_[0], &v.int_[1], &v.char8_[0]);
-				EATEST_VERIFY(v.char8_[0] == (char8_t)(uint8_t)0xdd);
+				EATEST_VERIFY(v.char8_[0] == (char)(uint8_t)0xdd);
 			#endif
 			EATEST_VERIFY(n == 2);
 			EATEST_VERIFY(v.int_[0] == 10);
@@ -2145,9 +2145,9 @@ static int TestScanfMisc()
 				n = Sscanf(EA_CHAR32("10:11"), EA_CHAR32("%d:%d%c"), &v.int_[0], &v.int_[1], &v.wchar_[0]);
 				EATEST_VERIFY(v.wchar_[0] == 0xdd);
 			#else
-				v.char8_[0] = (char8_t)(uint8_t)0xdd;
+				v.char8_[0] = (char)(uint8_t)0xdd;
 				n = Sscanf(EA_CHAR32("10:11"), EA_CHAR32("%d:%d%c"), &v.int_[0], &v.int_[1], &v.char8_[0]);
-				EATEST_VERIFY(v.char8_[0] == (char8_t)(uint8_t)0xdd);
+				EATEST_VERIFY(v.char8_[0] == (char)(uint8_t)0xdd);
 			#endif
 			EATEST_VERIFY(n == 2);
 			EATEST_VERIFY(v.int_[0] == 10);
@@ -2361,7 +2361,7 @@ static int TestScanfUnusual()
 			EATEST_VERIFY((uintptr_t)v.voidptr_[0] == 0xffffffff);
 		}
 
-		{   // Make sure we support explicit char8_t strings.
+		{   // Make sure we support explicit char strings.
 			v.Clear();
 			n = Sscanf("2.0", "%hs", v.str8_[0]);    
 			EATEST_VERIFY(n == 1);
@@ -2395,7 +2395,7 @@ static int TestScanfUnusual()
 			EATEST_VERIFY(Strcmp(v.strw_[0], EA_WCHAR("2.0")) == 0);
 		}
 
-		{   // Make sure we support explicit char8_t chars.
+		{   // Make sure we support explicit char chars.
 			v.Clear();
 			n = Sscanf("2.0", "%hc", &v.char8_[0]);
 			EATEST_VERIFY(n == 1);
@@ -2669,10 +2669,10 @@ static int TestScanfVariants()
 
 		// To do: Implement some of these:
 		/*
-		EASTDC_API int Cscanf(ReadFunction8 pReadFunction8, void* pContext, const char8_t* pFormat, ...);
-		EASTDC_API int Fscanf(FILE* pFile, const char8_t* pFormat, ...);
-		EASTDC_API int Scanf(const char8_t* pFormat, ...);
-		EASTDC_API int Sscanf(const char8_t*  pTextBuffer, const char8_t* pFormat, ...);
+		EASTDC_API int Cscanf(ReadFunction8 pReadFunction8, void* pContext, const char* pFormat, ...);
+		EASTDC_API int Fscanf(FILE* pFile, const char* pFormat, ...);
+		EASTDC_API int Scanf(const char* pFormat, ...);
+		EASTDC_API int Sscanf(const char*  pTextBuffer, const char* pFormat, ...);
 
 		EASTDC_API int Cscanf(ReadFunction16 pReadFunction16, void* pContext, const char16_t* pFormat, ...);
 		EASTDC_API int Fscanf(FILE* pFile, const char16_t* pFormat, ...);
@@ -2685,10 +2685,10 @@ static int TestScanfVariants()
 		EASTDC_API int Sscanf(const char32_t* pTextBuffer, const char32_t* pFormat, ...);
 
 
-		EASTDC_API int Vcscanf(ReadFunction8 pReadFunction8, void* pContext, const char8_t* pFormat, va_list arguments);
-		EASTDC_API int Vfscanf(FILE* pFile, const char8_t* pFormat, va_list arguments);
-		EASTDC_API int Vscanf(const char8_t* pFormat, va_list arguments);
-		EASTDC_API int Vsscanf(const char8_t* pTextBuffer, const char8_t* pFormat, va_list arguments);
+		EASTDC_API int Vcscanf(ReadFunction8 pReadFunction8, void* pContext, const char* pFormat, va_list arguments);
+		EASTDC_API int Vfscanf(FILE* pFile, const char* pFormat, va_list arguments);
+		EASTDC_API int Vscanf(const char* pFormat, va_list arguments);
+		EASTDC_API int Vsscanf(const char* pTextBuffer, const char* pFormat, va_list arguments);
 
 		EASTDC_API int Vcscanf(ReadFunction16 pReadFunction16, void* pContext, const char16_t* pFormat, va_list arguments);
 		EASTDC_API int Vfscanf(FILE* pFile, const char16_t* pFormat, va_list arguments);

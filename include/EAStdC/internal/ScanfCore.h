@@ -96,7 +96,7 @@ enum Sign
 enum Modifier
 {
 	kModifierNone,       // No modifier, use the type as-is.
-	kModifierChar,       // Use char8_t instead of int. Specified by hh in front of d, i, o, u, x, or X.
+	kModifierChar,       // Use char instead of int. Specified by hh in front of d, i, o, u, x, or X.
 	kModifierShort,      // Use short instead of int. Specified by h in front of d, i, o, u, x, or X.
 	kModifierInt,        // This is a placeholder, as integer is the default fd for integral types.
 	kModifierLong,       // Use long instead of int. Specified by l in front of d, i, o, u, x, or X.
@@ -106,7 +106,7 @@ enum Modifier
 	kModifierPtrdiff_t,  // Use ptrdiff_t argument. Specified by 't' in front of d, i, o, u, x, or X.
 	kModifierDouble,     // Use double instead of float. Specified by nothing in front of e, E, f, F, g, G for printf and l for scanf.
 	kModifierLongDouble, // Use long double instead of double. Specified by l in front of e, E, f, F, g, G for printf and L for scanf.
-	kModifierWChar,      // Use wide char8_t instead of char8_t. Specified by l (in front of c).
+	kModifierWChar,      // Use wide char instead of char. Specified by l (in front of c).
 	kModifierInt8,       // Use int8_t or uint8_t.   Specified by I8 in front of d, i, o, u.
 	kModifierInt16,      // Use int16_t or uint16_t. Specified by I16 in front of d, i, o, u.
 	kModifierInt32,      // Use int32_t or uint32_t. Specified by I32 in front of d, i, o, u.
@@ -161,7 +161,7 @@ struct CharBitmap
 	CharBitmap()
 		{ memset(mBits, 0, sizeof(mBits)); }
 
-	int Get(char8_t c) const
+	int Get(char c) const
 		{ return (int)mBits[(uint8_t)(unsigned)c >> 5] & (1 << (c & 31)); }
 
 	// This isn't correct. To do this completely right for all uses of scanf, 
@@ -173,7 +173,7 @@ struct CharBitmap
 	int Get(char32_t c) const // If c >= 256, we return whatever the first bit is, since it will be equal to what bits 256 - 2^32 are meant to be.
 		{ if(c < 256) return (int)mBits[(uint8_t)(unsigned)c >> 5] & (1 << (c & 31)); else return (int)(mBits[0] & 0x00000001); }
 
-	void Set(char8_t c)
+	void Set(char c)
 		{ mBits[(uint8_t)(unsigned)c >> 5] |= (1 << (c & 31)); }
 
 	void Set(char16_t c)
@@ -204,7 +204,7 @@ struct CharBitmap
 
 struct DoubleValue
 {
-	char8_t mSigStr[kMaxSignificandDigits + 1];  // String
+	char mSigStr[kMaxSignificandDigits + 1];  // String
 	int16_t mSigLen;                             // Length of string
 	int16_t mExponent;                           // Exponent value.
 
@@ -252,10 +252,10 @@ struct FormatData
 
 struct SscanfContext8
 {
-	const char8_t* mpSource;
+	const char* mpSource;
 	int            mbEndFound;
 
-	SscanfContext8(const char8_t* pSource = NULL)
+	SscanfContext8(const char* pSource = NULL)
 	  : mpSource(pSource),
 		mbEndFound(0)
 	{}
@@ -300,7 +300,7 @@ int StringReader32(ReadAction readAction, int value, void* pContext);
 ///////////////////////////////////////////////////////////////////////////////
 // VscanfCore
 //
-int VscanfCore(ReadFunction8  pReadFunction8,  void* pReadFunction8Context, const char8_t* pFormat,  va_list arguments);
+int VscanfCore(ReadFunction8  pReadFunction8,  void* pReadFunction8Context, const char* pFormat,  va_list arguments);
 int VscanfCore(ReadFunction16 pReadFunction16, void* pReadFunction8Context, const char16_t* pFormat, va_list arguments);
 int VscanfCore(ReadFunction32 pReadFunction32, void* pReadFunction8Context, const char32_t* pFormat, va_list arguments);
 

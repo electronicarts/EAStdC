@@ -92,8 +92,8 @@ int TestHash()
 
 	uint8_t*  pDataA   = new uint8_t[kDataLength];
 	uint8_t*  pDataB   = new uint8_t[kDataLength];
-	char8_t*  pData8A  = new char8_t[kDataLength];
-	char8_t*  pData8B  = new char8_t[kDataLength];
+	char*  pData8A  = new char[kDataLength];
+	char*  pData8B  = new char[kDataLength];
 	char16_t* pData16A = new char16_t[kDataLength];
 	char16_t* pData16B = new char16_t[kDataLength];
 	char32_t* pData32A = new char32_t[kDataLength];
@@ -106,8 +106,8 @@ int TestHash()
 
 		pDataA[i]    = (uint8_t) c;
 		pDataB[i]    = (uint8_t) c;
-		pData8A[i]   = (char8_t) c;
-		pData8B[i]   = (char8_t) c;
+		pData8A[i]   = (char) c;
+		pData8B[i]   = (char) c;
 		pData16A[i]  = (char16_t)c;
 		pData16B[i]  = (char16_t)c;
 		pData32A[i]  = (char32_t)c;

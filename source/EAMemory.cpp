@@ -303,9 +303,9 @@ EASTDC_API const void* Memcheck64(const void* p, uint64_t c, size_t byteCount)
 
 
 
-EASTDC_API const char8_t* Memchr(const char8_t* p, char8_t c, size_t nCharCount)
+EASTDC_API const char* Memchr(const char* p, char c, size_t nCharCount)
 {
-	for(const char8_t* p8 = (const char8_t*)p; nCharCount > 0; ++p8, --nCharCount)
+	for(const char* p8 = (const char*)p; nCharCount > 0; ++p8, --nCharCount)
 	{
 		if(*p8 == c)
 			return p8;
@@ -349,8 +349,8 @@ EASTDC_API const char32_t* Memchr32(const char32_t* pString, char32_t c, size_t 
 
 EASTDC_API int Memcmp(const void* pString1, const void* pString2, size_t nCharCount)
 {
-	const char8_t* p1 = (const char8_t*)pString1;
-	const char8_t* p2 = (const char8_t*)pString2;
+	const char* p1 = (const char*)pString1;
+	const char* p2 = (const char*)pString2;
 
 	for(; nCharCount > 0; ++p1, ++p2, --nCharCount)
 	{
@@ -949,9 +949,9 @@ EASTDC_API void MemfillSpecific(void* pDestination, const void* pSource, size_t 
 // as is usually the case for logical integer operations.
 EASTDC_API bool TimingSafeMemEqual(const void* pMem1, const void* pMem2, size_t byteCount)
 {
-	const char8_t* p1 = (const char8_t*)pMem1;
-	const char8_t* p2 = (const char8_t*)pMem2;
-	char8_t mask = 0;
+	const char* p1 = (const char*)pMem1;
+	const char* p2 = (const char*)pMem2;
+	char mask = 0;
 
 	for(; byteCount > 0; ++p1, ++p2, --byteCount)
 		mask |= (*p1 ^ *p2);    // Accumulate any differences between the memory.

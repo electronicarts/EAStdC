@@ -52,7 +52,7 @@ namespace SprintfLocal
 {
 
 
-int StringWriter8(const char8_t* EA_RESTRICT pData, size_t nCount, void* EA_RESTRICT pContext8, WriteFunctionState /*wfs*/)
+int StringWriter8(const char* EA_RESTRICT pData, size_t nCount, void* EA_RESTRICT pContext8, WriteFunctionState /*wfs*/)
 {
 	using namespace SprintfLocal;
 
@@ -133,10 +133,10 @@ int StringWriter32(const char32_t* EA_RESTRICT pData, size_t nCount, void* EA_RE
 
 
 
-int FILEWriter8(const char8_t* EA_RESTRICT pData, size_t nCount, void* EA_RESTRICT pContext8, WriteFunctionState /*wfs*/)
+int FILEWriter8(const char* EA_RESTRICT pData, size_t nCount, void* EA_RESTRICT pContext8, WriteFunctionState /*wfs*/)
 {
 	FILE* const pFile = (FILE*)pContext8;
-	const size_t nResult = fwrite(pData, sizeof(char8_t), nCount, pFile); // It's OK if nCount == 0.
+	const size_t nResult = fwrite(pData, sizeof(char), nCount, pFile); // It's OK if nCount == 0.
 	if(nResult == nCount)
 		return (int)(unsigned)nResult;
 	return -1;
@@ -165,7 +165,7 @@ int FILEWriter32(const char32_t* EA_RESTRICT pData, size_t nCount, void* EA_REST
 ///////////////////////////////////////////////////////////////////////////////
 // PlatformLogWriter8
 //
-int PlatformLogWriter8(const char8_t* EA_RESTRICT pData, size_t nCount, void* EA_RESTRICT pContext8, WriteFunctionState)
+int PlatformLogWriter8(const char* EA_RESTRICT pData, size_t nCount, void* EA_RESTRICT pContext8, WriteFunctionState)
 {
 	#if defined(EA_PLATFORM_ANDROID)
 		// The __android_log_write function appends a \n to every call you make to it. This is a problem for 
@@ -386,7 +386,7 @@ template <typename CharT>
 const CharT* StringNull();
 
 template <>
-const char8_t* StringNull<char8_t>() { return kStringNull8; }
+const char* StringNull<char>() { return kStringNull8; }
 
 template <>
 const char16_t* StringNull<char16_t>() { return kStringNull16; }
@@ -573,7 +573,7 @@ int StringFormat(int(*pWriteFunction)(const OutCharT* EA_RESTRICT pData, size_t 
 // ReadFormat
 //
 // Reads the current format into FormatData. Return value is pointer to first
-// char8_t after the format data.
+// char after the format data.
 //
 // To know how printf truly needs to work, see the ISO C 1999 standard, section 7.19.6.1.
 // See http://www.cplusplus.com/ref/cstdio/printf.html or http://www.opengroup.org/onlinepubs/007908799/xsh/fprintf.html 
@@ -718,7 +718,7 @@ const CharT* ReadFormat(const CharT* EA_RESTRICT pFormat, SprintfLocal::FormatDa
 		case 'h':
 			if(pFormatCurrent[1] == 'h') // If the user specified %hh ...
 			{
-				// Specifies that a following d, i, o, u, x, or X conversion specifier applies to a signed char or unsigned char argument (the argument will have been promoted according to the integer promotions, but its value shall be converted to signed char8_t or unsigned char8_t before printing); or that a following n conversion specifier applies to a pointer to a signed char8_t argument.
+				// Specifies that a following d, i, o, u, x, or X conversion specifier applies to a signed char or unsigned char argument (the argument will have been promoted according to the integer promotions, but its value shall be converted to signed char or unsigned char before printing); or that a following n conversion specifier applies to a pointer to a signed char argument.
 				fd.mModifier = kModifierChar;
 				c = *++pFormatCurrent;
 			}
@@ -858,20 +858,20 @@ const CharT* ReadFormat(const CharT* EA_RESTRICT pFormat, SprintfLocal::FormatDa
 
 			break;
 
-		case 'c': // We accept %hc, %c, %lc, %I8c, %I16c, %I32c (regular, regular, wide, char8_t, char16_t, char32_t)
-		case 'C': // We accept %hC, %C, %lC, %I8C, %I16C, %I32C (regular, wide,    wide, char8_t, char16_t, char32_t)
-		case 's': // We accept %hs, %s, %ls, %I8s, %I16s, %I32s (regular, regular, wide, char8_t, char16_t, char32_t)
-		case 'S': // We accept %hS, %S, %lS, %I8s, %I16s, %I32s (regular, wide,    wide, char8_t, char16_t, char32_t)
+		case 'c': // We accept %hc, %c, %lc, %I8c, %I16c, %I32c (regular, regular, wide, char, char16_t, char32_t)
+		case 'C': // We accept %hC, %C, %lC, %I8C, %I16C, %I32C (regular, wide,    wide, char, char16_t, char32_t)
+		case 's': // We accept %hs, %s, %ls, %I8s, %I16s, %I32s (regular, regular, wide, char, char16_t, char32_t)
+		case 'S': // We accept %hS, %S, %lS, %I8s, %I16s, %I32s (regular, wide,    wide, char, char16_t, char32_t)
 			// If the user specified zero-fill above, then it is a mistake and we 
 			// need to use spaces instead. So we restore the fallback alignment.
 			if(fd.mAlignment == kAlignmentZeroFill)
 				fd.mAlignment = alignmentNonZeroFill;
 
 			// Microsoft's library goes against the standard: %s is 
-			// interpreted to mean char8_t string but instead is interpreted 
-			// to be either char8_t or wchar_t depending on what the output
+			// interpreted to mean char string but instead is interpreted 
+			// to be either char or wchar_t depending on what the output
 			// text format is. This is non-standard but has the convenience
-			// of allowing users to migrate between char8_t and wchar_t usage
+			// of allowing users to migrate between char and wchar_t usage
 			// more easily. So we allow EASPRINTF_MS_STYLE_S_FORMAT to control this.
 			if(fd.mModifier == kModifierShort)
 				fd.mModifier = kModifierChar;
@@ -1207,7 +1207,7 @@ CharT* WriteDouble(const SprintfLocal::FormatData& fd, double dValue, CharT* EA_
 
 				if(!((nExponent < -4) || (nExponent >= nPrecision)))
 				{
-					if(!IsSameType<CharT, char8_t>::value)
+					if(!IsSameType<CharT, char>::value)
 					{
 						if(nExponent >= 0) // If there are any digits to the left of the decimal...
 							nPrecision -= (nExponent + 1);
@@ -1722,8 +1722,8 @@ int VprintfCoreInternal(int(*pWriteFunction)(const CharT* EA_RESTRICT pData, siz
 					{
 						case 1:
 						{
-							const char8_t* pBufferData8 = va_arg(arguments, char8_t*);
-							nWriteCount = StringFormat<char8_t, CharT>(pWriteFunction, pWriteFunctionContext, fd, pBuffer, pBufferData8);
+							const char* pBufferData8 = va_arg(arguments, char*);
+							nWriteCount = StringFormat<char, CharT>(pWriteFunction, pWriteFunctionContext, fd, pBuffer, pBufferData8);
 							if (nWriteCount < 0)
 								goto FormatError;
 							nWriteCountSum += nWriteCount;
@@ -1764,7 +1764,7 @@ int VprintfCoreInternal(int(*pWriteFunction)(const CharT* EA_RESTRICT pData, siz
 					{
 						case kModifierInt8:
 						case kModifierChar:
-							*(char8_t*)pCountBufferData = (char8_t)nWriteCountSum;
+							*(char*)pCountBufferData = (char)nWriteCountSum;
 							break;
 
 						case kModifierInt16:
@@ -1848,7 +1848,7 @@ int VprintfCoreInternal(int(*pWriteFunction)(const CharT* EA_RESTRICT pData, siz
 					{
 					case 1:
 					{
-						const char8_t c8 = (char8_t)va_arg(arguments, int); // We make the assumption here that sizeof(char16_t) is <= sizeof(int) and thus that a char16_t argument was promoted to int.
+						const char c8 = (char)va_arg(arguments, int); // We make the assumption here that sizeof(char16_t) is <= sizeof(int) and thus that a char16_t argument was promoted to int.
 						pBuffer[0] = (CharT)(uint32_t)c8;
 						pBufferData = pBuffer;
 						nWriteCount = 1;
@@ -1877,7 +1877,7 @@ int VprintfCoreInternal(int(*pWriteFunction)(const CharT* EA_RESTRICT pData, siz
 
 				case '%':
 				{
-					// In this case we just write a single '%' char8_t to the output.
+					// In this case we just write a single '%' char to the output.
 					pBuffer[0] = '%';
 					pBufferData = pBuffer;
 					nWriteCount = 1;
@@ -1920,7 +1920,7 @@ FunctionError:
 ///////////////////////////////////////////////////////////////////////////////
 // VprintfCore
 //
-int VprintfCore(WriteFunction8 pWriteFunction8, void* EA_RESTRICT pWriteFunctionContext8, const char8_t* EA_RESTRICT pFormat, va_list arguments)
+int VprintfCore(WriteFunction8 pWriteFunction8, void* EA_RESTRICT pWriteFunctionContext8, const char* EA_RESTRICT pFormat, va_list arguments)
 {
 	return VprintfCoreInternal(pWriteFunction8, pWriteFunctionContext8, pFormat, arguments);
 }

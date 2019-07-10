@@ -194,7 +194,7 @@ void EAStdCStopwatchSetup()
 			// Stopwatch Frequency
 			mnStopwatchFrequency = mnCPUFrequency;
 
-		#elif defined(EA_PLATFORM_CAPILANO)
+		#elif defined(EA_PLATFORM_XBOXONE)
 			// Microsoft has stated (https://forums.xboxlive.com/AnswerPage.aspx?qid=c3fcdad5-f3e4-46d9-85f9-d337506f0d6b&tgt=1) that  
 			// QueryPerformanceCounter / QueryPerformanceFrequency map to rdtsc and they are stable throughout the life of the process.
 			// Thus we can use QueryPerformanceFrequency to portable tell the CPU frequency for our usage of rdtsc.

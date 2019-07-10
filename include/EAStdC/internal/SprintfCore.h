@@ -76,7 +76,7 @@ const int      kMaxWidth             = kConversionBufferSize - 8;
 const int      kMaxPrecision         = kConversionBufferSize - 8; 
 const int      kNoPrecision          = INT_MAX;
 const int      kFormatError          = 0;
-const char8_t  kStringNull8[]        = { '(', 'n', 'u', 'l', 'l', ')', '\0' }; // Used if the user uses "%s" but passes NULL as the string pointer.
+const char  kStringNull8[]        = { '(', 'n', 'u', 'l', 'l', ')', '\0' }; // Used if the user uses "%s" but passes NULL as the string pointer.
 const char16_t kStringNull16[]       = { '(', 'n', 'u', 'l', 'l', ')', '\0' };
 const char32_t kStringNull32[]       = { '(', 'n', 'u', 'l', 'l', ')', '\0' };
 
@@ -103,7 +103,7 @@ enum Sign
 enum Modifier
 {
 	kModifierNone,       // No modifier, use the type as-is.
-	kModifierChar,       // Use char8_t instead of int. Specified by hh in front of d, i, o, u, x, or X.
+	kModifierChar,       // Use char instead of int. Specified by hh in front of d, i, o, u, x, or X.
 	kModifierShort,      // Use short instead of int. Specified by h in front of d, i, o, u, x, or X.
 	kModifierInt,        // This is a placeholder, as integer is the default format for integral types.
 	kModifierLong,       // Use long instead of int. Specified by l in front of d, i, o, u, x, or X.
@@ -113,7 +113,7 @@ enum Modifier
 	kModifierPtrdiff_t,  // Use ptrdiff_t argument. Specified by 't' in front of d, i, o, u, x, or X.
 	kModifierDouble,     // This is a placeholder, as double is the default format for floating point types.
 	kModifierLongDouble, // Use long double instead of double. Specified by l in front of e, E, f, g, G.
-	kModifierWChar,      // Use wide char8_t instead of char8_t. Specified by l (in front of c).
+	kModifierWChar,      // Use wide char instead of char. Specified by l (in front of c).
 	kModifierInt8,       // Use int8_t or uint8_t.     Specified by I8 in front of d, i, o, u.
 	kModifierInt16,      // Use int16_t or uint16_t.   Specified by I16 in front of d, i, o, u.
 	kModifierInt32,      // Use int32_t or uint32_t.   Specified by I32 in front of d, i, o, u.
@@ -177,12 +177,12 @@ struct FormatData
 
 struct SnprintfContext8
 {
-	char8_t* mpDestination;     // Start of destination data. Ptr doesn't change once it has been initialized.
+	char* mpDestination;     // Start of destination data. Ptr doesn't change once it has been initialized.
 	size_t   mnCount;           // Count written to destination so far.
 	size_t   mnMaxCount;        // The max count we can write to the destination.
 	bool     mbMaxCountReached; // True if the max count has been reached. Used because multi-byte strings (e.g. UTF8) could end with mnCount < mnMaxCount.
 
-	SnprintfContext8(char8_t* pDestination = NULL, size_t nCount = 0, size_t nMaxCount = (size_t)-1)
+	SnprintfContext8(char* pDestination = NULL, size_t nCount = 0, size_t nMaxCount = (size_t)-1)
 	  : mpDestination(pDestination),
 		mnCount(nCount),
 		mnMaxCount(nMaxCount),
@@ -219,7 +219,7 @@ struct SnprintfContext32
 #ifdef EA_PLATFORM_ANDROID
 	struct PlatformLogWriterContext8
 	{
-		char8_t mBuffer[512];
+		char mBuffer[512];
 		size_t  mPosition;
 
 		PlatformLogWriterContext8() { mBuffer[0] = 0; mPosition = 0; }
@@ -230,9 +230,9 @@ struct SnprintfContext32
 #endif
 
 // Default output writers
-int StringWriter8     (const char8_t*  EA_RESTRICT pData, size_t nCount, void* EA_RESTRICT pContext8,  WriteFunctionState wfs);
-int FILEWriter8       (const char8_t*  EA_RESTRICT pData, size_t nCount, void* EA_RESTRICT pContext8,  WriteFunctionState wfs);
-int PlatformLogWriter8(const char8_t*  EA_RESTRICT pData, size_t nCount, void* EA_RESTRICT pContext8,  WriteFunctionState wfs);
+int StringWriter8     (const char*  EA_RESTRICT pData, size_t nCount, void* EA_RESTRICT pContext8,  WriteFunctionState wfs);
+int FILEWriter8       (const char*  EA_RESTRICT pData, size_t nCount, void* EA_RESTRICT pContext8,  WriteFunctionState wfs);
+int PlatformLogWriter8(const char*  EA_RESTRICT pData, size_t nCount, void* EA_RESTRICT pContext8,  WriteFunctionState wfs);
 
 int StringWriter16   (const char16_t* EA_RESTRICT pData, size_t nCount, void* EA_RESTRICT pContext16, WriteFunctionState wfs);
 int FILEWriter16     (const char16_t* EA_RESTRICT pData, size_t nCount, void* EA_RESTRICT pContext16, WriteFunctionState wfs);
@@ -269,7 +269,7 @@ void EASprintfShutdown();
 // ReadFormat
 //
 // Reads the current format into FormatData. Return value is pointer to first
-// char8_t/char16_t after the format data.
+// char/char16_t after the format data.
 //
 // To know how printf truly needs to work, see the ISO C 1999 standard, section 7.19.6.1.
 // See http://www.cplusplus.com/ref/cstdio/printf.html or http://www.opengroup.org/onlinepubs/007908799/xsh/fprintf.html 
@@ -286,7 +286,7 @@ const CharT* ReadFormat(const CharT* EA_RESTRICT pFormat, SprintfLocal::FormatDa
 ///////////////////////////////////////////////////////////////////////////////
 // VprintfCore
 //
-int VprintfCore(WriteFunction8  pWriteFunction8,  void* EA_RESTRICT pWriteFunctionContext8,  const char8_t*  EA_RESTRICT pFormat, va_list arguments);
+int VprintfCore(WriteFunction8  pWriteFunction8,  void* EA_RESTRICT pWriteFunctionContext8,  const char*  EA_RESTRICT pFormat, va_list arguments);
 int VprintfCore(WriteFunction16 pWriteFunction16, void* EA_RESTRICT pWriteFunctionContext16, const char16_t* EA_RESTRICT pFormat, va_list arguments);
 int VprintfCore(WriteFunction32 pWriteFunction32, void* EA_RESTRICT pWriteFunctionContext32, const char32_t* EA_RESTRICT pFormat, va_list arguments);
 

@@ -419,7 +419,15 @@ namespace StdC
 
 
 #if defined(EA_PLATFORM_MICROSOFT) && (defined(EA_PROCESSOR_ARM) || defined(EA_PLATFORM_WINDOWS_PHONE))
+	#ifndef WIN32_LEAN_AND_MEAN
+		#define EASTDC_WIN32_LEAN_AND_MEAN_DEFINED
+		#define WIN32_LEAN_AND_MEAN
+	#endif
 	#include <windows.h>
+	#ifdef EASTDC_WIN32_LEAN_AND_MEAN_DEFINED
+		#undef EASTDC_WIN32_LEAN_AND_MEAN_DEFINED
+		#undef WIN32_LEAN_AND_MEAN
+	#endif
 
 	inline uint64_t EA::StdC::Stopwatch::GetCPUCycle()
 	{

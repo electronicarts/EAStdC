@@ -108,70 +108,6 @@ namespace EA
 namespace StdC
 {
 
-#if EABASE_VERSION_N <= 20602
-	#if   defined(EA_PROCESSOR_X86)
-		typedef uint32_t machine_word_t;
-		const size_t     kMachineWordSize     = sizeof(machine_word_t);
-		const size_t     kMachineWordSizeMask = sizeof(machine_word_t) - 1;
-		const size_t     kCacheLineSize       = 32;  // This is the minimum possible value.
-		const size_t     kCacheLineSizeMask   = 31;
-
-		#if EA_SSE
-			#define EA_CACHE_PREFETCH_128(addr)  _mm_prefetch((const char*)(uintptr_t)(addr), _MM_HINT_NTA)
-			#define EA_CACHE_ZERO_128(addr)      memset(addr, 0, 128)
-		#else
-			#define EA_CACHE_PREFETCH_128(addr)  // Need to support _mm_prefetch.
-			#define EA_CACHE_ZERO_128(addr)      memset(addr, 0, 128)
-		#endif
-
-	#elif defined(EA_PROCESSOR_X86_64)
-		typedef uint64_t machine_word_t;
-		const size_t     kMachineWordSize     = sizeof(machine_word_t);
-		const size_t     kMachineWordSizeMask = sizeof(machine_word_t) - 1;
-		const size_t     kCacheLineSize       = 64;  // This is the minimum possible value
-		const size_t     kCacheLineSizeMask   = 63;
-
-		#define EA_CACHE_PREFETCH_128(addr)  _mm_prefetch((const char*)(uintptr_t)(addr), _MM_HINT_NTA)
-		#define EA_CACHE_ZERO_128(addr)      memset(addr, 0, 128)
-
-	#elif defined(EA_PROCESSOR_ARM)
-		typedef uint32_t machine_word_t;
-		const size_t     kMachineWordSize     = sizeof(machine_word_t);
-		const size_t     kMachineWordSizeMask = sizeof(machine_word_t) - 1;
-		const size_t     kCacheLineSize       = 32; // This varies between implementations and is usually 32 or 64.
-		const size_t     kCacheLineSizeMask   = 31;
-
-		// Modern ARM CPUs have auto-prefetch functionality, though it's 
-		// not necessarily smart and has to be enabled by the OS.
-		#if defined(__GNUC__) && (__GNUC__ >= 4)
-			#define EA_CACHE_PREFETCH_128(addr) __builtin_prefetch(addr)
-		#else
-			#define EA_CACHE_PREFETCH_128(addr)
-		#endif
-		#define EA_CACHE_ZERO_128(addr)      memset(addr, 0, 128)
-
-	#elif (EA_PLATFORM_WORD_SIZE == 4)
-		typedef uint32_t machine_word_t;
-		const size_t     kMachineWordSize     = sizeof(machine_word_t);
-		const size_t     kMachineWordSizeMask = sizeof(machine_word_t) - 1;
-		const size_t     kCacheLineSize       = 32;  // This is the minimum possible value
-		const size_t     kCacheLineSizeMask   = 31;
-
-		#define EA_CACHE_PREFETCH_128(addr)
-		#define EA_CACHE_ZERO_128(addr)      memset(addr, 0, 128)
-
-	#else
-		typedef uint64_t machine_word_t;
-		const size_t     kMachineWordSize     = sizeof(machine_word_t);
-		const size_t     kMachineWordSizeMask = sizeof(machine_word_t) - 1;
-		const size_t     kCacheLineSize       = 64;  // This is the minimum possible value
-		const size_t     kCacheLineSizeMask   = 63;
-
-		#define EA_CACHE_PREFETCH_128(addr)
-		#define EA_CACHE_ZERO_128(addr)      memset(addr, 0, 128)
-
-	#endif
-#else
 	#if   defined(EA_PROCESSOR_X86)
 		typedef uint32_t machine_word_t;
 		const size_t     kMachineWordSize     = sizeof(machine_word_t);
@@ -218,11 +154,6 @@ namespace StdC
 
 	const size_t     kCacheLineSize       = EA_CACHE_LINE_SIZE;  
 	const size_t     kCacheLineSizeMask   = (EA_CACHE_LINE_SIZE-1);
-#endif
-
-
-   
-
 
 
 	///////////////////////////////////////////////////////////////////////////////

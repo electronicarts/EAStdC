@@ -283,8 +283,8 @@ struct FPTemplate
 	FPTemplate& operator^=(const FPTemplate& argValue) { value ^= argValue.value;          return *this;}
 	FPTemplate& operator^=(const int&        argValue) { value ^= (argValue<<upShiftInt);  return *this;} //Convert Fixed to int, then do operation
 
-	FPTemplate operator<<(int numBits) const { return value << numBits; }
-	FPTemplate operator>>(int numBits) const { return value << numBits; }
+	FPTemplate operator<<(int numBits) const { FPTemplate temp; temp.value = value << numBits; return temp; }
+	FPTemplate operator>>(int numBits) const { FPTemplate temp; temp.value = value >> numBits; return temp; }
 
 	FPTemplate& operator<<=(int numBits) { value <<= numBits; return *this;}
 	FPTemplate& operator>>=(int numBits) { value >>= numBits; return *this;}

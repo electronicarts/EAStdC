@@ -129,6 +129,44 @@ int TestFixedPoint()
 			nErrorCount++;
 	}
 
+	{
+		// FPTemplate operator<<(int numBits) const 
+		{
+			SFixed16 a(16);
+
+			auto expected = a.value << 1;
+
+			a = (a << 1);
+
+			if(!CompareValues(a.value, expected))
+				nErrorCount++;
+		}
+
+		// FPTemplate operator>>(int numBits) const 
+		{
+			SFixed16 a(16);
+
+			auto expected = a.value >> 1;
+
+			a = (a >> 1);
+
+			if(!CompareValues(a.value, expected))
+				nErrorCount++;
+		}
+	}
+
+	// Reported regression - ensure operator<< and operator>> are implemented correctly.
+	{
+		SFixed16 a(16);
+
+		auto expected = a.value;
+
+		a = (a << 1);
+		a = (a >> 1);
+
+		if(!CompareValues(a.value, expected))
+			nErrorCount++;
+	}
 
 	#ifndef EA_DLL
 		// Test SFixed24

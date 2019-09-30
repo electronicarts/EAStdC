@@ -32,8 +32,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef EASTDC_VERSION
-	#define EASTDC_VERSION   "1.26.03"
-	#define EASTDC_VERSION_N  12603
+	#define EASTDC_VERSION   "1.26.04"
+	#define EASTDC_VERSION_N  12604
 #endif
 
 

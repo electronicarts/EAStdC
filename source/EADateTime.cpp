@@ -200,6 +200,15 @@ namespace StdC
 		return sInitialTime + t;
 	}
 
+	///////////////////////////////////////////////////////////////////////
+	// GetTimeMilliseconds
+	//
+	// Convenient wrapper for converting the nanosecond resolution of GetTime()
+	// to milliseconds.
+	EASTDC_API uint64_t GetTimeMilliseconds()
+	{
+		return GetTime() / 1000000;
+	}
 
 	#if 0 // Alternative variation, which on the surface seems more efficient.
 	/*

@@ -470,6 +470,12 @@ namespace StdC
 	/// GetTime values to seconds/nanoseconds used by the DateTime class.
 	EASTDC_API uint64_t GetTime();
 
+	/// GetTimeMilliseconds
+	/// Returns the number of milliseconds elapsed since January 1, 1970 UTC.
+	/// This is simply a convenient wrapper for GetTime() / 1000000 (ie.
+	/// converting the nanosecond resolution of GetTime() to milliseconds).
+	EASTDC_API uint64_t GetTimeMilliseconds();
+
 	/// GetTimePrecision
 	/// Returns the precision, in nanoseconds, of GetTime().
 	/// A return value of 1 means GetTime indeed returns nanosecond values with nanosecond precision.

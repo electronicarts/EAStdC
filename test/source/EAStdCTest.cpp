@@ -158,7 +158,6 @@ void operator delete(void* p, char const*, int, unsigned, char const*, int)
 	size_t sceLibcHeapSize = 128*1024*1024;
 #endif
 
-
 ///////////////////////////////////////////////////////////////////////////////
 // EAMain
 //

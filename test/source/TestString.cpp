@@ -25,7 +25,7 @@
 #endif
 
 
-static inline bool DoubleEqual(double x1, double x2)
+static inline bool TestString_DoubleEqual(double x1, double x2)
 {
 	double difference = fabs(x1 - x2);
 	double relative   = fabs(difference / x1);
@@ -34,7 +34,7 @@ static inline bool DoubleEqual(double x1, double x2)
 		return true;
 	else
 	{
-		EA::UnitTest::Report("DoubleEqual Error: %f, %f\n", x1, x2);
+		EA::UnitTest::Report("TestString_DoubleEqual Error: %f, %f\n", x1, x2);
 		return false;
 	}
 }
@@ -2304,49 +2304,49 @@ static int TestStrtod()
 		//EATEST_VERIFY(0 == StrtodEnglish(p, &pEnd));
 
 		p = "-111.111";
-		EATEST_VERIFY(DoubleEqual(-111.111, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(-111.111, StrtodEnglish(p, &pEnd)));
 
 		p = "111e111";
-		EATEST_VERIFY(DoubleEqual(111e111, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(111e111, StrtodEnglish(p, &pEnd)));
 
 		p = "-111e-111";
-		EATEST_VERIFY(DoubleEqual(-111e-111, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(-111e-111, StrtodEnglish(p, &pEnd)));
 
 		p = "137";
-		EATEST_VERIFY(DoubleEqual(137, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(137, StrtodEnglish(p, &pEnd)));
 
 		p = "999999";
-		EATEST_VERIFY(DoubleEqual(999999, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(999999, StrtodEnglish(p, &pEnd)));
 
 		p = "123.456";
-		EATEST_VERIFY(DoubleEqual(123.456, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(123.456, StrtodEnglish(p, &pEnd)));
 
 		p = "123232111.000123";
-		EATEST_VERIFY(DoubleEqual(123232111.000123, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(123232111.000123, StrtodEnglish(p, &pEnd)));
 
 		p = "-888111.000123";
-		EATEST_VERIFY(DoubleEqual(-888111.000123, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(-888111.000123, StrtodEnglish(p, &pEnd)));
 
 		p = "-123.456";
-		EATEST_VERIFY(DoubleEqual(-123.456, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(-123.456, StrtodEnglish(p, &pEnd)));
 
 		p = "+999999";
-		EATEST_VERIFY(DoubleEqual(+999999, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(+999999, StrtodEnglish(p, &pEnd)));
 
 		p = "+999999e2";
-		EATEST_VERIFY(DoubleEqual(+999999e2, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(+999999e2, StrtodEnglish(p, &pEnd)));
 
 		p = "-234.567E-3";
-		EATEST_VERIFY(DoubleEqual(-234.567E-3, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(-234.567E-3, StrtodEnglish(p, &pEnd)));
 
 		p = "321654.987e11";
-		EATEST_VERIFY(DoubleEqual(321654.987e11, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(321654.987e11, StrtodEnglish(p, &pEnd)));
 
 		p = "-321654.987E0";
-		EATEST_VERIFY(DoubleEqual(-321654.987E0, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(-321654.987E0, StrtodEnglish(p, &pEnd)));
 
 		p = "+321654.987e-0";
-		EATEST_VERIFY(DoubleEqual(+321654.987e-0, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(+321654.987e-0, StrtodEnglish(p, &pEnd)));
 	}
 	{
 		const char16_t* p;
@@ -2360,49 +2360,49 @@ static int TestStrtod()
 		//EATEST_VERIFY(0 == StrtodEnglish(p, &pEnd));
 
 		p = EA_CHAR16("-111.111");
-		EATEST_VERIFY(DoubleEqual(-111.111, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(-111.111, StrtodEnglish(p, &pEnd)));
 
 		p = EA_CHAR16("111e111");
-		EATEST_VERIFY(DoubleEqual(111e111, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(111e111, StrtodEnglish(p, &pEnd)));
 
 		p = EA_CHAR16("-111e-111");
-		EATEST_VERIFY(DoubleEqual(-111e-111, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(-111e-111, StrtodEnglish(p, &pEnd)));
 
 		p = EA_CHAR16("137");
-		EATEST_VERIFY(DoubleEqual(137, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(137, StrtodEnglish(p, &pEnd)));
 
 		p = EA_CHAR16("999999");
-		EATEST_VERIFY(DoubleEqual(999999, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(999999, StrtodEnglish(p, &pEnd)));
 
 		p = EA_CHAR16("123.456");
-		EATEST_VERIFY(DoubleEqual(123.456, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(123.456, StrtodEnglish(p, &pEnd)));
 
 		p = EA_CHAR16("123232111.000123");
-		EATEST_VERIFY(DoubleEqual(123232111.000123, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(123232111.000123, StrtodEnglish(p, &pEnd)));
 
 		p = EA_CHAR16("-888111.000123");
-		EATEST_VERIFY(DoubleEqual(-888111.000123, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(-888111.000123, StrtodEnglish(p, &pEnd)));
 
 		p = EA_CHAR16("-123.456");
-		EATEST_VERIFY(DoubleEqual(-123.456, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(-123.456, StrtodEnglish(p, &pEnd)));
 
 		p = EA_CHAR16("+999999");
-		EATEST_VERIFY(DoubleEqual(+999999, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(+999999, StrtodEnglish(p, &pEnd)));
 
 		p = EA_CHAR16("+999999e2");
-		EATEST_VERIFY(DoubleEqual(+999999e2, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(+999999e2, StrtodEnglish(p, &pEnd)));
 
 		p = EA_CHAR16("-234.567E-3");
-		EATEST_VERIFY(DoubleEqual(-234.567E-3, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(-234.567E-3, StrtodEnglish(p, &pEnd)));
 
 		p = EA_CHAR16("321654.987e11");
-		EATEST_VERIFY(DoubleEqual(321654.987e11, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(321654.987e11, StrtodEnglish(p, &pEnd)));
 
 		p = EA_CHAR16("-321654.987E0");
-		EATEST_VERIFY(DoubleEqual(-321654.987E0, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(-321654.987E0, StrtodEnglish(p, &pEnd)));
 
 		p = EA_CHAR16("+321654.987e-0");
-		EATEST_VERIFY(DoubleEqual(+321654.987e-0, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(+321654.987e-0, StrtodEnglish(p, &pEnd)));
 	}
 	{
 		const char32_t* p;
@@ -2416,49 +2416,49 @@ static int TestStrtod()
 		//EATEST_VERIFY(0 == StrtodEnglish(p, &pEnd));
 
 		p = EA_CHAR32("-111.111");
-		EATEST_VERIFY(DoubleEqual(-111.111, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(-111.111, StrtodEnglish(p, &pEnd)));
 
 		p = EA_CHAR32("111e111");
-		EATEST_VERIFY(DoubleEqual(111e111, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(111e111, StrtodEnglish(p, &pEnd)));
 
 		p = EA_CHAR32("-111e-111");
-		EATEST_VERIFY(DoubleEqual(-111e-111, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(-111e-111, StrtodEnglish(p, &pEnd)));
 
 		p = EA_CHAR32("137");
-		EATEST_VERIFY(DoubleEqual(137, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(137, StrtodEnglish(p, &pEnd)));
 
 		p = EA_CHAR32("999999");
-		EATEST_VERIFY(DoubleEqual(999999, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(999999, StrtodEnglish(p, &pEnd)));
 
 		p = EA_CHAR32("123.456");
-		EATEST_VERIFY(DoubleEqual(123.456, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(123.456, StrtodEnglish(p, &pEnd)));
 
 		p = EA_CHAR32("123232111.000123");
-		EATEST_VERIFY(DoubleEqual(123232111.000123, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(123232111.000123, StrtodEnglish(p, &pEnd)));
 
 		p = EA_CHAR32("-888111.000123");
-		EATEST_VERIFY(DoubleEqual(-888111.000123, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(-888111.000123, StrtodEnglish(p, &pEnd)));
 
 		p = EA_CHAR32("-123.456");
-		EATEST_VERIFY(DoubleEqual(-123.456, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(-123.456, StrtodEnglish(p, &pEnd)));
 
 		p = EA_CHAR32("+999999");
-		EATEST_VERIFY(DoubleEqual(+999999, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(+999999, StrtodEnglish(p, &pEnd)));
 
 		p = EA_CHAR32("+999999e2");
-		EATEST_VERIFY(DoubleEqual(+999999e2, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(+999999e2, StrtodEnglish(p, &pEnd)));
 
 		p = EA_CHAR32("-234.567E-3");
-		EATEST_VERIFY(DoubleEqual(-234.567E-3, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(-234.567E-3, StrtodEnglish(p, &pEnd)));
 
 		p = EA_CHAR32("323254.987e11");
-		EATEST_VERIFY(DoubleEqual(323254.987e11, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(323254.987e11, StrtodEnglish(p, &pEnd)));
 
 		p = EA_CHAR32("-323254.987E0");
-		EATEST_VERIFY(DoubleEqual(-323254.987E0, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(-323254.987E0, StrtodEnglish(p, &pEnd)));
 
 		p = EA_CHAR32("+323254.987e-0");
-		EATEST_VERIFY(DoubleEqual(+323254.987e-0, StrtodEnglish(p, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(+323254.987e-0, StrtodEnglish(p, &pEnd)));
 	}
 
 
@@ -2468,35 +2468,35 @@ static int TestStrtod()
 	{
 		char  sn18[] = "-111.111";
 		char* pEnd = NULL;
-		EATEST_VERIFY(DoubleEqual(-111.111, Strtod(sn18, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(-111.111, Strtod(sn18, &pEnd)));
 
 		char sn28[] = "111e111";
-		EATEST_VERIFY(DoubleEqual(111e111, Strtod(sn28, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(111e111, Strtod(sn28, &pEnd)));
 
 		char sn38[] = "-111e-111";
-		EATEST_VERIFY(DoubleEqual(-111e-111, Strtod(sn38, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(-111e-111, Strtod(sn38, &pEnd)));
 	}
 	{
 		char16_t  sn18[16]; Strlcpy(sn18, EA_CHAR16("-111.111"), EAArrayCount(sn18)); // Can't do char16_t variable[64] = EA_CHAR16(...) because some compilers don't support 16 bit string literals.
 		char16_t* pEnd = NULL;
-		EATEST_VERIFY(DoubleEqual(-111.111, Strtod(sn18, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(-111.111, Strtod(sn18, &pEnd)));
 
 		char16_t sn28[16]; Strlcpy(sn28, EA_CHAR16("111e111"), EAArrayCount(sn28)); // Can't do char16_t variable[64] = EA_CHAR16(...) because some compilers don't support 16 bit string literals.
-		EATEST_VERIFY(DoubleEqual(111e111, Strtod(sn28, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(111e111, Strtod(sn28, &pEnd)));
 
 		char16_t sn38[16]; Strlcpy(sn38, EA_CHAR16("-111e-111"), EAArrayCount(sn38)); // Can't do char16_t variable[64] = EA_CHAR16(...) because some compilers don't support 16 bit string literals.
-		EATEST_VERIFY(DoubleEqual(-111e-111, Strtod(sn38, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(-111e-111, Strtod(sn38, &pEnd)));
 	}
 	{
 		char32_t  sn18[32]; Strlcpy(sn18, EA_CHAR32("-111.111"), EAArrayCount(sn18)); // Can't do char32_t variable[64] = EA_CHAR32(...) because some compilers don't support 32 bit string literals.
 		char32_t* pEnd = NULL;
-		EATEST_VERIFY(DoubleEqual(-111.111, Strtod(sn18, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(-111.111, Strtod(sn18, &pEnd)));
 
 		char32_t sn28[32]; Strlcpy(sn28, EA_CHAR32("111e111"), EAArrayCount(sn28)); // Can't do char32_t variable[64] = EA_CHAR32(...) because some compilers don't support 32 bit string literals.
-		EATEST_VERIFY(DoubleEqual(111e111, Strtod(sn28, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(111e111, Strtod(sn28, &pEnd)));
 
 		char32_t sn38[32]; Strlcpy(sn38, EA_CHAR32("-111e-111"), EAArrayCount(sn38)); // Can't do char32_t variable[64] = EA_CHAR32(...) because some compilers don't support 32 bit string literals.
-		EATEST_VERIFY(DoubleEqual(-111e-111, Strtod(sn38, &pEnd)));
+		EATEST_VERIFY(TestString_DoubleEqual(-111e-111, Strtod(sn38, &pEnd)));
 	}
 
 	return nErrorCount;
@@ -3120,28 +3120,28 @@ static int TestAtof()
 
 		{
 			double d = Atof(kStrMax);
-			EATEST_VERIFY(DoubleEqual(d, kValMax));
+			EATEST_VERIFY(TestString_DoubleEqual(d, kValMax));
 
 			d = Atof(kStrMin);
-			EATEST_VERIFY(DoubleEqual(d, kValMin));
+			EATEST_VERIFY(TestString_DoubleEqual(d, kValMin));
 		}
 		{
 			char16_t sn18[32]; Strlcpy(sn18, kStrMax, EAArrayCount(sn18)); // Can't do char16_t variable[64] = EA_CHAR16(...) because some compilers don't support 16 bit string literals.
 			double  d = Atof(sn18);
-			EATEST_VERIFY(DoubleEqual(d, kValMax));
+			EATEST_VERIFY(TestString_DoubleEqual(d, kValMax));
 
 			char16_t sn28[32]; Strlcpy(sn28, kStrMin, EAArrayCount(sn28));
 			d = Atof(sn28);
-			EATEST_VERIFY(DoubleEqual(d, kValMin));
+			EATEST_VERIFY(TestString_DoubleEqual(d, kValMin));
 		}
 		{
 			char32_t sn18[32]; Strlcpy(sn18, kStrMax, EAArrayCount(sn18));
 			double d = Atof(sn18);
-			EATEST_VERIFY(DoubleEqual(d, kValMax));
+			EATEST_VERIFY(TestString_DoubleEqual(d, kValMax));
 
 			char32_t sn28[32]; Strlcpy(sn28, kStrMin, EAArrayCount(sn28));
 			d = Atof(sn28);
-			EATEST_VERIFY(DoubleEqual(d, kValMin));
+			EATEST_VERIFY(TestString_DoubleEqual(d, kValMin));
 		}
 	}
 
@@ -3159,23 +3159,23 @@ static int TestAtof()
 		const double   kValMax =  1.7976931348622e+307;
 
 		{
-			EATEST_VERIFY(DoubleEqual(kValMin, AtofEnglish(kStrMin)));
+			EATEST_VERIFY(TestString_DoubleEqual(kValMin, AtofEnglish(kStrMin)));
 
-			EATEST_VERIFY(DoubleEqual(kValMax, AtofEnglish(kStrMax)));
+			EATEST_VERIFY(TestString_DoubleEqual(kValMax, AtofEnglish(kStrMax)));
 		}
 		{
 			char16_t sn18[32]; Strlcpy(sn18, kStrMin, EAArrayCount(sn18)); // Can't do char16_t variable[64] = EA_CHAR16(...) because some compilers don't support 16 bit string literals.
-			EATEST_VERIFY(DoubleEqual(kValMin, AtofEnglish(sn18)));
+			EATEST_VERIFY(TestString_DoubleEqual(kValMin, AtofEnglish(sn18)));
 
 			char16_t sn28[32]; Strlcpy(sn28, kStrMax, EAArrayCount(sn28));
-			EATEST_VERIFY(DoubleEqual(kValMax, AtofEnglish(sn28)));
+			EATEST_VERIFY(TestString_DoubleEqual(kValMax, AtofEnglish(sn28)));
 		}
 		{
 			char32_t sn18[32]; Strlcpy(sn18, kStrMin, EAArrayCount(sn18));
-			EATEST_VERIFY(DoubleEqual(kValMin, AtofEnglish(sn18)));
+			EATEST_VERIFY(TestString_DoubleEqual(kValMin, AtofEnglish(sn18)));
 
 			char32_t sn28[32]; Strlcpy(sn28, kStrMax, EAArrayCount(sn28));
-			EATEST_VERIFY(DoubleEqual(kValMax, AtofEnglish(sn28)));
+			EATEST_VERIFY(TestString_DoubleEqual(kValMax, AtofEnglish(sn28)));
 		}
 	}
 

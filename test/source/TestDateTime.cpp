@@ -16,16 +16,14 @@
 
 
 #if defined(EA_PLATFORM_MICROSOFT)
-	#ifdef _MSC_VER
-		#pragma warning(push, 0)
-		#if !(defined(EA_PLATFORM_WINDOWS) && !EA_WINAPI_FAMILY_PARTITION(EA_WINAPI_PARTITION_DESKTOP))
-			#include <winsock2.h> // for timeval
-		#endif
-		#include <Windows.h>
-		#pragma warning(pop)
+	EA_DISABLE_ALL_VC_WARNINGS()
+	#if defined(EA_PLATFORM_XBOXONE) || defined(CS_UNDEFINED_STRING)
+		#include <winsock2.h> // for timeval
 	#else
-		#include <Windows.h>
+		#include <winsock.h> // for timeval
 	#endif
+	#include <Windows.h>
+	EA_RESTORE_ALL_VC_WARNINGS()
 
 	bool GetLocaleInfoHelper(LCTYPE lcType, char* lcData, int cchData)
 	{

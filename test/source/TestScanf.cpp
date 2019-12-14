@@ -122,40 +122,6 @@ static int TestCRTVsscanf(const char32_t* pBuffer, const char32_t* pFormat, ...)
 	return n;
 }
 
-
-
-static inline double DoubleAbsoluteDifference(double x1, double x2)
-{
-	return (x1 < x2) ? (x2 - x1) : (x1 - x2);
-}
-
-static inline bool DoubleEqual(double x1, double x2)
-{
-	if(x1 < 1e-15)
-		return (x2 < 1e-15);
-	else if(x2 < 1e-15)
-		return (x1 < 1e-15);
-	else
-		return DoubleAbsoluteDifference((x1 - x2) / x1, 1e-15) < 1e-13;
-}
-
-static inline double FloatAbsoluteDifference(float x1, float x2)
-{
-	return (x1 < x2) ? (x2 - x1) : (x1 - x2);
-}
-
-static inline bool FloatEqual(float x1, float x2)
-{
-	if(x1 < 1e-7f)
-		return (x2 < 1e-7f);
-	else if(x2 < 1e-7f)
-		return (x1 < 1e-7f);
-	else
-		return FloatAbsoluteDifference((x1 - x2) / x1, 1e-7f) < 1e-5f;
-}
-
-
-
 ///////////////////////////////////////////////////////////////////////////////
 // TestScanfLimits
 //

@@ -29,7 +29,7 @@ namespace EA
 		#if defined(EA_PLATFORM_WINDOWS) && EA_WINAPI_FAMILY_PARTITION(EA_WINAPI_PARTITION_DESKTOP)
 			const int kMaxPathLength      = _MAX_PATH;
 			const int kMaxDirectoryLength = _MAX_PATH;
-		#elif defined(EA_PLATFORM_XBOXONE)
+		#elif defined(EA_PLATFORM_XBOXONE) || defined(CS_UNDEFINED_STRING)
 			const int kMaxPathLength      = 260;
 			const int kMaxDirectoryLength = 260;
 		#elif defined(EA_PLATFORM_SONY)

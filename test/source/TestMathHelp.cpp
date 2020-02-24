@@ -12,6 +12,7 @@
 #include <EATest/EATest.h>
 #include <EASTL/string.h>
 #include <EAAssert/eaassert.h>
+#include <EASTL/type_traits.h>
 
 EA_DISABLE_ALL_VC_WARNINGS()
 #include <float.h>
@@ -29,14 +30,14 @@ bool TestArray(const char *testname, T (&values)[count], U (*testFunc)(T), U (*r
 {
 	typedef U tResult;
 
-	//const bool isUnsigned = ((T)-1 >= 0);
+	const bool isUnsigned = eastl::is_unsigned_v<U>;
 
 	for(size_t i = 0; i < count; ++i)
 	{
 		const T& v = values[i];
 
-		//if (isUnsigned && (v < 0)) // This can never be true.
-		//    continue;
+		if (isUnsigned && (v < 0)) // prevent UB from converting floats outside the valid range of [-1, FLOAT_MAX) to uin32_t.
+			continue;
 
 		if (unit_only && (v < 0 || v > 1))
 			continue;
@@ -80,7 +81,7 @@ bool TestArray(const char *testname, T (&values)[count], U (*testFunc)(T), U (*r
 //
 EA_NO_UBSAN static uint32_t ref_RoundToUint32(float32_t v)
 {
-	return (uint32_t)floorf(v + 0.5f);
+	return static_cast<uint32_t>(floorf(v + 0.5f));
 }
 
 
@@ -443,8 +444,6 @@ static int TestMath()
 int TestMathHelp()
 {
 	int nErrorCount = 0;
-
-	EA::UnitTest::Report("TestMathHelp\n");
 
 	nErrorCount += TestMath();
 

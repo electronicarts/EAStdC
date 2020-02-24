@@ -32,8 +32,6 @@ int TestBitTricks()
 
 	int nErrorCount(0);
 
-	EA::UnitTest::Report("TestBitTricks\n");
-
 	int       n1 = 0, n2 = 0;
 	bool       b = false;
 	int        i = 0;

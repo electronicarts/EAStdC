@@ -3987,12 +3987,18 @@ template <class charType>
 int TestStrstripString(const charType* input, const charType* expectedOutput)
 {
 	using namespace EA::StdC;
+
 	int nErrorCount = 0;
-	size_t strLen = EA::StdC::Strlen(input) + 1;
-	charType* str = static_cast<charType*>(malloc((strLen) * sizeof(charType)));
+
+	const size_t strLen = EA::StdC::Strlen(input) + 1;
+	const size_t allocSizeInBytes = (strLen) * sizeof(charType);
+
+	charType* str = static_cast<charType*>(malloc(allocSizeInBytes));
+	Memclear(str, allocSizeInBytes);
 	Strncpy(str, input, strLen);
 	EATEST_VERIFY(Strcmp(Strstrip(str), expectedOutput) == 0);
 	free(str);
+
 	return nErrorCount;
 }
 
@@ -4099,7 +4105,6 @@ static int TestStrstrip()
 	nErrorCount += TestStrstripString(EA_CHAR32(" a b    "), EA_CHAR32("a b"));
 	nErrorCount += TestStrstripString(EA_CHAR32(" a b "), EA_CHAR32("a b"));
 	nErrorCount += TestStrstripString(EA_CHAR32(" a     b "), EA_CHAR32("a     b"));
-	nErrorCount += TestStrstripString(EA_CHAR32("    a     b   "), EA_CHAR32("a     b"));
 	nErrorCount += TestStrstripString(EA_CHAR32("    a     b   "), EA_CHAR32("a     b"));
 	nErrorCount += TestStrstripString(EA_CHAR32("ab"), EA_CHAR32("ab"));
 	nErrorCount += TestStrstripString(EA_CHAR32("abcdefghiklmnop"), EA_CHAR32("abcdefghiklmnop"));
@@ -4266,11 +4271,10 @@ static int TestStrend()
 }
 
 
+
 int TestString()
 {
 	int nErrorCount = 0;
-
-	EA::UnitTest::Report("TestString\n");
 
 	// Disable assertions, because we will be explicitly testing the failure 
 	// modes of some of the functions here. And we don't want the tests to 

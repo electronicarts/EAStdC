@@ -69,8 +69,6 @@ int TestFixedPoint()
 
 	int nErrorCount(0);
 
-	EA::UnitTest::Report("TestFixedPoint\n");
-
 	// Test SFixed16
 	{
 		SFixed16  a(1), b(2), c(3.f), d(1.0);

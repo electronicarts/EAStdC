@@ -31,8 +31,6 @@ int TestInt128()
 {
 	using namespace EA::StdC;
 
-	EA::UnitTest::Report("TestInt128\n");
-
 	int  nErrorCount(0);
 	char array[256];
 	bool bResult;

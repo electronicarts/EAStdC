@@ -28,6 +28,12 @@
 	#pragma warning(pop)
 #endif
 
+#ifndef EASTDC_SWAPPABLE_PROCESS_PLATFORM
+	#if defined(EA_PLATFORM_ANDROID)
+		#define EASTDC_SWAPPABLE_PROCESS_PLATFORM
+	#endif
+#endif
+
 // Tests whether an emulator is being used (for Android devices only)
 #ifdef EA_PLATFORM_ANDROID
 	bool IsEmulator()
@@ -46,8 +52,6 @@
 int TestStopwatch()
 {
 	using namespace EA::StdC;
-
-	EA::UnitTest::Report("TestStopwatch\n");
 
 	int       nErrorCount(0);
 	Stopwatch stopwatch(Stopwatch::kUnitsSeconds);

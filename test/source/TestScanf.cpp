@@ -2951,8 +2951,6 @@ int TestScanf()
 {
 	int nErrorCount = 0;
 
-	EA::UnitTest::Report("TestScanf\n");
-
 	nErrorCount += TestScanfLimits();
 	nErrorCount += TestScanfMisc();
 	nErrorCount += TestScanfUnusual();

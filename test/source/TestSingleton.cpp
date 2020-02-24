@@ -48,8 +48,6 @@ int TestSingleton()
 {
 	int nErrorCount(0);
 
-	EA::UnitTest::Report("TestSingleton\n");
-
 	// Singleton
 	WidgetS* pWidgetS = WidgetS::GetInstance();
 	EATEST_VERIFY(pWidgetS == NULL);

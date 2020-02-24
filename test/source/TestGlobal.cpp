@@ -44,8 +44,6 @@ int TestGlobal()
 
 	int nErrorCount(0);
 
-	EA::UnitTest::Report("TestGlobal\n");
-
 	const uint32_t id = 0x8e9c5fd7;
 
 	GlobalTestObject::sSeqCounter = 0;

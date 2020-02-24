@@ -14,8 +14,6 @@ int TestCType()
 
 	int nErrorCount = 0;
 
-	EA::UnitTest::Report("TestCType\n");
-
 	// Character categorization
 	// To do: Change this from a macro to a template.
 	#define ISCHAR_CATEGORY_TEST(type, category, c_from, c_to, positive) \

@@ -85,8 +85,6 @@ int TestHash()
 
 	int nErrorCount(0);
 
-	EA::UnitTest::Report("TestHash\n");
-
 	const int kDataLength(16384); // We intentionally choose a power of 2.
 	EATEST_VERIFY((kDataLength % 8) == 0); // Code below depends on this.
 

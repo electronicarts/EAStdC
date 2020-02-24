@@ -23,12 +23,14 @@
 #endif
 
 
-#if defined(EA_PLATFORM_DESKTOP) // We need to test/debug this module in detail on machines before we enable the test formally for them. Given how threads work on other platforms this test or EACallback could fail on other platforms in async mode.
+#if defined(EA_PLATFORM_DESKTOP)
+	// We need to test/debug this module in detail on machines before we enable the test
+	// formally for them. Given how threads work on other platforms this test or EACallback
+	// could fail on other platforms in async mode.
 	#define EASTDC_EACALLBACK_TESTS_ENABLED 1
 #else
 	#define EASTDC_EACALLBACK_TESTS_ENABLED 0
 #endif
-
 
 
 #if EASTDC_EACALLBACK_TESTS_ENABLED
@@ -249,8 +251,6 @@ int TestCallback()
 {
 	using namespace EA::StdC;
 
-	EA::UnitTest::Report("TestCallback\n");
-
 	int nErrorCount(0);
 
 	#if EASTDC_EACALLBACK_TESTS_ENABLED
@@ -294,8 +294,6 @@ int TestCallback()
 			// For each type of TestControlInfo above...
 			for(size_t cn = 0, n = EAArrayCount(tci); cn < n; ++cn)
 			{
-
-
 				const TestControlInfo& ci = tci[cn];
 
 				for(uint32_t t = 0; t < kCallbackCount; ++t)
@@ -375,7 +373,7 @@ int TestCallback()
 							EA::Thread::ThreadTime sleepTime = EA::Thread::kTimeoutImmediate;
 
 							#if EASTDC_THREADING_SUPPORTED
-								// Since we are in a seperate thread from the callback manager and sicne we are updating On UserEvent
+								// Since we are in a seperate thread from the callback manager and since we are updating On UserEvent
 								// ourselves here, it might be useful to sleep here to handle the case that our OnUserEvent calls get
 								// ahead of what the callback manager can keep up with and "CallbackTest low accuracy rate" reports 
 								// can result, though these reports wouldn't be indicative of bugs or failures of EACallback.

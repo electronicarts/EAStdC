@@ -350,8 +350,6 @@ int TestTextUtil()
 
 	int nErrorCount(0);
 
-	EA::UnitTest::Report("TestTextUtil\n");
-
 	nErrorCount += TestUTF8();
 
 	// WildcardMatch

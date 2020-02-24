@@ -96,8 +96,6 @@ int TestProcess()
 {
 	int nErrorCount(0);
 
-	EA::UnitTest::Report("TestProcess\n");
-
 	{
 		// size_t GetCurrentProcessPath(char*  pPath);
 		// size_t GetCurrentProcessPath(char16_t* pPath);

@@ -12,8 +12,6 @@ int TestByteCrackers()
 {
 	int nErrorCount(0);
 
-	EA::UnitTest::Report("TestByteCrackers\n");
-
 	#ifdef _MSC_VER
 		#pragma warning (disable: 4310) // Cast truncates constant value
 	#endif

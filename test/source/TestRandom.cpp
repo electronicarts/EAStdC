@@ -154,8 +154,6 @@ int TestRandom()
 {
 	int nErrorCount(0);
 
-	EA::UnitTest::Report("TestRandom\n");
-
 	{   // Bug report regression.
 		// User Fei Jiang reports that RandomLinearCongruential::RandomUnit32Uniform(uint32_t nLimit) returns 
 		// different values on PS3 in debug vs. debug-opt builds with SN compiler.

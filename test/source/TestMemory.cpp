@@ -1233,8 +1233,6 @@ static void TestMemclearSpeed()
 
 int TestMemory()
 {
-	EA::UnitTest::Report("TestMemory\n");
-
 	int nErrorCount = 0;
 
 	// Set up large aligned memory blocks for memory tests.

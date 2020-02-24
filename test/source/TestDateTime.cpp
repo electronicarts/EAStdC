@@ -158,8 +158,6 @@ int TestDateTime()
 
 	int nErrorCount(0);
 
-	EA::UnitTest::Report("TestDateTime\n");
-
 	DateTime dateTimeTest(1970, 1, 1, 0, 0, 0);
 	EATEST_VERIFY(DateTimeSecondsToTimeTSeconds(dateTimeTest.GetSeconds()) == 0);
 
@@ -224,7 +222,7 @@ int TestDateTime()
 										value, (uint32_t)pTime->tm_min, dateTime2.GetSeconds(), (int64_t)nTime);
 
 			value = dateTime2.GetParameter(kParameterSecond);
-			EATEST_VERIFY_F(value == (uint32_t)pTime->tm_sec, "TestDateTime DateTime second failure: value: %u, expected: %u. DateTime seconds: %I64u, time_t: %I64d", 
+			EATEST_VERIFY_F((value - (uint32_t)pTime->tm_sec < 5), "TestDateTime DateTime second failure: value: %u, expected: %u. DateTime seconds: %I64u, time_t: %I64d", 
 										value, (uint32_t)pTime->tm_sec, dateTime2.GetSeconds(), (int64_t)nTime);
 		#endif
 	}

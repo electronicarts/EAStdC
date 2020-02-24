@@ -2719,8 +2719,6 @@ int TestSprintf()
 {
 	int nErrorCount(0);
 
-	EA::UnitTest::Report("TestSprintf\n");
-
 	// Regular sprintf
 	nErrorCount += TestSprintf8();
 	nErrorCount += TestSprintf16();

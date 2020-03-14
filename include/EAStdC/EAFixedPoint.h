@@ -134,12 +134,12 @@ namespace StdC
 ///////////////////////////////////////////////////////////////////////////////
 // class FPTemplate 
 //
-#define FPTemplateDeclaration template<class T, int upShiftInt, int downShiftInt, int upMulInt, int downDivInt>
+#define FPTemplateDeclaration template<class T, T upShiftInt, T downShiftInt, T upMulInt, T downDivInt>
 #define FPTemplateType FPTemplate<T, upShiftInt, downShiftInt, upMulInt, downDivInt>
 
 template <class  T,                            //'T' must be a signed or unsigned integer type (e.g. long, unsigned long, etc.)
-		  int  upShiftInt, int downShiftInt, 
-		  int  upMulInt,   int downDivInt>
+		  T  upShiftInt, T downShiftInt,
+		  T  upMulInt,   T downDivInt>
 
 struct FPTemplate
 {
@@ -152,10 +152,10 @@ struct FPTemplate
 	//Functions
 	FPTemplate() {}
 	FPTemplate(const FPTemplate&    newValue) { value = newValue.value; }
-	FPTemplate(const int&           newValue) { value = newValue << upShiftInt; }
-	FPTemplate(const unsigned int&  newValue) { value = newValue << upShiftInt; }
-	FPTemplate(const long&          newValue) { value = newValue << upShiftInt; }
-	FPTemplate(const unsigned long& newValue) { value = newValue << upShiftInt; }
+	FPTemplate(const int&           newValue) { value = (T)(newValue) << upShiftInt; }
+	FPTemplate(const unsigned int&  newValue) { value = (T)(newValue) << upShiftInt; }
+	FPTemplate(const long&          newValue) { value = (T)(newValue) << upShiftInt; }
+	FPTemplate(const unsigned long& newValue) { value = (T)(newValue) << upShiftInt; }
 	FPTemplate(const float&         newValue) { value = (int)(newValue * (float)upMulInt);  }
 	FPTemplate(const double&        newValue) { value = (int)(newValue * (double)upMulInt); }
 	void FromFixed(const int&       newValue) { value = newValue; }    // Accepts an int that is in fixed point format (i.e. shifted) already. 
@@ -516,7 +516,7 @@ inline FPTemplateType operator*(const FPTemplateType& t1, const FPTemplateType& 
 FPTemplateDeclaration
 inline FPTemplateType operator*(const FPTemplateType& t1, const int& t2){ 
    FPTemplateType temp; 
-   temp.value = FPTemplateType::FixedMul(t1.value, t2<<upShiftInt);
+   temp.value = FPTemplateType::FixedMul(t1.value, (T)(t2)<<upShiftInt);
    return temp;
 }
 

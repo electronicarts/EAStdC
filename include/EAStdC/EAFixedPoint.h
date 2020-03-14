@@ -992,6 +992,8 @@ typedef FPTemplate<uint32_t,   10, 22,  4194304,      1024>   UFixed10;
 typedef FPTemplate<int32_t,    24,  8, 16777216,       256>    SFixed8;   //  8:24 fixed point (24 bits of fraction)
 typedef FPTemplate<uint32_t,   24,  8, 16777216,       256>    UFixed8;
 
+typedef FPTemplate<int64_t, 32, 32, 4294967296LL, 4294967296LL> SFixed32;  // 32:32 fixed point (32 bits of fraction)
+
 ///////////////////////////////////////////////////////////////////////////////
 
 #define FPDeclareTemplateSpecializations(TypeDef) \

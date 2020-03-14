@@ -8,6 +8,7 @@
 #include <EAStdC/EAFixedPoint.h>
 #include <EAStdCTest/EAStdCTest.h>
 #include <EATest/EATest.h>
+#include <EAStdC/Int128_t.h>
 
 
 
@@ -57,8 +58,43 @@ static bool CompareValues(EA::StdC::SFixed16 a, double b)
 				 const volatile uint64_t c = ((uint64_t)a) << 8;
 				 return (int32_t)(uint32_t)(c % b);
 			}
+
+			static bool CompareValues(SFixed32 a, double b) {
+			#define Fixed32ToDouble(a) (((double)a) / (65536.0 * 65536.0))
+
+				const double c = Fixed32ToDouble(a.AsFixed());
+				return (fabs(c - b) < 0.01);
+			}
+			template <>
+			EASTDC_API int64_t FP_PASCAL SFixed32::FixedMul(const int64_t lhs,
+																											const int64_t rhs) {
+				int128_t lhs128(lhs);
+				lhs128 *= rhs;
+				lhs128 >>= 32;
+
+				return lhs128.AsInt64();
+			}
+
+			template <>
+			EASTDC_API int64_t FP_PASCAL SFixed32::FixedDiv(const int64_t lhs,
+																											const int64_t rhs) {
+				int128_t lhs128(lhs);
+				lhs128 <<= 32;
+				lhs128 /= rhs;
+
+				return lhs128.AsInt64();
+			}
+
+			template <>
+			EASTDC_API int64_t FP_PASCAL SFixed32::FixedMod(const int64_t lhs,
+																											const int64_t rhs) {
+				int128_t c(lhs);
+				c <<= 32;
+				return (c % rhs).AsInt64();
+			}
 		}
 	}
+
 #endif
 
 
@@ -223,6 +259,84 @@ int TestFixedPoint()
 			a = log(e) / log(f);
 			if(!CompareValues(a, 0.77333))
 				nErrorCount++;
+		}
+
+		//Test SFixed32
+		{
+			SFixed32  a(1), b(2), c(3.f), d(1.0);
+			double    e = 3.2;
+			float     f = 4.5;
+			int       g = 6;
+
+			if (a.AsInt() != 1) nErrorCount++;
+			if (c.AsUnsignedInt() != 3) nErrorCount++;
+			if (a.AsLong() != 1) nErrorCount++;
+			if (c.AsUnsignedLong() != 3) nErrorCount++;
+			if (!CompareValues((double)a.AsFloat(), 1.0)) nErrorCount++;
+			if (!CompareValues(c.AsDouble(), 3.0)) nErrorCount++;
+
+			a = b * f;
+			if (!CompareValues(a, 9.0)) nErrorCount++;
+
+			a = b / d;
+			if (!CompareValues(a, 2.0)) nErrorCount++;
+
+			a = b + d;
+			if (!CompareValues(a, 3.0)) nErrorCount++;
+
+			a = (c / e) + b + f;
+			if (!CompareValues(a, 7.4375)) nErrorCount++;
+
+			a = c / e * (b % g) + f / c;
+			if (!CompareValues(a, 3.375)) nErrorCount++;
+
+			if (!CompareValues(b, 2.0)) nErrorCount++;
+			a = g * -c / (b++);
+			if (!CompareValues(a, -9.0)) nErrorCount++;
+			if (!CompareValues(b, 3.0)) nErrorCount++;
+			--b;	// Restore it to its original value.
+			if (!CompareValues(b, 2.0)) nErrorCount++;
+
+			a = sin(d) + pow(b, e) * sqrt(d);
+			if (!CompareValues(a, 10.031)) nErrorCount++;
+
+			a = log(e) / log(f);
+			if (!CompareValues(a, 0.77333))
+				nErrorCount++;
+		}
+
+		{
+			SFixed32 a(16);
+
+			auto expected = a.value << 1;
+
+			a = (a << 1);
+
+			if (!CompareValues(a.value, expected)) nErrorCount++;
+		}
+
+		// FPTemplate operator>>(int numBits) const
+		{
+			SFixed32 a(16);
+
+			auto expected = a.value >> 1;
+
+			a = (a >> 1);
+
+			if (!CompareValues(a.value, expected)) nErrorCount++;
+		}
+
+		// Reported regression - ensure operator<< and operator>> are
+		// implemented correctly.
+		{
+			SFixed32 a(16);
+
+			auto expected = a.value;
+
+			a = (a << 1);
+			a = (a >> 1);
+
+			if (!CompareValues(a.value, expected)) nErrorCount++;
 		}
 	#endif
 

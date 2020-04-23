@@ -18,6 +18,12 @@ Your pull request should:
 	* limit using clang format on new code
 	* do not deviate from style already established in the files
 
+### Getting the Repository
+EAStdC uses git submodules for its dependencies as they are seperate git repositories. Recursive clones will continue until HD space is exhausted unless they are manually limited. It is recommended to use the following to get the source:
+
+git clone https://github.com/electronicarts/EAStdC
+cd EAStdC
+git submodule update --init
 
 ### Running the Unit Tests
 

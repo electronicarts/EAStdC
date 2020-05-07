@@ -37,6 +37,7 @@ add_definitions(-D_CHAR16T)
 # Include directories
 #-------------------------------------------------------------------------------------------
 target_include_directories(EAStdC PUBLIC include)
+target_include_directories(EAStdC PRIVATE ../EABase/include/Common)
 
 #-------------------------------------------------------------------------------------------
 # Dependencies

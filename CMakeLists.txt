@@ -42,7 +42,6 @@ target_include_directories(EAStdC PRIVATE ../EABase/include/Common)
 #-------------------------------------------------------------------------------------------
 # Dependencies
 #-------------------------------------------------------------------------------------------
-target_link_libraries(EAStdC EABase)
 target_link_libraries(EAStdC EAAssert)
 target_link_libraries(EAStdC EAThread)
 

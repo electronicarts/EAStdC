@@ -49,7 +49,7 @@ add_subdirectory(packages/EASTL)
 add_subdirectory(packages/EATest)
 add_subdirectory(packages/EAThread)
 
-target_link_libraries(EAStdCTest EABase)
+)
 target_link_libraries(EAStdCTest EAAssert)
 target_link_libraries(EAStdCTest EAMain)
 target_link_libraries(EAStdCTest EASTL)

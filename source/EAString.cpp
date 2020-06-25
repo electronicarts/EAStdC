@@ -2295,6 +2295,92 @@ EASTDC_API char32_t* Strstr(const char32_t* pString, const char32_t* pSubString)
 
 
 
+EASTDC_API char* Strnstr(const char* pString, const char* pSubString, size_t n)
+{
+	if (*pSubString == 0)
+		return (char*)pString;
+
+	size_t len = Strlen(pSubString);
+
+	if (n < len)
+		return 0;
+
+	char* s1 = (char*)pString;
+	for(size_t i = 0; (*s1 != 0) && (i <= n - len) ; ++i, ++s1)
+	{
+		if (*s1 == *pSubString)
+		{
+			const char* s2 = (s1 - 1);
+			const char* p2 = (pSubString - 1);
+			char cs, cp;
+
+			while((cs = *++s2) == (cp = *++p2) && cs){} // Do nothing
+
+			if(!cp)
+				return s1;
+		}
+	}
+	return 0;
+}
+
+EASTDC_API char16_t* Strnstr(const char16_t* pString, const char16_t* pSubString, size_t n)
+{
+	if (*pSubString == 0)
+		return (char16_t*)pString;
+
+	size_t len = Strlen(pSubString);
+
+	if (n < len)
+		return 0;
+
+	char16_t* s1 = (char16_t*)pString;
+	for(size_t i = 0; (*s1 != 0) && (i <= n - len) ; ++i, ++s1)
+	{
+		if (*s1 == *pSubString)
+		{
+			const char16_t* s2 = (s1 - 1);
+			const char16_t* p2 = (pSubString - 1);
+			char16_t cs, cp;
+
+			while((cs = *++s2) == (cp = *++p2) && cs){} // Do nothing
+
+			if(!cp)
+				return s1;
+		}
+	}
+	return 0;
+}
+
+EASTDC_API char32_t* Strnstr(const char32_t* pString, const char32_t* pSubString, size_t n)
+{
+	if (*pSubString == 0)
+		return (char32_t*)pString;
+
+	size_t len = Strlen(pSubString);
+
+	if (n < len)
+		return 0;
+
+	char32_t* s1 = (char32_t*)pString;
+	for(size_t i = 0; (*s1 != 0) && (i <= n - len) ; ++i, ++s1)
+	{
+		if (*s1 == *pSubString)
+		{
+			const char32_t* s2 = (s1 - 1);
+			const char32_t* p2 = (pSubString - 1);
+			char32_t cs, cp;
+
+			while((cs = *++s2) == (cp = *++p2) && cs){} // Do nothing
+
+			if(!cp)
+				return s1;
+		}
+	}
+	return 0;
+}
+
+
+
 EASTDC_API char* Stristr(const char* s1, const char* s2)
 {
 	const char* cp = s1;

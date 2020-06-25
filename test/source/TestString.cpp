@@ -1236,6 +1236,45 @@ static int TestStringCore()
 		EATEST_VERIFY(Strstr(s32, EA_CHAR32("abcd"))  == &s32[3]);
 	}
 
+	// char*  Strnstr(const char*  pString, const char*  pSubString, size_t n);
+	// char16_t* Strnstr(const char16_t* pString, const char16_t* pSubString, size_t n);
+	// char32_t* Strnstr(const char32_t* pString, const char32_t* pSubString, size_t n);
+	{
+		char s8[] = "012abcdf89abcdef";
+
+		EATEST_VERIFY(Strnstr(s8, "", 0)       == &s8[0]);
+		EATEST_VERIFY(Strnstr(s8, "012", 3)    == &s8[0]);
+		EATEST_VERIFY(Strnstr(s8, "012", 2)    == 0);
+		EATEST_VERIFY(Strnstr(s8, "abcde", 20) == &s8[10]);
+		EATEST_VERIFY(Strnstr(s8, "abcde", 10) == 0);
+		EATEST_VERIFY(Strnstr(s8, ":/1", 20)   == 0);
+		EATEST_VERIFY(Strnstr(s8, "abcd", 10)  == &s8[3]);
+		EATEST_VERIFY(Strnstr(s8, "abcd", 5)   == 0);
+	}
+	{
+		char16_t s16[24]; Strlcpy(s16, EA_CHAR16("012abcdf89abcdef"), EAArrayCount(s16)); // Can't do char16_t variable[64] = EA_CHAR16(...) because some compilers don't support 16 bit string literals.
+
+		EATEST_VERIFY(Strnstr(s16, EA_CHAR16(""), 0)       == &s16[0]);
+		EATEST_VERIFY(Strnstr(s16, EA_CHAR16("012"), 3)    == &s16[0]);
+		EATEST_VERIFY(Strnstr(s16, EA_CHAR16("012"), 2)    == 0);
+		EATEST_VERIFY(Strnstr(s16, EA_CHAR16("abcde"), 20) == &s16[10]);
+		EATEST_VERIFY(Strnstr(s16, EA_CHAR16("abcde"), 10) == 0);
+		EATEST_VERIFY(Strnstr(s16, EA_CHAR16(":/1"), 20)   == 0);
+		EATEST_VERIFY(Strnstr(s16, EA_CHAR16("abcd"), 10)  == &s16[3]);
+		EATEST_VERIFY(Strnstr(s16, EA_CHAR16("abcd"), 5)   == 0);
+	}
+	{
+		char32_t s32[24]; Strlcpy(s32, EA_CHAR32("012abcdf89abcdef"), EAArrayCount(s32)); // Can't do char32_t variable[64] = EA_CHAR32(...) because some compilers don't support 32 bit string literals.
+
+		EATEST_VERIFY(Strnstr(s32, EA_CHAR32(""), 0)       == &s32[0]);
+		EATEST_VERIFY(Strnstr(s32, EA_CHAR32("012"), 3)    == &s32[0]);
+		EATEST_VERIFY(Strnstr(s32, EA_CHAR32("012"), 2)    == 0);
+		EATEST_VERIFY(Strnstr(s32, EA_CHAR32("abcde"), 20) == &s32[10]);
+		EATEST_VERIFY(Strnstr(s32, EA_CHAR32("abcde"), 10) == 0);
+		EATEST_VERIFY(Strnstr(s32, EA_CHAR32(":/1"), 20)   == 0);
+		EATEST_VERIFY(Strnstr(s32, EA_CHAR32("abcd"), 10)  == &s32[3]);
+		EATEST_VERIFY(Strnstr(s32, EA_CHAR32("abcd"), 5)   == 0);
+	}
 
 	// char*  Stristr(const char*  pString, const char*  pSubString);
 	// char16_t* Stristr(const char16_t* pString, const char16_t* pSubString);

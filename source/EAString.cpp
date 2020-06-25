@@ -2452,6 +2452,88 @@ EASTDC_API char32_t* Stristr(const char32_t* s1, const char32_t* s2)
 
 
 
+EASTDC_API char*  Strnistr(const char*  pString, const char*  pSubString, size_t n)
+{
+	if (*pSubString == 0)
+		return (char*)pString;
+
+	size_t len = Strlen(pSubString);
+
+	if (n < len)
+		return 0;
+
+	char* s1 = (char*)pString;
+	for(size_t i = 0; (*s1 != 0) && (i <= n - len) ; ++i, ++s1)
+	{
+		const char* s2 = s1;
+		const char* p2 = pSubString;
+
+		while(*s2 && *p2 && (Tolower(*s2) == Tolower(*p2)))
+		{
+			++s2; ++p2;
+		}
+
+		if(*p2 == 0)
+			return s1;
+	}
+	return 0;
+}
+
+EASTDC_API char16_t* Strnistr(const char16_t* pString, const char16_t* pSubString, size_t n)
+{
+	if (*pSubString == 0)
+		return (char16_t*)pString;
+
+	size_t len = Strlen(pSubString);
+
+	if (n < len)
+		return 0;
+
+	char16_t* s1 = (char16_t*)pString;
+	for(size_t i = 0; (*s1 != 0) && (i <= n - len) ; ++i, ++s1)
+	{
+		const char16_t* s2 = s1;
+		const char16_t* p2 = pSubString;
+
+		while(*s2 && *p2 && (Tolower(*s2) == Tolower(*p2)))
+		{
+			++s2; ++p2;
+		}
+
+		if(*p2 == 0)
+			return s1;
+	}
+	return 0;
+}
+
+EASTDC_API char32_t* Strnistr(const char32_t* pString, const char32_t* pSubString, size_t n)
+{
+	if (*pSubString == 0)
+		return (char32_t*)pString;
+
+	size_t len = Strlen(pSubString);
+
+	if (n < len)
+		return 0;
+
+	char32_t* s1 = (char32_t*)pString;
+	for(size_t i = 0; (*s1 != 0) && (i <= n - len) ; ++i, ++s1)
+	{
+		const char32_t* s2 = s1;
+		const char32_t* p2 = pSubString;
+
+		while(*s2 && *p2 && (Tolower(*s2) == Tolower(*p2)))
+		{
+			++s2; ++p2;
+		}
+
+		if(*p2 == 0)
+			return s1;
+	}
+	return 0;
+}
+
+
 
 EASTDC_API char* Strrstr(const char* s1, const char* s2) 
 {

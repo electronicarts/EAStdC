@@ -32,7 +32,9 @@
 //    char_t*  Strrchr(const char_t* pString, char_t c);
 //    size_t   Strspn(const char_t* pString, const char_t* pSubString);
 //    char_t*  Strstr(const char_t* pString, const char_t* pSubString);
+//    char_t*  Strnstr(const char_t* pString, const char_t* pSubString, size_t n);
 //    char_t*  Stristr(const char_t* pString, const char_t* pSubString);
+//    char_t*  Strnistr(const char_t* pString, const char_t* pSubString, size_t n);
 //    bool     Strstart(const char_t* pString, const char_t* pPrefix);
 //    bool     Stristart(const char_t* pString, const char_t* pPrefix);
 //    bool     Strend(const char_t* pString, const char_t* pSuffix, size_t stringLength = kSizeTypeUnset);
@@ -1041,6 +1043,20 @@ EASTDC_API char32_t* Strstr(const char32_t* pString, const char32_t* pSubString)
 #endif
 
 
+/// Strnstr
+///
+/// Finds the first occurrence of pSubString within pString, exclusive of the
+/// terminating null character, where not more than n characters are searched.
+/// This is similar to the strnstr C function.
+/// Note: Has the same const char return decision that Strstr.
+EASTDC_API char*  Strnstr(const char*  pString, const char*  pSubString, size_t n);
+EASTDC_API char16_t* Strnstr(const char16_t* pString, const char16_t* pSubString, size_t n);
+EASTDC_API char32_t* Strnstr(const char32_t* pString, const char32_t* pSubString, size_t n);
+#if EA_WCHAR_UNIQUE
+EASTDC_API wchar_t* Strnstr(const wchar_t* pString, const wchar_t* pSubString, size_t n);
+#endif
+
+
 /// Stristr
 ///
 /// This is a case-insensitive version of Strstr.
@@ -1056,6 +1072,18 @@ EASTDC_API char16_t* Stristr(const char16_t* pString, const char16_t* pSubString
 EASTDC_API char32_t* Stristr(const char32_t* pString, const char32_t* pSubString);
 #if EA_WCHAR_UNIQUE
 	EASTDC_API wchar_t* Stristr(const wchar_t* pString, const wchar_t* pSubString);
+#endif
+
+
+/// Strnistr
+///
+/// This is a case-insensitive version of Strnstr.
+///
+EASTDC_API char*  Strnistr(const char*  pString, const char*  pSubString, size_t n);
+EASTDC_API char16_t* Strnistr(const char16_t* pString, const char16_t* pSubString, size_t n);
+EASTDC_API char32_t* Strnistr(const char32_t* pString, const char32_t* pSubString, size_t n);
+#if EA_WCHAR_UNIQUE
+	EASTDC_API wchar_t* Strnistr(const wchar_t* pString, const wchar_t* pSubString, size_t n);
 #endif
 
 
@@ -2570,9 +2598,19 @@ namespace StdC
 		return reinterpret_cast<wchar_t *>(Strstr(EASTDC_UNICODE_CONST_CHAR_PTR_CAST(pString), EASTDC_UNICODE_CONST_CHAR_PTR_CAST(pSubString)));
 	}
 
+	inline wchar_t* Strnstr(const wchar_t* pString, const wchar_t* pSubString, size_t n)
+	{
+		return reinterpret_cast<wchar_t *>(Strnstr(EASTDC_UNICODE_CONST_CHAR_PTR_CAST(pString), EASTDC_UNICODE_CONST_CHAR_PTR_CAST(pSubString), n));
+	}
+
 	inline wchar_t* Stristr(const wchar_t* pString, const wchar_t* pSubString)
 	{
 		return reinterpret_cast<wchar_t *>(Stristr(EASTDC_UNICODE_CONST_CHAR_PTR_CAST(pString), EASTDC_UNICODE_CONST_CHAR_PTR_CAST(pSubString)));
+	}
+
+	inline wchar_t* Strnistr(const wchar_t* pString, const wchar_t* pSubString, size_t n)
+	{
+		return reinterpret_cast<wchar_t *>(Strnistr(EASTDC_UNICODE_CONST_CHAR_PTR_CAST(pString), EASTDC_UNICODE_CONST_CHAR_PTR_CAST(pSubString), n));
 	}
 
 	inline wchar_t* Strrstr(const wchar_t* pString, const wchar_t* pSubString)

@@ -134,12 +134,12 @@ namespace StdC
 ///////////////////////////////////////////////////////////////////////////////
 // class FPTemplate 
 //
-#define FPTemplateDeclaration template<class T, int upShiftInt, int downShiftInt, int upMulInt, int downDivInt>
+#define FPTemplateDeclaration template<class T, T upShiftInt, T downShiftInt, T upMulInt, T downDivInt>
 #define FPTemplateType FPTemplate<T, upShiftInt, downShiftInt, upMulInt, downDivInt>
 
 template <class  T,                            //'T' must be a signed or unsigned integer type (e.g. long, unsigned long, etc.)
-		  int  upShiftInt, int downShiftInt, 
-		  int  upMulInt,   int downDivInt>
+		  T  upShiftInt, T downShiftInt,
+		  T  upMulInt,   T downDivInt>
 
 struct FPTemplate
 {
@@ -152,12 +152,12 @@ struct FPTemplate
 	//Functions
 	FPTemplate() {}
 	FPTemplate(const FPTemplate&    newValue) { value = newValue.value; }
-	FPTemplate(const int&           newValue) { value = newValue << upShiftInt; }
-	FPTemplate(const unsigned int&  newValue) { value = newValue << upShiftInt; }
-	FPTemplate(const long&          newValue) { value = newValue << upShiftInt; }
-	FPTemplate(const unsigned long& newValue) { value = newValue << upShiftInt; }
-	FPTemplate(const float&         newValue) { value = (int)(newValue * (float)upMulInt);  }
-	FPTemplate(const double&        newValue) { value = (int)(newValue * (double)upMulInt); }
+	FPTemplate(const int&           newValue) { value = (T)(newValue) << upShiftInt; }
+	FPTemplate(const unsigned int&  newValue) { value = (T)(newValue) << upShiftInt; }
+	FPTemplate(const long&          newValue) { value = (T)(newValue) << upShiftInt; }
+	FPTemplate(const unsigned long& newValue) { value = (T)(newValue) << upShiftInt; }
+	FPTemplate(const float&         newValue) { value = (T)(newValue * (float)upMulInt);  }
+	FPTemplate(const double&        newValue) { value = (T)(newValue * (double)upMulInt); }
 	void FromFixed(const int&       newValue) { value = newValue; }    // Accepts an int that is in fixed point format (i.e. shifted) already. 
 	T    AsFixed  ()                          { return value;     }    // Allows you to get the fixed point value itself and mess with it as you want. 
 
@@ -245,15 +245,15 @@ struct FPTemplate
 	FPTemplate& operator+=(const unsigned int&  argValue) { value += (T)(argValue<<upShiftInt); return *this; }
 	FPTemplate& operator+=(const long &         argValue) { value += (T)(argValue<<upShiftInt); return *this; }
 	FPTemplate& operator+=(const unsigned long& argValue) { value += (T)(argValue<<upShiftInt); return *this; }
-	FPTemplate& operator+=(const float&         argValue) { value += int(argValue*(float)upMulInt);  return *this; }
-	FPTemplate& operator+=(const double&        argValue) { value += int(argValue*(double)upMulInt); return *this; }
+	FPTemplate& operator+=(const float&         argValue) { value += (T)(argValue*(float)upMulInt);  return *this; }
+	FPTemplate& operator+=(const double&        argValue) { value += (T)(argValue*(double)upMulInt); return *this; }
 	FPTemplate& operator-=(const FPTemplate&    argValue) { value -= argValue.value;            return *this; }
 	FPTemplate& operator-=(const int&           argValue) { value -= (T)(argValue<<upShiftInt); return *this; }
 	FPTemplate& operator-=(const unsigned int&  argValue) { value -= (T)(argValue<<upShiftInt); return *this; }
 	FPTemplate& operator-=(const long&          argValue) { value -= (T)(argValue<<upShiftInt); return *this; }
 	FPTemplate& operator-=(const unsigned long& argValue) { value -= (T)(argValue<<upShiftInt); return *this; }
-	FPTemplate& operator-=(const float&         argValue) { value -= int(argValue*(float)upMulInt);  return *this; }
-	FPTemplate& operator-=(const double&        argValue) { value -= int(argValue*(double)upMulInt); return *this; }
+	FPTemplate& operator-=(const float&         argValue) { value -= (T)(argValue*(float)upMulInt);  return *this; }
+	FPTemplate& operator-=(const double&        argValue) { value -= (T)(argValue*(double)upMulInt); return *this; }
 	FPTemplate& operator*=(const FPTemplate&    argValue) { value = FixedMul(value, argValue.value);        return *this; }
 	FPTemplate& operator*=(const int&           argValue) { value = FixedMul(value, argValue<<upShiftInt);  return *this; }
 	FPTemplate& operator*=(const unsigned int&  argValue) { value = FixedMul(value, argValue<<upShiftInt);  return *this; }
@@ -289,10 +289,10 @@ struct FPTemplate
 	FPTemplate& operator<<=(int numBits) { value <<= numBits; return *this;}
 	FPTemplate& operator>>=(int numBits) { value >>= numBits; return *this;}
 
-	FPTemplate& operator++()    { value += 1<<upShiftInt; return *this; } 
-	FPTemplate& operator--()    { value -= 1<<upShiftInt; return *this; }
-	FPTemplate  operator++(int) { FPTemplate temp(*this); value += 1<<upShiftInt; return temp; }
-	FPTemplate  operator--(int) { FPTemplate temp(*this); value -= 1<<upShiftInt; return temp; }
+	FPTemplate& operator++()    { value += (T)(1)<<upShiftInt; return *this; }
+	FPTemplate& operator--()    { value -= (T)(1)<<upShiftInt; return *this; }
+	FPTemplate  operator++(int) { FPTemplate temp(*this); value += (T)(1)<<upShiftInt; return temp; }
+	FPTemplate  operator--(int) { FPTemplate temp(*this); value -= (T)(1)<<upShiftInt; return temp; }
 
 	FPTemplate  Abs() { if(value<0) return -value; return value; }
 	FPTemplate  DivSafe(const FPTemplate& denominator)       { FPTemplate temp; temp.FromFixed(FixedDivSafe(value, denominator.value)); return temp; }
@@ -516,14 +516,14 @@ inline FPTemplateType operator*(const FPTemplateType& t1, const FPTemplateType& 
 FPTemplateDeclaration
 inline FPTemplateType operator*(const FPTemplateType& t1, const int& t2){ 
    FPTemplateType temp; 
-   temp.value = FPTemplateType::FixedMul(t1.value, t2<<upShiftInt);
+   temp.value = FPTemplateType::FixedMul(t1.value, (T)(t2)<<upShiftInt);
    return temp;
 }
 
 FPTemplateDeclaration
 inline FPTemplateType operator*(const int& t2, const FPTemplateType& t1){ 
    FPTemplateType temp; 
-   temp.value = FPTemplateType::FixedMul(t2<<upShiftInt, t1.value);
+   temp.value = FPTemplateType::FixedMul((T)(t2)<<upShiftInt, t1.value);
    return temp;
 }
 
@@ -705,14 +705,14 @@ inline FPTemplateType operator%(const FPTemplateType& t1, const FPTemplateType& 
 FPTemplateDeclaration
 inline FPTemplateType operator%(const FPTemplateType& t1, const int& t2){ 
    FPTemplateType temp; 
-   temp.value = FPTemplateType::FixedMod(t1.value, t2<<upShiftInt);
+   temp.value = FPTemplateType::FixedMod(t1.value, (T)(t2)<<upShiftInt);
    return temp;
 }
 
 FPTemplateDeclaration
 inline FPTemplateType operator%(const int& t2, const FPTemplateType& t1){ 
    FPTemplateType temp; 
-   temp.value = FPTemplateType::FixedMod(t2<<upShiftInt, t1.value);
+   temp.value = FPTemplateType::FixedMod((T)(t2)<<upShiftInt, t1.value);
    return temp;
 }
 
@@ -991,6 +991,8 @@ typedef FPTemplate<uint32_t,   10, 22,  4194304,      1024>   UFixed10;
 
 typedef FPTemplate<int32_t,    24,  8, 16777216,       256>    SFixed8;   //  8:24 fixed point (24 bits of fraction)
 typedef FPTemplate<uint32_t,   24,  8, 16777216,       256>    UFixed8;
+
+typedef FPTemplate<int64_t, 32, 32, 4294967296LL, 4294967296LL> SFixed32;  // 32:32 fixed point (32 bits of fraction)
 
 ///////////////////////////////////////////////////////////////////////////////
 

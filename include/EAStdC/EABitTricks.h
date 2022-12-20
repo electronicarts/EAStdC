@@ -747,7 +747,7 @@ namespace StdC
 
 
 	/// IsPowerOf2Minus1
-	/// How to tell if an unsigned integer is of the form 2n-1 (e.g. 0x0fff, 0x000fffff).
+	/// How to tell if an unsigned integer is of the form n**2-1 (e.g. 0x0fff, 0x000fffff).
 	/// Returns true for an input of 0.
 	/// Example:
 	///    00001111 (15) -> true

@@ -1,9 +1,0 @@
-[submodule "test/packages/EAAssert"]
-	path = test/packages/EAAssert
-	url = git@github.com:electronicarts/EAAssert.git
-[submodule "test/packages/EAThread"]
-	path = test/packages/EAThread
-	url = git@github.com:electronicarts/EAThread.git
-[submodule "test/packages/EABase"]
-	path = test/packages/EABase
-	url = git@github.com:electronicarts/EABase.git

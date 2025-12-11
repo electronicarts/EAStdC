@@ -435,7 +435,7 @@ namespace
 	#include <kernel.h>
 	#include <string.h>
 	#include <sceerror.h>
-	#include <eathread/eathread_sync.h>
+	#include <EAThread/eathread_sync.h>
 	#include <EAStdC/EAStopwatch.h>
 
 

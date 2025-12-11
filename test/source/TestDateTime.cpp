@@ -9,7 +9,7 @@
 #include <EAStdC/EAString.h>
 #include <EAStdC/EAMemory.h>
 #include <EAStdCTest/EAStdCTest.h>
-#include <eathread/eathread.h>
+#include <EAThread/eathread.h>
 #include <EATest/EATest.h>
 #include <string.h>
 #include <EAAssert/eaassert.h>

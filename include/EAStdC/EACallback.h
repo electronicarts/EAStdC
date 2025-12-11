@@ -78,10 +78,10 @@
 #include <EAStdC/internal/Config.h>
 #include <EAStdC/EAStopwatch.h>
 #include <EAStdC/EARandom.h>
-#include <eathread/eathread_atomic.h>   // Used even if EASTDC_THREADING_SUPPORTED is zero, as it's still present. Just no actual threads.
+#include <EAThread/eathread_atomic.h>   // Used even if EASTDC_THREADING_SUPPORTED is zero, as it's still present. Just no actual threads.
 #if EASTDC_THREADING_SUPPORTED
-	#include <eathread/eathread_thread.h>
-	#include <eathread/eathread_mutex.h>
+	#include <EAThread/eathread_thread.h>
+	#include <EAThread/eathread_mutex.h>
 #endif
 
 

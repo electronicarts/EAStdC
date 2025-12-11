@@ -10,7 +10,7 @@
 #include <EAStdC/EARandom.h>
 #include <EAStdC/EARandomDistribution.h>
 #include <EATest/EATest.h>
-#include <eathread/eathread.h>
+#include <EAThread/eathread.h>
 #include <EAAssert/eaassert.h>
 
 #ifdef _MSC_VER

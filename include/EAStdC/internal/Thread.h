@@ -7,8 +7,8 @@
 
 
 #include <EABase/eabase.h>
-#include <eathread/eathread_atomic.h>
-#include <eathread/eathread_mutex.h>
+#include <EAThread/eathread_atomic.h>
+#include <EAThread/eathread_mutex.h>
 
 
 namespace EA
